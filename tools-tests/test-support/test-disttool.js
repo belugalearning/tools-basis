@@ -7,6 +7,7 @@ var ToolLayer = cc.Layer.extend({
     sprite:null,
     clc:null,
     lastcount:null,
+    lastb:null,
     objlayer:null,
     allpsprites:new Array(),
     touchSprite:null,
@@ -68,87 +69,105 @@ var ToolLayer = cc.Layer.extend({
         // cc.log("setting up tool");
 // 
 
-        for(var i=0; i<this.allpsprites.length; i++)
-        {
-            var ps=this.allpsprites[i];
-            this.space.removeShape(ps._body.shapeList[0]);
-            this.space.removeBody(ps._body);
+        var newc=emapData.a * emapData.b;
+        var oldc=this.lastcount * this.lastb;
 
-            this.objlayer.removeChild(ps, false);
-        }
+        cc.log("newc: " + newc + "  oldc: " + oldc);
 
-        //only while we're removing everything from the array, else we could just pop the one we don't
-        this.allpsprites=new Array();
+        // if(newc<oldc)
+        // {
+        //     cc.log("removing objects");
+        //     for(var r=0; r<(oldc-newc); r++)
+        //     {
+        //         var ps=this.allpsprites[0];
+        //         this.space.removeConstraint(ps.spring);
+        //         this.space.removeConstraint(ps.slide);
 
-        for(i=0; i<emapData.a; i++)
-        {
-            var x=Math.random()*924 + 50;
-            var y=Math.random()*569 + 50;
+                
+        //         this.space.removeShape(ps._body.shapeList[0]);
+        //         this.space.removeBody(ps._body);
 
-            var s=this.createPhysicsSprite(cc.p(x,y));
 
-            // var s=cc.Sprite.create(s_imagePath + "object.png");
-            // cc.log("x: " + x + "  y: " + y);
-            // s.setPosition(cc.p(x, y));
-            this.objlayer.addChild(s, 1);   
+        //         this.objlayer.removeChild(ps, false);
+        //         this.allpsprites.pop(ps);
+        //     }
+        // }
+        // else
+        // {
 
-            cc.log(" allps is " + this.allpsprites.length);
-            this.allpsprites.push(s);         
-        }
 
-        // var z=cp.v(0,0);
-        // cc.log(this.allpsprites);
-        // var o1=this.allpsprites[0];
-        // cc.log("object: " + o1);
-        // var b1=o1.refBody;
-        // cc.log("body: " + b1);
-        // var pv=new cp.PivotJoint(this.allpsprites[0].refBody, this.allpsprites[1].refBody, z);
-        // this.space.addConstraint(pv);
-
-        // this.space.addConstraint(new cp.PivotJoint(this.allpsprites[0]._body, this.allpsprites[1]._body, v(200,00)));
-
-        //attach all the bodies to eachother
-        for(var i=0; i<this.allpsprites.length; i++)
-        {
-            var ps1=this.allpsprites[i];
-            
-            // for(var j=i; j<2; j++)
-            // {
-            var k=(i+1)%(this.allpsprites.length);
-
-            cc.log(i + " .... " + k);
-            var ps2=this.allpsprites[k];
-
-            if(ps1!=ps2 && ps1!=null && ps2!=null)
+            for(var i=0; i<this.allpsprites.length; i++)
             {
-                var slide=new cp.SlideJoint(ps1.refBody, ps2.refBody, cp.vzero, cp.vzero, 200,300);
-                this.space.addConstraint(slide);
+                var ps=this.allpsprites[i];
+                this.space.removeShape(ps._body.shapeList[0]);
+                this.space.removeBody(ps._body);
 
-                var spring=new cp.DampedSpring(ps1.refBody, ps2.refBody, cp.vzero, cp.vzero, 0, 3, 0.05);
-                this.space.addConstraint(spring);
-
-                ps1.slide=slide;
-                ps1.spring=spring;
-                ps1.otherps=ps2;
+                this.objlayer.removeChild(ps, false);
             }
-            // }
-            
-        }
 
+            //only while we're removing everything from the array, else we could just pop the one we don't
+            this.allpsprites=new Array();
 
-        lastcount=emapData.a;
+            for(b=0; b<emapData.b; b++)
+            {
+                asprites=new Array();
+                for(i=0; i<emapData.a; i++)
+                {
+                    var x=Math.random()*924 + 50;
+                    var y=Math.random()*569 + 50;
+
+                    var s=this.createPhysicsSprite(cc.p(x,y));
+
+                    this.objlayer.addChild(s, 1);   
+
+                    // cc.log(" allps is " + this.allpsprites.length);
+                    this.allpsprites.push(s);    
+                    asprites.push(s);     
+                }
+
+                //attach all the bodies to eachother
+                for(var i=0; i<asprites.length; i++)
+                {
+                    var ps1=asprites[i];
+                    
+                    // for(var j=i; j<2; j++)
+                    // {
+                    var k=(i+1)%(asprites.length);
+
+                    cc.log(i + " .... " + k);
+                    var ps2=asprites[k];
+
+                    if(ps1!=ps2 && ps1!=null && ps2!=null)
+                    {
+                        var slide=new cp.SlideJoint(ps1.refBody, ps2.refBody, cp.vzero, cp.vzero, 200,300);
+                        this.space.addConstraint(slide);
+
+                        var spring=new cp.DampedSpring(ps1.refBody, ps2.refBody, cp.vzero, cp.vzero, 0, 3, 0.05);
+                        this.space.addConstraint(spring);
+
+                        ps1.slide=slide;
+                        ps1.spring=spring;
+                        ps1.otherps=ps2;
+                    }
+                    // }
+                    
+                }
+
+            //close b loop
+            }
+
+        //close else to removing objects
+        // }
+
+        this.lastcount=emapData.a;
+        this.lastb=emapData.b;
     },
 
     update:function (dt) {
 
         this.space.step( dt );
-        
-        // if(emapData && emapData.question!=this.titleLabel.string)
-        // {
-        //     this.titleLabel.setString(emapData.question);
-        // }
 
-        if(lastcount!=emapData.a)
+        if(this.lastcount!=emapData.a || this.lastb!=emapData.b)
         {
             this.setupTool();
         }

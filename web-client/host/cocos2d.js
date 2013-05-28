@@ -40,8 +40,8 @@
             'src/resource.js',
             '../../host-helpers/shared-qlayer.js',
 
-            '../../tools-tests/test-support/test-emptytool.js',
-            // '../../tools-tests/test-support/test-disttool.js',
+            // '../../tools-tests/test-support/test-emptytool.js',
+            '../../tools-tests/test-support/test-disttool.js',
             '../../host-helpers/shared-createtoolscene.js'
         ]
     };
