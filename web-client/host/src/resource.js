@@ -7,6 +7,7 @@ var s_imagePath="../../shared-resources/images/";
 var s_geoboard_background = s_imagePath + "background.png";
 var s_pin = s_imagePath + "pin.png";
 var s_bandPart = s_imagePath + "bandPart.png";
+var s_square_geoboard_button = s_imagePath + "squareLatticeButton.png";
 
 var g_ressources = [
     //image

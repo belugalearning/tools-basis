@@ -4,6 +4,8 @@ var ToolLayer = cc.Layer.extend({
     lastcount:null,
     label:null,
     geoboard:null,
+    circleNumberOfPins:8,
+    circleIncludeCentre:true,
 
     init:function () {
 
@@ -19,44 +21,148 @@ var ToolLayer = cc.Layer.extend({
 */
         this.setTouchEnabled(true);
 
-        var size = cc.Director.getInstance().getWinSize();
-
         clc=cc.LayerColor.create(cc.c4b(0, 0, 0, 255));
         this.addChild(clc,0);
         setupInheritances();
 
         //this.setPosition(cc.p(-500, 0));
 
-        geoboard = new SquareGeoboard();
-        geoboard.background.setPosition(cc.p(size.width/2, size.height/2));
-        this.addChild(geoboard.background);
-        geoboard.setupPins();
+        this.geoboard = new CircleGeoboard(this.circleNumberOfPins, this.circleIncludeCentre);
+        this.setupGeoboard();
 
-        var pin1 = geoboard.pins[0];
-        var pin2 = geoboard.pins[39];
-        var pin3 = geoboard.pins[43];
-        var pin4 = geoboard.pins[1]; 
+        // Currently using a MenuItemImage isn't working here (the 'activate' function on the object is not triggered, 
+        //I have used MenuItemFonts instead)
+        var squareGeoboardButton = new cc.MenuItemFont.create("Square", 'squareGeoboardTapped', this);
+
+        var triangleGeoboardButton = new cc.MenuItemFont.create("Triangle", 'triangleGeoboardTapped', this);
+        triangleGeoboardButton.setPosition(0, -110);
+
+        var circleGeoboardButton = new cc.MenuItemFont.create("Circle", 'circleGeoboardTapped', this);
+        circleGeoboardButton.setPosition(-20, -220);
+
+        var centrePinButton = new cc.MenuItemFont.create("Centre", 'centrePinTapped', this);
+        centrePinButton.setPosition(85, -190);
+        centrePinButton.setFontSize(16);
+
+        var addPinButton = new cc.MenuItemFont.create("Add", 'addPinTapped', this);
+        addPinButton.setPosition(85, -225);
+        addPinButton.setFontSize(16);
+
+        var removePinButton = new cc.MenuItemFont.create("Remove", 'removePinTapped', this);
+        removePinButton.setPosition(85, -260);
+        removePinButton.setFontSize(16);
+
+        var geoboardTypesMenu = new cc.Menu.create(squareGeoboardButton, triangleGeoboardButton, circleGeoboardButton,
+            centrePinButton, addPinButton, removePinButton);
+        geoboardTypesMenu.setPosition(110, 500);
+        this.addChild(geoboardTypesMenu);
+
+        var addBandButton = new cc.MenuItemFont.create("Add band", 'addBandTapped', this);
+
+        var removeBandButton = new cc.MenuItemFont.create("Remove band", 'removeBandTapped', this);
+        removeBandButton.setPosition(0, -60);
+
+        var addRemoveBandMenu = new cc.Menu.create(addBandButton, removeBandButton);
+        addRemoveBandMenu.setPosition(110, 130);
+        this.addChild(addRemoveBandMenu);
+
+        var pin1 = this.geoboard.pins[0];
+        var pin2 = this.geoboard.pins[1];
+        var pin3 = this.geoboard.pins[2];
 
         var band = new Band();
-        band.setupWithGeoboardAndPins(geoboard, [pin1, pin2, pin3, pin4]);
+        band.setupWithGeoboardAndPins(this.geoboard, [pin1, pin2, pin3]);
 
         return this;
     },
 
+    setupGeoboard:function (touches, event) {
+        var size = cc.Director.getInstance().getWinSize();
+        this.geoboard.background.setPosition(size.width/2, size.height/2);
+        this.addChild(this.geoboard.background);
+        this.geoboard.layer = this;
+        this.geoboard.setupPins();
+    },
+
+    clearGeoboardSprites:function (touches, event) {
+        this.geoboard.background.removeFromParent();
+    },
+
     onTouchesBegan:function (touches, event) {
         var touchLocation = this.convertTouchToNodeSpace(touches[0]);
-        geoboard.processTouch(touchLocation);
+        this.geoboard.processTouch(touchLocation);
     },
 
     onTouchesMoved:function (touches, event) {
         var touchLocation = this.convertTouchToNodeSpace(touches[0]);
-        geoboard.processMove(touchLocation);
+        this.geoboard.processMove(touchLocation);
     },
 
     onTouchesEnded:function(touches, event) {
-        var touchLocation = this.convertTouchToNodeSpace(touches[0]);
-        geoboard.processEnd(touchLocation);
+        if (touches.length > 0) {
+            var touchLocation = this.convertTouchToNodeSpace(touches[0]);
+            this.geoboard.processEnd(touchLocation);
+        };
     },
+
+    squareGeoboardTapped:function() {
+        if(!(this.geoboard instanceof SquareGeoboard)) {
+            this.clearGeoboardSprites();
+            this.geoboard = new SquareGeoboard();
+            this.setupGeoboard();
+        }
+    },
+
+    triangleGeoboardTapped:function() {
+        if (!(this.geoboard instanceof TriangleGeoboard)) {
+            this.clearGeoboardSprites();
+            this.geoboard = new TriangleGeoboard();
+            this.setupGeoboard();
+        };
+    },
+
+    circleGeoboardTapped:function() {
+        if (!(this.geoboard instanceof CircleGeoboard)) {
+            this.clearGeoboardSprites();
+            this.geoboard = new CircleGeoboard(this.circleNumberOfPins, this.circleIncludeCentre);
+            this.setupGeoboard();
+        };
+    },
+
+    centrePinTapped:function() {
+        if (this.geoboard instanceof CircleGeoboard) {
+            this.circleIncludeCentre = !this.circleIncludeCentre;
+            if (this.circleIncludeCentre) {
+                this.geoboard.addCentrePin();
+            } else {
+                this.geoboard.removeCentrePin();
+            };
+        };
+    },
+
+    addPinTapped:function() {
+        if (this.geoboard instanceof CircleGeoboard) {
+            if (this.circleNumberOfPins < 20) {
+                this.circleNumberOfPins++;
+                this.geoboard.addEdgePin();
+            };
+        }
+    },
+
+    removePinTapped:function() {
+        if(this.geoboard instanceof CircleGeoboard) {
+            if (this.circleNumberOfPins > 3) {
+                this.circleNumberOfPins--;
+                this.geoboard.removeEdgePin();
+            };
+        }
+    },
+
+    addBandTapped:function() {
+        if (this.geoboard.bands.length < 24) {
+            var band = this.geoboard.newBand();
+        };
+    }
 
 });
 
@@ -90,6 +196,9 @@ function Geoboard() {
     this.processTouch = function(touchLocation) {
         for (var i = 0; i < this.bands.length; i++) {
             this.bands[i].processTouch(touchLocation);
+            if (this.movingBand !== null) {
+                break;
+            };
         };
     }
 
@@ -120,6 +229,20 @@ function Geoboard() {
 
     this.setMovingBand = function(band) {
         this.movingBand = band;
+    }
+
+    this.newBand = function() {
+        var firstPin = this.pins[0];
+        var secondPin = this.pins[1];
+        var band = new Band();
+        band.setupWithGeoboardAndPins(this, [firstPin, secondPin]);
+        band.setupBandParts();
+    }
+
+    this.removeBand = function(index) {
+        var band = this.bands[index];
+        band.bandNode.removeFromParent();
+        this.bands.splice(index, 1);
     }
 }
 
@@ -185,29 +308,118 @@ function TriangleGeoboard() {
 }
 
 
-function CircleGeoboard() {
+function CircleGeoboard(numberOfPins, includeCentre) {
     Geoboard.call(this);
     this.radius = 100;
-    this.numberOfPins = 8;
-    this.includeCentre = true;
+    this.numberOfPins = numberOfPins;
+    this.includeCentre = includeCentre;
+    var contentSize = this.background.getContentSize();
+    this.centreOfCircle = cc.p(contentSize.width/2, contentSize.height/2);
 
     this.setupPins = function() {
-        var background = this.background;
-        var contentSize = background.getContentSize();
-        var centreOfCircle = cc.p(contentSize.width/2, contentSize.height/2);
         if (this.includeCentre) {
             var pin = new Pin();
-            pin.sprite.setPosition(centreOfCircle);
+            pin.circlePinIndex = 0;
+            pin.sprite.setPosition(this.centreOfCircle);
             this.pins.push(pin);
         }
         for (var i = 0; i < this.numberOfPins; i++) {
             var pin = new Pin();
-            var xPosition = centreOfCircle.x + this.radius * Math.sin(2 * Math.PI * i/this.numberOfPins);
-            var yPosition = centreOfCircle.y + this.radius * Math.cos(2 * Math.PI * i/this.numberOfPins);
-            pin.sprite.setPosition(cc.p(xPosition, yPosition));
+            pin.circlePinIndex = i + 1;
+            pin.sprite.setPosition(this.edgePinPosition(pin.circlePinIndex - 1));
             this.pins.push(pin);
         }
         this.addPinsToBackground();
+    }
+
+    this.edgePinPosition = function(index) {
+        var xPosition = this.centreOfCircle.x + this.radius * Math.sin(2 * Math.PI * index/this.numberOfPins);
+        var yPosition = this.centreOfCircle.y + this.radius * Math.cos(2 * Math.PI * index/this.numberOfPins);
+        return cc.p(xPosition, yPosition);
+    }
+
+    this.addCentrePin = function() {
+        this.includeCentre = true;
+        var pin = new Pin();
+        pin.circlePinIndex = 0;
+        pin.sprite.setPosition(this.centreOfCircle)
+        this.background.addChild(pin.sprite);
+        this.pins.push(pin);
+    }
+
+    this.removeCentrePin = function() {
+        this.includeCentre = false;
+        var pinToDelete;
+        for (var i = 0; i < this.pins.length; i++) {
+            var pin = this.pins[i];
+            if (pin.circlePinIndex === 0) {
+                pinToDelete = pin;
+                this.pins.splice(i, 1);
+                break;
+            }
+        };
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            for (var j = band.pins.length - 1; j >= 0; j--) {
+                var pin = band.pins[j];
+                if (pin === pinToDelete) {
+                    band.pins.splice(j, 1);
+                }
+            };
+            if (band.pins.length === 0) {
+                this.removeBand(i);
+            };
+            band.setupBandParts();
+        };
+        pinToDelete.sprite.removeFromParent();
+    }
+
+    this.addEdgePin = function() {
+        this.numberOfPins++;
+        var pin = new Pin();
+        pin.circlePinIndex = this.numberOfPins;
+        this.pins.push(pin);
+        this.background.addChild(pin.sprite);
+        this.positionEdgePins();
+        for (var i = 0; i < this.bands.length; i++) {
+            this.bands[i].setPositionAndRotationOfBandParts();
+        };
+    }
+
+    this.removeEdgePin = function() {
+        var pinToDelete;
+        for (var i = 0; i < this.pins.length; i++) {
+            var pin = this.pins[i];
+            if (pin.circlePinIndex === this.numberOfPins) {
+                pinToDelete = pin;
+                this.pins.splice(i, 1);
+                break;
+            };
+        };
+        this.numberOfPins--;
+        this.positionEdgePins();
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            for (var j = 0; j < band.pins.length; j++) {
+                var pin = band.pins[j];
+                if (pin === pinToDelete) {
+                    band.pins.splice(j, 1);
+                };
+            };
+            band.setupBandParts();
+        };
+        pinToDelete.sprite.removeFromParent();
+    }
+
+    this.positionEdgePins = function() {
+        for (var i = 0; i < this.pins.length; i++) {
+            var pin = this.pins[i];
+            var circleIndex = pin.circlePinIndex;
+            if (circleIndex !== 0) {
+                var position = this.edgePinPosition(circleIndex - 1);
+                pin.sprite.setPosition(position);
+            }; 
+        };
     }
 }
 
@@ -278,8 +490,9 @@ function Band() {
                 var bandPart = this.bandParts[i];
 
 /*                
-                The following is a hack, the _transform property of the bandParts is being calculated incorrectly due to the rotation 
-                (reflected in the x axis from the fromPin of the bandPart) resulting in the sprites incorrectly detecting touches.
+                The following is a hack, the _transform property of the bandParts is being calculated incorrectly due to their rotation 
+                (the transform is reflected in the x axis from the fromPin of the bandPart) resulting in the sprites incorrectly 
+                detecting touches.
                 These lines ensure the point passed in to touched() will give the correct touch detection, but the cause for this 
                 behaviour should be found. The corresponding code in the objective C version of this app gives the correct transform. 
 */
@@ -420,7 +633,6 @@ Array.prototype.indexWraparound = function(index) {
     };
     return this[index];
 }
-
 
 
 
