@@ -8,9 +8,7 @@ var ToolLayer = cc.Layer.extend({
     circleIncludeCentre:true,
 
     init:function () {
-
         this._super();
-
 /*
         if ('touches' in sys.capabilities) {
             this.setTouchEnabled(true);
@@ -66,12 +64,10 @@ var ToolLayer = cc.Layer.extend({
         addRemoveBandMenu.setPosition(110, 130);
         this.addChild(addRemoveBandMenu);
 
-        var pin1 = this.geoboard.pins[0];
-        var pin2 = this.geoboard.pins[1];
-        var pin3 = this.geoboard.pins[2];
-
-        var band = new Band();
-        band.setupWithGeoboardAndPins(this.geoboard, [pin1, pin2, pin3]);
+        this.selectBandMenu = new cc.Menu.create();
+        this.selectBandMenu.setPosition(800, 700);
+        this.addChild(this.selectBandMenu);
+        this.selectBandButtons = new Array();
 
         return this;
     },
@@ -161,8 +157,44 @@ var ToolLayer = cc.Layer.extend({
     addBandTapped:function() {
         if (this.geoboard.bands.length < 24) {
             var band = this.geoboard.newBand();
+            var selectBandButton = new cc.MenuItemFont.create("X", "selectBandFromButton", this.geoboard);
+            selectBandButton.band = band;
+            selectBandButton.setColor(band.colour);
+            this.addSelectBandButton(selectBandButton);
         };
-    }
+    },
+
+    removeBandTapped:function() {
+        this.geoboard.removeSelectedBand();
+    },
+
+    addSelectBandButton:function(selectBandButton) {
+        this.selectBandButtons.push(selectBandButton);
+        this.selectBandMenu.addChild(selectBandButton);
+        this.positionBandSelectButtons();
+    },
+
+    removeSelectBandButton:function(band) {
+        for (var i = 0; i < this.selectBandButtons.length; i++) {
+            var button = this.selectBandButtons[i];
+            if (button.band === band) {
+                this.selectBandButtons.splice(i, 1);
+                button.removeFromParent();
+                this.positionBandSelectButtons();
+            };
+        };
+    },
+
+    positionBandSelectButtons:function() {
+        var numberOfRows = 6;
+        var numberOfButtons =  this.selectBandButtons.length;
+        for (var i = 0; i < numberOfButtons; i++) {
+            var bandSelectButton = this.selectBandButtons[i];
+            var xPosition = 0 + 30 * (i % numberOfRows);
+            var yPosition = 0 - 30 * Math.floor(i/numberOfRows);
+            bandSelectButton.setPosition(xPosition, yPosition);
+        };
+    },
 
 });
 
@@ -181,6 +213,15 @@ function Geoboard() {
     this.bands = new Array();
     this.movingBand = null;
 
+    this.border = new cc.Sprite();
+    this.border.initWithFile(s_geoboard_border);
+    this.background.addChild(this.border);
+    this.border.setZOrder(-1);
+    var box = this.background.getBoundingBox();
+    this.border.setPosition(box.width/2, box.height/2);
+    this.border.setScaleX(2.6);
+    this.border.setScaleY(3.2);
+
     this.addPinsToBackground = function() {
         for (var i = 0; i < this.pins.length; i++) {
             var pin = this.pins[i];
@@ -191,6 +232,7 @@ function Geoboard() {
     this.addBand = function(band) {
         this.bands.push(band);
         this.background.addChild(band.bandNode);
+        this.selectBand(band);
     }
 
     this.processTouch = function(touchLocation) {
@@ -229,6 +271,7 @@ function Geoboard() {
 
     this.setMovingBand = function(band) {
         this.movingBand = band;
+        this.selectBand(band);
     }
 
     this.newBand = function() {
@@ -237,12 +280,50 @@ function Geoboard() {
         var band = new Band();
         band.setupWithGeoboardAndPins(this, [firstPin, secondPin]);
         band.setupBandParts();
+        return band;
     }
 
     this.removeBand = function(index) {
         var band = this.bands[index];
         band.bandNode.removeFromParent();
         this.bands.splice(index, 1);
+        this.layer.removeSelectBandButton(band);
+        if (index === 0) {
+            if (this.bands.length > 0) {
+                this.selectBand(this.bands[0]);
+            } else {
+                this.selectNoBand();
+            };
+        };
+    }
+
+    this.selectNoBand = function() {
+        this.border.setColor(cc.c3b(255, 255, 255));
+    }
+
+    this.removeSelectedBand = function() {
+        this.removeBand(0);
+    }
+
+    this.selectBand = function(band) {
+        var index = this.bands.indexOf(band);
+        this.bands.splice(index, 1);
+        this.bands.splice(0, 0, band);
+        this.setBandsZIndexToPriorityOrder();
+        this.border.setColor(band.colour);
+    }
+
+    this.selectBandFromButton = function(sender) {
+        var band = sender.band;
+        this.selectBand(band);        
+    }
+
+    this.setBandsZIndexToPriorityOrder = function() {
+        for (var i = 1; i <= this.bands.length; i++) {
+            var index = this.bands.length - i;
+            var band = this.bands[index];
+            this.background.reorderChild(band.bandNode, i);
+        };
     }
 }
 
@@ -382,7 +463,9 @@ function CircleGeoboard(numberOfPins, includeCentre) {
         this.background.addChild(pin.sprite);
         this.positionEdgePins();
         for (var i = 0; i < this.bands.length; i++) {
-            this.bands[i].setPositionAndRotationOfBandParts();
+            var band = this.bands[i];
+            band.setPositionAndRotationOfBandParts();
+            band.cleanPins();
         };
     }
 
@@ -406,7 +489,11 @@ function CircleGeoboard(numberOfPins, includeCentre) {
                     band.pins.splice(j, 1);
                 };
             };
+            if(band.pins.length === 0) {
+                this.removeBand(i);
+            }
             band.setupBandParts();
+            band.cleanPins();
         };
         pinToDelete.sprite.removeFromParent();
     }
@@ -433,6 +520,13 @@ function Band() {
     this.bandNode = new cc.Node();
     this.bandParts = new Array();
     this.movingPin = null;
+    var red = 0, green = 0, blue = 0;
+    while (red + green + blue < 256) {
+        red = Math.floor(Math.random() * 256);
+        green = Math.floor(Math.random() * 256);
+        blue = Math.floor(Math.random() * 256);
+    }
+    this.colour = cc.c3b(red, green, blue);
 
     this.setupWithGeoboardAndPins = function(geoboard, pins) {
         this.geoboard = geoboard;
@@ -464,6 +558,8 @@ function Band() {
     this.addBandPartBetween = function(fromPin, toPin) {
         var bandPart = new BandPart();
         bandPart.setup(this, fromPin, toPin);
+        bandPart.sprite.setColor(this.colour);
+        bandPart.sprite.setOpacity(255);
         this.bandNode.addChild(bandPart.baseNode);
         this.bandParts.push(bandPart);
     }
@@ -479,7 +575,11 @@ function Band() {
         for (var i = 0; i < this.pins.length; i++) {
             var pin = this.pins[i];
             if (pin.sprite.touched(touchLocation)) {
-                this.unpinBandFromPin(i);
+                if (this.pins.length > 1) {
+                    this.unpinBandFromPin(i);
+                } else {
+                    this.splitBandPart(0, touchLocation);
+                };
                 selected = true;
                 this.geoboard.setMovingBand(this);
                 break;
@@ -540,6 +640,7 @@ function Band() {
         this.movingPin = null;
         this.setupBandParts();
         this.setPositionAndRotationOfBandParts();
+        this.cleanPins();
     }
 
     this.pinBandOnPin = function(pin) {
@@ -557,6 +658,47 @@ function Band() {
         this.pins.splice(index, 1);
     }
 
+    this.cleanPins = function() {
+        if (this.pins.length > 1) {
+            var repeatPinsIndexes = new Array();
+            for (var i = 0; i < this.pins.length; i++) {
+                var currentPin = this.pins[i];
+                var nextPin = this.pins[(i+1) % this.pins.length];
+                if (currentPin == nextPin) {
+                    repeatPinsIndexes.push(i);
+                };
+            };
+            for (var i = repeatPinsIndexes.length - 1; i >= 0; i--) {
+                this.pins.splice(repeatPinsIndexes[i], 1);
+            };
+            this.setupBandParts();
+
+            var indexOfStraightThroughPin = this.indexOfStraightThroughPin();
+            while (indexOfStraightThroughPin != -1) {
+                this.pins.splice(indexOfStraightThroughPin, 1);
+                this.setupBandParts();
+                indexOfStraightThroughPin = this.indexOfStraightThroughPin();
+            }
+        };
+    }
+
+    this.indexOfStraightThroughPin = function() {
+        var indexToReturn = -1;
+        for (var i = 0; i < this.pins.length; i++) {
+            var currentPart = this.bandParts[i];
+            var nextPart = this.bandParts[(i+1) % this.bandParts.length];
+            var currentParent = currentPart.sprite.getParent();
+            var nextParent = nextPart.sprite.getParent();
+            if (this.closeFloats(currentParent.getRotation(), nextParent.getRotation())) {
+                indexToReturn = (i+1) % this.pins.length;
+            };
+        };
+        return indexToReturn;
+    }
+
+    this.closeFloats = function(floatA, floatB) {
+        return Math.abs(floatA - floatB) < 0.001;
+    }
 }
 
 
@@ -566,7 +708,7 @@ function BandPart() {
     this.sprite.initWithFile(s_bandPart);
     this.bandPartNode = new cc.Node();
     this.sprite.setAnchorPoint(cc.p(0.5, 0));
-    //this.baseNode.setAnchorPoint(cc.p(0.5, 0));
+    this.baseNode.setAnchorPoint(cc.p(0.5, 0));
     this.baseNode.addChild(this.bandPartNode);
     this.bandPartNode.addChild(this.sprite);
 
@@ -633,6 +775,8 @@ Array.prototype.indexWraparound = function(index) {
     };
     return this[index];
 }
+
+
 
 
 
