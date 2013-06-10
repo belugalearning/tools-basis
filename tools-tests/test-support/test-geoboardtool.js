@@ -211,7 +211,7 @@ var ToolLayer = cc.Layer.extend({
     },
 
     showAnglesTapped:function() {
-        this.geoboard.setAngleDisplay("angles");
+        this.geoboard.toggleAngleDisplay("angleValues");
     },
 
     positionBandSelectButtons:function() {
@@ -255,7 +255,7 @@ function Geoboard() {
     this.border.setScaleX(2.6);
     this.border.setScaleY(3.2);
 
-
+    this.angleDisplay = "none";
 
     this.angleDisplayType = "none";
 
@@ -317,7 +317,6 @@ function Geoboard() {
         var secondPin = this.pins[1];
         var band = new Band();
         band.setupWithGeoboardAndPins(this, [firstPin, secondPin]);
-        band.setupBandParts();
         return band;
     }
 
@@ -369,7 +368,27 @@ function Geoboard() {
             var band = this.bands[0];
             this.layer.setRegularIndicatorWith(band.regular());
         };
+    }
 
+    this.toggleAngleDisplay = function(string) {
+        if (this.angleDisplay === string) {
+            this.angleDisplay = "none"
+        } else {
+            this.angleDisplay = string;
+        };
+        this.setupAngleDisplay();
+    }
+
+    this.setupAngleDisplay = function() {
+        if (this.angleDisplay === "none") {
+            for (var i = 0; i < this.bands.length; i++) {
+                this.bands[i].angleNode.setVisible(false);
+            };
+        } else if (this.angleDisplay === "angleValues") {
+            for (var i = 0; i < this.bands.length; i++) {
+                this.bands[i].angleNode.setVisible(true);
+            };
+        };
     }
 }
 
@@ -569,6 +588,8 @@ function Pin() {
 
 function Band() {
     this.bandNode = new cc.Node();
+    this.bandPartsNode = new cc.Node();
+    this.bandNode.addChild(this.bandPartsNode);
     this.bandParts = new Array();
     this.movingPin = null;
 
@@ -579,7 +600,7 @@ function Band() {
         green = Math.floor(Math.random() * 256);
         blue = Math.floor(Math.random() * 256);
     }
-    this.colour = cc.c3b(red, green, blue);
+    this.colour = cc.c4f(red, green, blue, 1);
 
     this.setupWithGeoboardAndPins = function(geoboard, pins) {
         this.geoboard = geoboard;
@@ -593,7 +614,7 @@ function Band() {
 
     this.setupBandParts = function() {
         this.bandParts = [];
-        this.bandNode.removeAllChildren();
+        this.bandPartsNode.removeAllChildren();
         if (this.pins.length > 1) {
             for (var i = 0; i < this.pins.length; i++) {
                 var fromPin = this.pins[i];
@@ -609,7 +630,7 @@ function Band() {
         bandPart.setup(this, fromPin, toPin);
         bandPart.sprite.setColor(this.colour);
         bandPart.sprite.setOpacity(255);
-        this.bandNode.addChild(bandPart.baseNode);
+        this.bandPartsNode.addChild(bandPart.baseNode);
         this.bandParts.push(bandPart);
     }
 
@@ -625,6 +646,8 @@ function Band() {
         this.bandNode.addChild(this.propertiesNode);
 
         this.angleNode = new cc.Node();
+        var angleNodeVisible = this.geoboard.angleDisplay === "none" ? false : true;
+        this.angleNode.setVisible(angleNodeVisible);
         this.angles = new Array();
         this.propertiesNode.addChild(this.angleNode);
         this.setupAngles();
@@ -671,6 +694,7 @@ function Band() {
         };
         if (selected) {
             this.setupBandParts();
+            this.setupAngles();
         };
     }
 
@@ -694,6 +718,7 @@ function Band() {
     this.processMove = function(touchLocation) {
         this.movingPin.sprite.setPosition(touchLocation);
         this.setPositionAndRotationOfBandParts();
+        this.setAngleValues();
     }
 
     this.processEnd = function(touchLocation) {
@@ -702,6 +727,7 @@ function Band() {
         this.setupBandParts();
         this.setPositionAndRotationOfBandParts();
         this.cleanPins();
+        this.setupAngles();
     }
 
     this.pinBandOnPin = function(pin) {
@@ -762,7 +788,8 @@ function Band() {
         this.angleNode.removeAllChildren();
         for (var i = 0; i < this.pins.length; i++) {
             var angle = new Angle();
-            //angle.init();
+            angle.init();
+            angle.colour = this.colour;
             this.angles.push(angle);
             var pin = this.pins[i];
             angle.setPosition(pin.sprite.getPosition());
@@ -792,11 +819,12 @@ function Band() {
             if (Math.abs(angle.throughAngle - 2 * Math.PI) < 0.0001) {
                 angle.throughAngle = 0;
             };
+            angle.setDrawAngle();
             var pin = this.pins[i];
             angle.setPosition(pin.sprite.getPosition());
             totalAngle += Math.PI - thisAngle;
-            angle.label = new cc.LabelTTF.create("", "Arial", 24);
             angle.label.setString(Math.round(cc.RADIANS_TO_DEGREES(angle.throughAngle)*100)/100);
+            //this.angleNode.addChild(angle.label);
         };
 
         var beforeAnticlockwise = this.anticlockwise;
@@ -896,73 +924,45 @@ function BandPart() {
     }
 }
 
-/*
-function Angle() {
-    this.baseNode = new cc.Node();
-    this.startAngle = 0;
-    this.throughAngle = 0;
-    this.label = cc.LabelTTF.create("", "Arial", 12);
-    this.label.setPosition(0, 10);
-    this.baseNode.addChild(this.label);
-
-    this.setDrawAngle = function() {
-        this.baseNode.clear();
-        this.baseNode.drawSector(cc.p(0,0), 30, this.startAngle, 3/2 * Math.PI, true, cc.c4f(1, 0, 0, 1), 2, cc.c4f(0, 1, 0, 1));
-    }
-} 
-*/
-
 var Angle = cc.DrawNode.extend({
     startAngle:0,
     throughAngle:0,
     label: null,
+    anticlockwise: false,
+    colour:null,
 
     init:function() {
-                this.label = cc.LabelTTF.create("", "Arial", 12);
+        this.label = cc.LabelTTF.create("", "Arial", 12);
         this._super();
-        this.label.setPosition(0, 10);
+        this.label.setPosition(0, 12);
         this.addChild(this.label);
-
-
     },
 
-    draw:function() {
-        this._super();
-        this.drawSector(cc.p(0,0), 30, this.startAngle, 3/2 * Math.PI, true, cc.c4f(1,0,0,1), 2, cc.c4f(0,1,0,1));
+    setDrawAngle:function() {
+        this.clear();
+        this.drawSector(cc.p(0,0), 30, this.startAngle, this.throughAngle, this.anticlockwise, this.lightColour(), 2, this.colourCorrect());
     },
 
-});
-
-
-/*cc.DrawNode.extend({
-    displaySameAngles:false,
-    numberOfArcs:0,
-
-    draw:function() {
-        var ctx = document.getElementById('gameCanvas').getContext('2d');
-        ctx.fillStyle = "rgb(200,0,0)";
-        ctx.fillRect(10, 10, 55, 50);
-    },
-    
-
-    draw:function () {
-        this.drawSector(cc.p(0,0), 100, 0, 5, true, cc.c4f(1,0,0,1), 1, cc.c4f(0,1,0,1));
+    colourCorrect:function() {
+        var red = this.colour.r/255;
+        var green = this.colour.g/255;
+        var blue = this.colour.b/255;
+        return cc.c4f(red, green, blue, 1);
     },
 
-        var angle = new cc.DrawNode.create();
-        this.addChild(angle);
-        angle.drawSector(cc.p(100, 100), 100, 0, 5, true, cc.c4f(1,0,0,1), 1, cc.c4f(0,1,0,1));
-        //angle.drawSegment(cc.p(100, 100), cc.p(500, 500), 0.5, cc.c4f(1, 0, 0, 1));
-        
-})
-*/
+    lightColour:function() {
+        var red = this.colour.r/255;
+        var green = this.colour.g/255;
+        var blue = this.colour.b/255;
+        return cc.c4f(red, green, blue, 0.5);
+    }
 
 /*
-function Angle() {
-    this.displaySameAngles = false;
-    this.numberOfArcs = 0;
-}
+    draw:function() {
+        this._super();
+    },
 */
+});
 
 function inherits(ctor, superCtor) {
   ctor.super_ = superCtor;
@@ -1009,8 +1009,8 @@ enum AngleDisplayTypes {
 
 cc.DrawNode.prototype.drawSector = function(position, radius, startAngle, throughAngle, anticlockwise, fillColour, borderWidth, borderColour) {
     var vertices = [];
-    for (var i = 0; i < 100; i++) {
-        var multiplier = anticlockwise ? -1 : 1;
+    for (var i = 0; i <= 100; i++) {
+        var multiplier = anticlockwise ? 1 : -1;
         var angle = startAngle + multiplier * (throughAngle * i)/100;
         var xPosition = position.x + radius * Math.sin(angle);
         var yPosition = position.y + radius * Math.cos(angle);
