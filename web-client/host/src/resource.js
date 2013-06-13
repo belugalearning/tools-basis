@@ -14,6 +14,7 @@ var s_angle_background = s_imagePath + "angleBackground.png";
 var s_side_length_background = s_imagePath + "sideLabelBackground.png";
 var s_same_side_length_notch = s_imagePath + "sameSideLengthNotch.png";
 var s_parallel_side_arrow = s_imagePath + "parallelSideArrow.png";
+var s_white_pin = s_imagePath + "whitePin.png";
 
 var g_ressources = [
     //image
@@ -30,6 +31,7 @@ var g_ressources = [
     {src:s_side_length_background},
     {src:s_same_side_length_notch},
     {src:s_parallel_side_arrow},
+    {src:s_white_pin},
 
     //plist
 
