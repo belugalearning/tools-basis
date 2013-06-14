@@ -34,33 +34,34 @@ var ToolLayer = cc.Layer.extend({
 
         var squareGeoboardButton = new cc.MenuItemImage.create(s_square_geoboard_button, s_square_geoboard_button, 'squareGeoboardTapped', this);
 
-        var triangleGeoboardButton = new cc.MenuItemFont.create("Triangle", 'triangleGeoboardTapped', this);
+        var triangleGeoboardButton = new cc.MenuItemImage.create(s_triangle_geoboard_button, s_triangle_geoboard_button, 'triangleGeoboardTapped', this);
         triangleGeoboardButton.setPosition(0, -110);
 
-        var circleGeoboardButton = new cc.MenuItemFont.create("Circle", 'circleGeoboardTapped', this);
-        circleGeoboardButton.setPosition(-20, -220);
+        var circleGeoboardButton = new cc.MenuItemImage.create(s_circle_geoboard_button, s_circle_geoboard_button, 'circleGeoboardTapped', this);
+        circleGeoboardButton.setScaleX(0.75);
+        circleGeoboardButton.setPosition(-30, -220);
 
-        var centrePinButton = new cc.MenuItemFont.create("Centre", 'centrePinTapped', this);
+        var centrePinButton = new cc.MenuItemImage.create(s_centre_pin_button, s_centre_pin_button, 'centrePinTapped', this);
         centrePinButton.setPosition(85, -190);
-        centrePinButton.setFontSize(16);
 
-        var addPinButton = new cc.MenuItemFont.create("Add", 'addPinTapped', this);
+        var addPinButton = new cc.MenuItemImage.create(s_add_pin_button, s_add_pin_button, 'addPinTapped', this);
         addPinButton.setPosition(85, -225);
-        addPinButton.setFontSize(16);
 
-        var removePinButton = new cc.MenuItemFont.create("Remove", 'removePinTapped', this);
+        var removePinButton = new cc.MenuItemImage.create(s_remove_pin_button, s_remove_pin_button, 'removePinTapped', this);
         removePinButton.setPosition(85, -260);
-        removePinButton.setFontSize(16);
 
         var geoboardTypesMenu = new cc.Menu.create(squareGeoboardButton, triangleGeoboardButton, circleGeoboardButton,
             centrePinButton, addPinButton, removePinButton);
         geoboardTypesMenu.setPosition(110, 500);
         this.addChild(geoboardTypesMenu);
 
-        var addBandButton = new cc.MenuItemFont.create("Add band", 'addBandTapped', this);
+        var addBandButton = new cc.MenuItemImage.create(s_add_band_button, s_add_band_button, 'addBandTapped', this);
+        addBandButton.setPosition(0, 10);
+        addBandButton.setScaleY(0.75);
 
-        var removeBandButton = new cc.MenuItemFont.create("Remove band", 'removeBandTapped', this);
-        removeBandButton.setPosition(0, -60);
+        var removeBandButton = new cc.MenuItemImage.create(s_remove_band_button, s_remove_band_button, 'removeBandTapped', this);
+        removeBandButton.setPosition(0, -75);
+        removeBandButton.setScaleY(0.75);
 
         var addRemoveBandMenu = new cc.Menu.create(addBandButton, removeBandButton);
         addRemoveBandMenu.setPosition(110, 130);
@@ -118,26 +119,33 @@ var ToolLayer = cc.Layer.extend({
         areaIndicator.addChild(this.areaIndicatorLabel);
         propertiesIndicator.addChild(areaIndicator);
 
-        var showAnglesButton = cc.MenuItemFont.create("Show angles", 'showAnglesTapped', this);
-        showAnglesButton.setPosition(-210, 50);
+        var showAnglesButtonUnselected = cc.MenuItemImage.create(s_show_angles_button, s_show_angles_button, null, null);
+        var showAnglesButtonSelected = cc.MenuItemImage.create(s_show_angles_button_selected, s_show_angles_button_selected, null, null);
+        this.showAnglesButton = cc.MenuItemToggle.create(showAnglesButtonUnselected, showAnglesButtonSelected, this.showAnglesTapped, this);
+        this.showAnglesButton.setPosition(-210, 50);
 
-        var showSameAnglesButton = cc.MenuItemFont.create("Show same angles", 'showSameAnglesTapped', this);
-        showSameAnglesButton.setPosition(40, 50);
+        var showSameAnglesButtonUnselected = cc.MenuItemImage.create(s_show_same_angles_button, s_show_same_angles_button, null, null);
+        var showSameAnglesButtonSelected = cc.MenuItemImage.create(s_show_same_angles_button_selected, s_show_same_angles_button_selected, null, null);
+        this.showSameAnglesButton = cc.MenuItemToggle.create(showSameAnglesButtonUnselected, showSameAnglesButtonSelected, this.showSameAnglesTapped, this);
+        this.showSameAnglesButton.setPosition(40, 50);
 
-        var showSideLengthsButton = cc.MenuItemFont.create("Show side lengths", 'showSideLengthsTapped', this);
-        showSideLengthsButton.setPosition(-245, -30);
-        showSideLengthsButton.setFontSize(20);
+        var showSideLengthsButtonUnselected = cc.MenuItemImage.create(s_show_side_lengths_button, s_show_side_lengths_button, null, null);
+        var showSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_side_lengths_button_selected, s_show_side_lengths_button_selected, null, null);
+        this.showSideLengthsButton = cc.MenuItemToggle.create(showSideLengthsButtonUnselected, showSideLengthsButtonSelected, this.showSideLengthsTapped, this);
+        this.showSideLengthsButton.setPosition(-245, -30);
 
-        var showSameSideLengthsButton = cc.MenuItemFont.create("Show same side lengths", 'showSameSideLengthsTapped', this);
-        showSameSideLengthsButton.setPosition(-45, -30);
-        showSameSideLengthsButton.setFontSize(20);
+        var showSameSideLengthsButtonUnselected = cc.MenuItemImage.create(s_show_same_side_lengths_button, s_show_same_side_lengths_button, null, null);
+        var showSameSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_same_side_lengths_button_selected, s_show_side_lengths_button_selected, null, null);
+        this.showSameSideLengthsButton = cc.MenuItemToggle.create(showSameSideLengthsButtonUnselected, showSameSideLengthsButtonSelected, this.showSameSideLengthsTapped, this);
+        this.showSameSideLengthsButton.setPosition(-35, -30);
 
-        var showParallelSidesButton = cc.MenuItemFont.create("Show parallel sides", 'showParallelSidesTapped', this);
-        showParallelSidesButton.setPosition(160, -30);
-        showParallelSidesButton.setFontSize(20);
+        var showParallelSidesButtonUnselected = cc.MenuItemImage.create(s_show_parallel_sides_button, s_show_parallel_sides_button, null, null);
+        var showParallelSidesButtonSelected = cc.MenuItemImage.create(s_show_parallel_sides_button_selected, s_show_parallel_sides_button_selected, null, null);
+        this.showParallelSidesButton = cc.MenuItemToggle.create(showParallelSidesButtonUnselected, showParallelSidesButtonSelected, this.showParallelSidesTapped, this);
+        this.showParallelSidesButton.setPosition(175, -30);
 
-        var bandPropertiesMenu = cc.Menu.create(showAnglesButton, showSameAnglesButton,
-        showSideLengthsButton, showSameSideLengthsButton, showParallelSidesButton);
+        var bandPropertiesMenu = cc.Menu.create(this.showAnglesButton, this.showSameAnglesButton,
+        this.showSideLengthsButton, this.showSameSideLengthsButton, this.showParallelSidesButton);
         bandPropertiesMenu.setPosition(600, 100);
         this.addChild(bandPropertiesMenu);
 
@@ -235,7 +243,7 @@ var ToolLayer = cc.Layer.extend({
     addBandTapped:function() {
         if (this.geoboard.bands.length < 24) {
             var band = this.geoboard.newBand();
-            var selectBandButton = new cc.MenuItemFont.create("X", "selectBandFromButton", this.geoboard);
+            var selectBandButton = new cc.MenuItemImage.create(s_select_band_button, s_select_band_button, "selectBandFromButton", this.geoboard);
             selectBandButton.band = band;
             selectBandButton.setColor(band.colour);
             this.addSelectBandButton(selectBandButton);
@@ -265,22 +273,31 @@ var ToolLayer = cc.Layer.extend({
 
     showAnglesTapped:function() {
         this.geoboard.toggleAngleDisplay("angleValues");
+        this.showSameAnglesButton.setSelectedIndex(0);
     },
 
     showSameAnglesTapped:function() {
         this.geoboard.toggleAngleDisplay("sameAngles");
+        this.showAnglesButton.setSelectedIndex(0);
     },
 
     showSideLengthsTapped:function() {
         this.geoboard.toggleSideDisplay("sideLengthValues");
+        this.showSameSideLengthsButton.setSelectedIndex(0);
+        this.showParallelSidesButton.setSelectedIndex(0);
     },
 
     showSameSideLengthsTapped:function() {
         this.geoboard.toggleSideDisplay("sameSideLengths");
+        this.showSideLengthsButton.setSelectedIndex(0);
+        this.showParallelSidesButton.setSelectedIndex(0);
+
     },
 
     showParallelSidesTapped:function() {
         this.geoboard.toggleSideDisplay("parallelSides");
+        this.showSideLengthsButton.setSelectedIndex(0);
+        this.showSameSideLengthsButton.setSelectedIndex(0);
     },
 
     positionBandSelectButtons:function() {
@@ -462,15 +479,15 @@ function Geoboard() {
     }
 
     this.selectBand = function(band) {
-        if (this.bands.length === 1 || this.bands[0] !== band) {
-            var index = this.bands.indexOf(band);
-            this.bands.splice(index, 1);
-            this.bands.splice(0, 0, band);
-            this.setBandsZIndexToPriorityOrder();
-            this.border.setColor(band.colour);
-            this.setPropertyIndicatorsForSelectedBand();
-            this.bands[0].colourAllPins();
-        } 
+
+        var index = this.bands.indexOf(band);
+        this.bands.splice(index, 1);
+        this.bands.splice(0, 0, band);
+        this.setBandsZIndexToPriorityOrder();
+        this.border.setColor(band.colour);
+        this.setPropertyIndicatorsForSelectedBand();
+        this.bands[0].colourAllPins();
+        
                /*
         for (var i = 0; i < band.pins.length; i++) {
             band.pins[i].colourPin(band.colour);
