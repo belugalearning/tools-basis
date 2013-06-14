@@ -371,8 +371,17 @@ function Geoboard() {
     this.sideDisplay = "none";
 
     this.pinNode = new cc.Node();
-    this.pinNode.setZOrder(100);
     this.background.addChild(this.pinNode);
+
+    this.bandColours = [];
+    var rgbValues = [75, 160, 245];
+    for (var i = 0; i < 3; i++) {
+        for (var j = 0; j < 3; j++) {
+            for (var k = 0; k < 3; k++) {
+                this.bandColours.push(cc.c3b(rgbValues[i], rgbValues[j], rgbValues[k]));
+            };
+        };
+    };
 
     this.addPinsToBackground = function() {
         for (var i = 0; i < this.pins.length; i++) {
@@ -454,6 +463,7 @@ function Geoboard() {
         band.bandNode.removeFromParent();
         this.bands.splice(index, 1);
         this.layer.removeSelectBandButton(band);
+        this.bandColours.push(band.colour);
         if (index === 0) {
             if (this.bands.length > 0) {
                 this.selectBand(this.bands[0]);
@@ -946,7 +956,7 @@ function Band() {
     this.perimeter = null;
     this.area = null;
 
-
+/*
     var red = 0, green = 0, blue = 0;
     while (red + green + blue < 256) {
         red = Math.floor(Math.random() * 256);
@@ -954,13 +964,18 @@ function Band() {
         blue = Math.floor(Math.random() * 256);
     }
     this.colour = cc.c4f(red, green, blue, 255);
+*/
 
     this.setupWithGeoboardAndPins = function(geoboard, pins) {
         this.geoboard = geoboard;
         this.pins = pins;
         this.bandParts = new Array();
-        this.geoboard.addBand(this);
 
+        var randomIndex = Math.floor(Math.random() * this.geoboard.bandColours.length);
+        this.colour = this.geoboard.bandColours[randomIndex];
+        this.geoboard.bandColours.splice(randomIndex, 1);
+
+        this.geoboard.addBand(this);
         this.setupBandParts();
         this.setupPropertiesNode();
     }
@@ -983,6 +998,9 @@ function Band() {
             this.singleBandPart.setPosition(pin.sprite.getPosition());
             this.singleBandPart.setScale(0.65);
             this.bandNode.addChild(this.singleBandPart);
+            var dummyPin = new Pin();
+            dummyPin.sprite.setPosition(pin.sprite.getPosition());
+            this.bandNode.addChild(dummyPin.sprite);
         };
     }
 
@@ -1509,6 +1527,7 @@ function Band() {
             band.geoboard = dummyGeoboard;
             band.pins = this.pins.slice(0);
             band.angleNode = new cc.Node();
+            band.colour = cc.c3b(0,0,0);
             band.setupBandParts();
             band.setupAngles();
             area = band.areaRecursive();
@@ -1615,6 +1634,12 @@ function BandPart() {
         this.band = band;
         this.fromPin = fromPin;
         this.toPin = toPin;
+        this.dummyStartPin = new Pin();
+        this.dummyStartPin.sprite.setZOrder(1);
+        this.dummyEndPin = new Pin();
+        this.dummyEndPin.sprite.setZOrder(1);
+        this.baseNode.addChild(this.dummyStartPin.sprite);
+        this.baseNode.addChild(this.dummyEndPin.sprite);
         this.notchNode.setVisible(this.band.geoboard.sideDisplay === "sameSideLengths");
         this.arrowNode.setVisible(this.band.geoboard.sideDisplay === "parallelSides");
     }
@@ -1625,6 +1650,8 @@ function BandPart() {
         this.bandPartNode.setPosition(fromPin.sprite.getPosition());
         this.notchNode.setPosition(fromPin.sprite.getPosition());
         this.arrowNode.setPosition(fromPin.sprite.getPosition());
+        this.dummyStartPin.sprite.setPosition(fromPin.sprite.getPosition());
+        this.dummyEndPin.sprite.setPosition(toPin.sprite.getPosition());
         var xDifference = toPin.sprite.getPosition().x - fromPin.sprite.getPosition().x;
         var yDifference = toPin.sprite.getPosition().y - fromPin.sprite.getPosition().y;
         var angle =  Math.atan2(xDifference, yDifference);
