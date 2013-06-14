@@ -370,10 +370,14 @@ function Geoboard() {
     this.angleDisplay = "none";
     this.sideDisplay = "none";
 
+    this.pinNode = new cc.Node();
+    this.pinNode.setZOrder(100);
+    this.background.addChild(this.pinNode);
+
     this.addPinsToBackground = function() {
         for (var i = 0; i < this.pins.length; i++) {
             var pin = this.pins[i];
-            this.background.addChild(this.pins[i].sprite);
+            this.pinNode.addChild(this.pins[i].sprite);
         };
     }
 
@@ -459,8 +463,8 @@ function Geoboard() {
         };
         for (var i = 0; i < band.pins.length; i++) {
             var pin = band.pins[i];
-            var colour = this.colourForPin(pin);
-            pin.colourPin(colour);
+            //var colour = this.colourForPin(pin);
+            //pin.colourPin(colour);
         };
         this.groupSameAngles();
         this.groupSameSideLengths();
@@ -486,14 +490,7 @@ function Geoboard() {
         this.setBandsZIndexToPriorityOrder();
         this.border.setColor(band.colour);
         this.setPropertyIndicatorsForSelectedBand();
-        this.bands[0].colourAllPins();
-        
-               /*
-        for (var i = 0; i < band.pins.length; i++) {
-            band.pins[i].colourPin(band.colour);
-        };
-        */
-        
+        //this.bands[0].colourAllPins();
     }
 
     this.selectBandFromButton = function(sender) {
@@ -705,7 +702,7 @@ function Geoboard() {
         }
     }
 
-    this.colourForPin = function(pin) {
+/*    this.colourForPin = function(pin) {
         var colour = null;
         for (var i = 0; i < this.bands.length; i++) {
             var band = this.bands[i]
@@ -716,7 +713,7 @@ function Geoboard() {
         };
         return colour;
     }
-}
+*/}
 
 
 function RegularGeoboard() {
@@ -918,7 +915,9 @@ function Pin() {
     this.sprite = new cc.Sprite();
     this.sprite.initWithFile(s_pin);
 
-    this.colourPin = function(colour) {
+// This function is supposed to colour pins in the same colour as the band, but is buggy at the moment (when selecting a band,
+// all pins in that band are coloured pure white instead of the same colour as the band). All references to colouring pins have been commented out
+/*    this.colourPin = function(colour) {
         if (colour === null) {
             var pinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_pin));
             this.sprite.setTexture(pinTexture);
@@ -930,7 +929,7 @@ function Pin() {
             this.sprite.setOpacity(255);
         };
     }
-}
+*/}
 
 function Band() {
     this.bandNode = new cc.Node();
@@ -939,6 +938,7 @@ function Band() {
     this.bandParts = new Array();
     this.movingPin = null;
     this.sideLengthsLabels = new Array();
+    this.singleBandPart = null;
 
     this.dirtyProperties = true;
     this.regular = null;
@@ -975,6 +975,14 @@ function Band() {
                 this.addBandPartBetween(fromPin, toPin);
             };
             this.setPositionAndRotationOfBandParts();
+        } else if (this.pins.length === 1) {
+            var pin = this.pins[0];
+            this.singleBandPart = new cc.Sprite();
+            this.singleBandPart.initWithFile(s_single_band_part);
+            this.singleBandPart.setColor(this.colour);
+            this.singleBandPart.setPosition(pin.sprite.getPosition());
+            this.singleBandPart.setScale(0.65);
+            this.bandNode.addChild(this.singleBandPart);
         };
     }
 
@@ -1020,19 +1028,27 @@ function Band() {
 
     this.processTouch = function(touchLocation) {
         var selected = false;
-        for (var i = 0; i < this.pins.length; i++) {
-            var pin = this.pins[i];
-            if (pin.sprite.touched(touchLocation)) {
-                if (this.pins.length > 1) {
-                    this.unpinBandFromPin(i);
-                } else {
-                    this.splitBandPart(0, touchLocation);
-                };
+        
+        if (this.pins.length === 1) {
+            if (this.singleBandPart.touched(touchLocation)) {
+                this.singleBandPart.removeFromParent();
+                this.singleBandPart = null;
+                this.splitBandPart(0, touchLocation);
                 selected = true;
                 this.geoboard.setMovingBand(this);
-                break;
+            };
+        } else if (this.pins.length > 1) {
+            for (var i = 0; i < this.pins.length; i++) {
+                var pin = this.pins[i];
+                if (pin.sprite.touched(touchLocation)) {
+                    this.unpinBandFromPin(i);
+                    selected = true;
+                    this.geoboard.setMovingBand(this);
+                    break;
+                };
             };
         };
+        
         if (!selected) {
             for (var i = 0; i < this.bandParts.length; i++) {
                 var bandPart = this.bandParts[i];
@@ -1066,21 +1082,20 @@ function Band() {
     this.unpinBandFromPin = function(index) {
         var pin = this.pins[index];
         this.movingPin = new Pin();
-        this.movingPin.colourPin(this.colour);
+        //this.movingPin.colourPin(this.colour);
         this.movingPin.sprite.setPosition(pin.sprite.getPosition());
         this.pins.splice(index, 1, this.movingPin);
-        this.geoboard.background.addChild(this.movingPin.sprite);
-        var pinColour = this.geoboard.colourForPin(pin);
-        pin.colourPin(pinColour);
+        this.geoboard.pinNode.addChild(this.movingPin.sprite);
+        //var pinColour = this.geoboard.colourForPin(pin);
+        //pin.colourPin(pinColour);
     }
 
     this.splitBandPart = function(index, touchLocation) {
-        var bandPart = this.bandParts[index];
         this.movingPin = new Pin();
-        this.movingPin.colourPin(this.colour);
+        //this.movingPin.colourPin(this.colour);
         var pinPosition = this.bandNode.convertToNodeSpace(touchLocation);
         this.movingPin.sprite.setPosition(pinPosition);
-        this.geoboard.background.addChild(this.movingPin.sprite);
+        this.geoboard.pinNode.addChild(this.movingPin.sprite);
         this.pins.splice(index + 1, 0, this.movingPin);
     }
 
@@ -1104,7 +1119,7 @@ function Band() {
     this.pinBandOnPin = function(pin) {
         var movingPinIndex = this.pins.indexOf(this.movingPin);
         this.pins.splice(movingPinIndex, 1, pin);
-        pin.colourPin(this.colour);
+        //pin.colourPin(this.colour);
         this.dirtyProperties = true;
     }
 
@@ -1138,8 +1153,8 @@ function Band() {
             var indexOfStraightThroughPin = this.indexOfStraightThroughPin();
             while (indexOfStraightThroughPin != -1) {
                 var pin = this.pins[indexOfStraightThroughPin];
-                var pinColour = this.geoboard.colourForPin(pin);
-                pin.colourPin(pinColour);
+                //var pinColour = this.geoboard.colourForPin(pin);
+                //pin.colourPin(pinColour);
                 this.pins.splice(indexOfStraightThroughPin, 1);
                 this.setupBandParts();
                 this.setupAngles();
@@ -1168,12 +1183,12 @@ function Band() {
         return indexToReturn;
     }
 
-    this.colourAllPins = function() {
+    /*this.colourAllPins = function() {
         for (var i = 0; i < this.pins.length; i++) {
             var pin = this.pins[i];
             pin.colourPin(this.colour);
         };
-    }
+    }*/
 
     this.setupAngles = function() {
         this.angles = [];

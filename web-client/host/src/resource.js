@@ -34,6 +34,7 @@ var s_same_side_length_notch = s_imagePath + "sameSideLengthNotch.png";
 var s_parallel_side_arrow = s_imagePath + "parallelSideArrow.png";
 var s_white_pin = s_imagePath + "whitePin.png";
 var s_select_band_button = s_imagePath + "bandButton.png";
+var s_single_band_part = s_imagePath + "singleBandPart.png";
 
 var g_ressources = [
     //image
@@ -41,6 +42,8 @@ var g_ressources = [
     {src:s_CloseNormal},
     {src:s_CloseSelected},
 
+    {src:s_pin},
+    {src:s_white_pin},
     {src:s_square_geoboard_button},
     {src:s_triangle_geoboard_button},
     {src:s_circle_geoboard_button},
@@ -62,15 +65,14 @@ var g_ressources = [
 
     {src:s_geoboard_background},
     {src:s_geoboard_border},
-    {src:s_pin},
     {src:s_bandPart},
     {src:s_property_background},
     {src:s_angle_background},
     {src:s_side_length_background},
     {src:s_same_side_length_notch},
     {src:s_parallel_side_arrow},
-    {src:s_white_pin},
     {src:s_select_band_button},
+    {src:s_single_band_part},
 
     //plist
 
