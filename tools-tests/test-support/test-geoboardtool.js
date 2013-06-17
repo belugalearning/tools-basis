@@ -135,7 +135,7 @@ var ToolLayer = cc.Layer.extend({
         this.showSideLengthsButton.setPosition(-245, -30);
 
         var showSameSideLengthsButtonUnselected = cc.MenuItemImage.create(s_show_same_side_lengths_button, s_show_same_side_lengths_button, null, null);
-        var showSameSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_same_side_lengths_button_selected, s_show_side_lengths_button_selected, null, null);
+        var showSameSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_same_side_lengths_button_selected, s_show_same_side_lengths_button_selected, null, null);
         this.showSameSideLengthsButton = cc.MenuItemToggle.create(showSameSideLengthsButtonUnselected, showSameSideLengthsButtonSelected, this.showSameSideLengthsTapped, this);
         this.showSameSideLengthsButton.setPosition(-35, -30);
 
@@ -188,6 +188,7 @@ var ToolLayer = cc.Layer.extend({
             this.setupGeoboard();
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
+            this.clearPropertyButtonHighlights();
         }
     },
 
@@ -198,6 +199,7 @@ var ToolLayer = cc.Layer.extend({
             this.setupGeoboard();
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
+            this.clearPropertyButtonHighlights();
         };
     },
 
@@ -208,6 +210,7 @@ var ToolLayer = cc.Layer.extend({
             this.setupGeoboard();
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
+            this.clearPropertyButtonHighlights();
         };
     },
 
@@ -339,6 +342,14 @@ var ToolLayer = cc.Layer.extend({
     clearBandSelectButtons:function() {
         this.selectBandMenu.removeAllChildren();
         this.selectBandButtons = [];
+    },
+
+    clearPropertyButtonHighlights:function() {
+        this.showAnglesButton.setSelectedIndex(0);
+        this.showSameAnglesButton.setSelectedIndex(0);
+        this.showSideLengthsButton.setSelectedIndex(0);
+        this.showSameSideLengthsButton.setSelectedIndex(0);
+        this.showParallelSidesButton.setSelectedIndex(0);
     },
 
 });
@@ -990,7 +1001,7 @@ function Band() {
                 this.addBandPartBetween(fromPin, toPin);
             };
             this.setPositionAndRotationOfBandParts();
-        } else if (this.pins.length === 1) {
+        } else if (this.pins.length === 1 && this.singleBandPart === null) {
             var pin = this.pins[0];
             this.singleBandPart = new cc.Sprite();
             this.singleBandPart.initWithFile(s_single_band_part);
@@ -1354,6 +1365,10 @@ function Band() {
     }
 
     this.propertiesClean = function() {
+        if (this.bandParts.length === 0) {
+            this.setupBandParts();
+            this.setPositionAndRotationOfBandParts();
+        };
         this.regularClean();
         this.shapeClean();
         this.perimeterClean();
@@ -1422,39 +1437,41 @@ function Band() {
     this.shapeClean = function() {
         var numberOfSides = this.bandParts.length;
         var shapeName = "";
-        switch(numberOfSides) {
-            case 3:
-                shapeName = this.triangleName();
-                break;
-            case 4:
-                shapeName = this.quadrilateralName();
-                break;
-            case 5:
-                shapeName = "Pentagon";
-                break;
-            case 6:
-                shapeName = "Hexagon";
-                break;
-            case 7:
-                shapeName = "Heptagon";
-                break;
-            case 8 :
-                shapeName = "Octagon";
-                break;
-            case 9:
-                shapeName = "Nonagon";
-                break;
-            case 10:
-                shapeName = "Decagon";
-                break;
-            default:
-                if (numberOfSides < 3) {
-                    shapeName = "";
-                } else if (numberOfSides > 10) {
-                    shapeName = "Polygon";
-                };
-                break;
-        }
+        if (!this.edgesCrossOver()) {  
+            switch(numberOfSides) {
+                case 3:
+                    shapeName = this.triangleName();
+                    break;
+                case 4:
+                    shapeName = this.quadrilateralName();
+                    break;
+                case 5:
+                    shapeName = "Pentagon";
+                    break;
+                case 6:
+                    shapeName = "Hexagon";
+                    break;
+                case 7:
+                    shapeName = "Heptagon";
+                    break;
+                case 8 :
+                    shapeName = "Octagon";
+                    break;
+                case 9:
+                    shapeName = "Nonagon";
+                    break;
+                case 10:
+                    shapeName = "Decagon";
+                    break;
+                default:
+                    if (numberOfSides < 3) {
+                        shapeName = "";
+                    } else if (numberOfSides > 10) {
+                        shapeName = "Polygon";
+                    };
+                    break;
+            }
+        };
         this.shape =  shapeName;
     }
 
@@ -1815,8 +1832,6 @@ var Angle = cc.DrawNode.extend({
         var blue = this.colour.b/255;
         return cc.c4f(red, green, blue, 0.5);
     }
-
-
 });
 
 function inherits(ctor, superCtor) {
@@ -1861,10 +1876,3 @@ cc.DrawNode.prototype.drawSector = function(position, radius, startAngle, throug
     vertices.push(position);
     this.drawPoly(vertices, fillColour, 1, borderColour);
 }
-
-
-
-
-
-
-
