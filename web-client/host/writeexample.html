@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Beluga Tools Web Client Host -- write local storage</title>
+</head>
+<body style="padding:0; margin: 10px;">
+
+<p>
+    <a href="index.html">Go to tool host</a>
+</p>
+
+<script type="text/javascript">
+    //write example to local storage
+    var bundleParameters={
+        "expression" : "<apply><eq /><apply><plus /><ci>a</ci><ci>b</ci></apply><ci>c</ci></apply>",
+        "question_templates" : ["What is <b:v var='a' /> plus <b:v var='b' />?", "<b:v var='a' /> added to <b:v var='c' /> is?"],
+        "variable_parameters" : [   {"var" : "a", "min" : 1, "max" : 5, "incr" : 1},
+                                    {"var" : "b", "min" : 2, "max" : 4, "incr" : 1},
+                                    {"var" : "c", "input" : true}],
+        "number_of_problems" : 5
+    };
+
+    sessionStorage.setItem("bundle_parameters", JSON.stringify(bundleParameters));
+
+    document.write("written to bundle_parameters in sessionStorage: " + sessionStorage.getItem("bundle_parameters"));
+</script>
+
+</body>
+</html>

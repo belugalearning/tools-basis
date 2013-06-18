@@ -33,5 +33,11 @@
 <script type="text/javascript" src="lib/dat.gui.min.js"></script>
 <script type="text/javascript" src="exprMapGui.js"></script>
 
+<script type="text/javascript">
+    //test that we wrote something to session storage
+    var lbp=JSON.parse(sessionStorage.getItem("bundle_parameters"));
+    console.log(lbp);
+</script>
+
 </body>
 </html>
