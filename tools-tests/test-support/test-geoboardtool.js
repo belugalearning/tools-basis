@@ -1,4 +1,5 @@
 var ToolLayer = cc.Layer.extend({
+
     titleLabel:null,
     clc:null,
     lastcount:null,
@@ -418,8 +419,12 @@ function Geoboard() {
 
     this.processMove = function(touchLocation) {
         if (this.movingBand !== null) {
-            touchLocation = this.background.convertToNodeSpace(touchLocation);
-            this.movingBand.processMove(touchLocation);
+            var touchLocationRelativeToBackground = this.background.convertToNodeSpace(touchLocation);
+            this.movingBand.processMove(touchLocationRelativeToBackground);
+            for (var i = 0; i < this.pins.length; i++) {
+                var pin = this.pins[i];
+                pin.highlightPin(pin.sprite.touchClose(touchLocation));
+            };
         }
     }
 
@@ -428,7 +433,8 @@ function Geoboard() {
             var placedOnPin = false;
             for (var i = 0; i < this.pins.length; i++) {
                 var pin = this.pins[i];
-                if (pin.sprite.touched(touchLocation)) {
+                pin.highlightPin(false);
+                if (pin.sprite.touchClose(touchLocation)) {
                     this.movingBand.pinBandOnPin(pin);
                     placedOnPin = true;
                     break;
@@ -935,6 +941,16 @@ function CircleGeoboard(numberOfPins, includeCentre) {
 function Pin() {
     this.sprite = new cc.Sprite();
     this.sprite.initWithFile(s_pin);
+
+    this.highlightPin = function(highlight) {
+        if (highlight) {
+            var highlightPinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_white_pin));
+            this.sprite.setTexture(highlightPinTexture);
+        } else {
+            var pinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_pin));
+            this.sprite.setTexture(pinTexture);
+        };
+    }
 
 // This function is supposed to colour pins in the same colour as the band, but is buggy at the moment (when selecting a band,
 // all pins in that band are coloured pure white instead of the same colour as the band). All references to colouring pins have been commented out
@@ -1831,7 +1847,7 @@ var Angle = cc.DrawNode.extend({
         var green = this.colour.g/255;
         var blue = this.colour.b/255;
         return cc.c4f(red, green, blue, 0.5);
-    }
+    },
 });
 
 function inherits(ctor, superCtor) {
@@ -1852,6 +1868,15 @@ cc.Sprite.prototype.touched = function(touchLocation) {
     var boundingBox = this.getBoundingBox();
     var contains = cc.rectContainsPoint(boundingBox, touchRelativeToParent);
     return contains;
+}
+
+cc.Sprite.prototype.touchClose = function(touchLocation) {
+    var closeDistance = 10;
+    var parent = this.getParent();
+    var touchRelativeToParent = parent.convertToNodeSpace(touchLocation);
+    var position = this.getPosition();
+    var distance = cc.pDistance(touchRelativeToParent, position);
+    return distance < closeDistance;
 }
 
 Array.prototype.indexWraparound = function(index) {
