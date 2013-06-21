@@ -54,14 +54,10 @@
         //load data & expr mappings
         [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"shared-resources/exprmap-defaults.js")];
         
-        //load resources
-        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"shared-resources/resource.js")];
-        
         //load a tool
 //		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-emptytool.js")];
-		// [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-disttool.js")];
-		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-geoboardtool.js")];
-  		// [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-clocktool.js")];
+//		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-disttool.js")];
+  		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-geoboardtool.js")];
 
         //tool scene creation
         [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"host-helpers/shared-createtoolscene.js")];
