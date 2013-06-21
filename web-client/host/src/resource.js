@@ -15,12 +15,13 @@ var s_triangle_geoboard_button = s_geoboardImagePath + "IsoPin_button.png";
 var s_triangle_geoboard_button_base = s_geoboardImagePath + "IsoPin_button_base.png";
 var s_circle_geoboard_button = s_geoboardImagePath + "CirclePin_button.png";
 var s_circle_geoboard_button_base = s_geoboardImagePath + "CirclePin_button_base.png";
-var s_centre_pin_button = s_geoboardImagePath + "centrePinButton.png";
-var s_add_pin_button = s_geoboardImagePath + "addPinButton.png";
-var s_remove_pin_button = s_geoboardImagePath + "minusPinButton.png";
-var s_add_band_button_base = s_geoboardImagePath + "RubberBand_base.png";
-var s_add_band_button = s_geoboardImagePath + "RubberBand_Icon.png";
-var s_remove_band_button = s_geoboardImagePath + "removeBandButton.png";
+var s_centre_pin_button = s_geoboardImagePath + "CentrePoint_button.png";
+var s_add_pin_button = s_geoboardImagePath + "Arrow_up_button.png";
+var s_remove_pin_button = s_geoboardImagePath + "Arrow_down_button.png";
+var s_add_band_button_base = s_geoboardImagePath + "Band_button_base.png";
+var s_add_band_button = s_geoboardImagePath + "Band_button.png";
+var s_remove_band_button = s_geoboardImagePath + "trash_button.png";
+var s_remove_band_button_base = s_geoboardImagePath + "trash_button_base.png";
 var s_show_angles_button = s_geoboardImagePath + "showAnglesButton.png";
 var s_show_angles_button_selected = s_geoboardImagePath + "showAnglesButtonSelected.png";
 var s_show_same_angles_button = s_geoboardImagePath + "sameAngleButton.png";
@@ -34,18 +35,25 @@ var s_show_parallel_sides_button_selected = s_geoboardImagePath + "showParallelS
 
 var s_geoboard_background = s_geoboardImagePath + "background.png";
 var s_pin = s_geoboardImagePath + "Pin_white.png";
-var s_bandPart = s_geoboardImagePath + "bandPart.png";
+var s_bandPart = s_geoboardImagePath + "Band_1_white.png";
 var s_geoboard_border = s_geoboardImagePath + "pinboardBackground.png";
 var s_property_background = s_geoboardImagePath + "Info_Side_Button.png";
 var s_property_highlight = s_geoboardImagePath + "Info_Side_Button_highlight.png";
-var s_angle_background = s_geoboardImagePath + "angleBackground.png";
-var s_side_length_background = s_geoboardImagePath + "sideLabelBackground.png";
+var s_angle_background = s_geoboardImagePath + "label_panel.png";
+var s_side_length_background = s_geoboardImagePath + "label_panel.png";
 var s_same_side_length_notch = s_geoboardImagePath + "sameSideLengthNotch.png";
 var s_parallel_side_arrow = s_geoboardImagePath + "parallelSideArrow.png";
 var s_white_pin = s_geoboardImagePath + "Pin_white.png";
-var s_select_band_button = s_geoboardImagePath + "bandButton.png";
-var s_single_band_part = s_geoboardImagePath + "singleBandPart.png";
+var s_select_band_button = s_geoboardImagePath + "Colour_select.png";
+var s_empty_select_band_button = s_geoboardImagePath + "colour_box_empty.png";
+var s_band_selected = s_geoboardImagePath + "colour_selected.png";
+var s_single_band_part = s_geoboardImagePath + "Band_Circle.png";
 
+var s_moving_pin = s_geoboardImagePath + "Hand.png";
+var s_pin_no_shadow = s_geoboardImagePath + "Pin_white_noShadow.png";
+var s_number_box = s_geoboardImagePath + "Number_box.png";
+
+var s_geoboard_title = s_geoboardImagePath + "Geoboard_title.png";
 
 //Clock tool images
 var s_clockImagePath = s_imagePath + "clock/";
@@ -77,6 +85,7 @@ var g_ressources = [
     {src:s_add_band_button},
     {src:s_add_band_button_base},
     {src:s_remove_band_button},
+    {src:s_remove_band_button_base},
     {src:s_show_angles_button},
     {src:s_show_angles_button_selected},
     {src:s_show_same_angles_button},
@@ -98,8 +107,15 @@ var g_ressources = [
     {src:s_same_side_length_notch},
     {src:s_parallel_side_arrow},
     {src:s_select_band_button},
+    {src:s_empty_select_band_button},
+    {src:s_band_selected},
     {src:s_single_band_part},
 
+    {src:s_moving_pin},
+    {src:s_pin_no_shadow},
+    {src:s_number_box},
+
+    {src:s_geoboard_title},
 
     //Clock
     {src:s_analogue_clockface},
