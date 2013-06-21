@@ -20,27 +20,38 @@ var ToolLayer = cc.Layer.extend({
 */
         this.setTouchEnabled(true);
 
-        clc=cc.LayerColor.create(cc.c4b(0, 0, 0, 255));
+        var size = cc.Director.getInstance().getWinSize();
+
+        clc=cc.Layer.create();
+        var background = new cc.Sprite();
+        background.initWithFile(s_deep_water_background);
+        background.setPosition(size.width/2, size.height/2);
+        clc.addChild(background);
         this.addChild(clc,0);
         setupInheritances();
-
-        //this.setPosition(cc.p(-500, 0));
 
         this.geoboard = new CircleGeoboard(this.circleNumberOfPins, this.circleIncludeCentre);
         this.setupGeoboard();
 
-        // Currently using a MenuItemImage isn't working here (the 'activate' function on the object is not triggered, 
-        //I have used MenuItemFonts instead)
-        //var squareGeoboardButton = new cc.MenuItemFont.create("Square", 'squareGeoboardTapped', this);
+        var squareGeoboardButtonBase = new cc.MenuItemImage.create(s_square_geoboard_button_base, s_square_geoboard_button_base, 'squareGeoboardTapped', this);
+        var squareGeoboardButton = new cc.Sprite();
+        squareGeoboardButton.initWithFile(s_square_geoboard_button);
+        squareGeoboardButton.setPosition(squareGeoboardButtonBase.getAnchorPointInPoints());
+        squareGeoboardButtonBase.addChild(squareGeoboardButton);
 
-        var squareGeoboardButton = new cc.MenuItemImage.create(s_square_geoboard_button, s_square_geoboard_button, 'squareGeoboardTapped', this);
+        var triangleGeoboardButtonBase = new cc.MenuItemImage.create(s_triangle_geoboard_button_base, s_triangle_geoboard_button_base, 'triangleGeoboardTapped', this);
+        var triangleGeoboardButton = new cc.Sprite();
+        triangleGeoboardButton.initWithFile(s_triangle_geoboard_button);
+        triangleGeoboardButton.setPosition(triangleGeoboardButtonBase.getAnchorPointInPoints());
+        triangleGeoboardButtonBase.addChild(triangleGeoboardButton);
+        triangleGeoboardButtonBase.setPosition(0, -110);
 
-        var triangleGeoboardButton = new cc.MenuItemImage.create(s_triangle_geoboard_button, s_triangle_geoboard_button, 'triangleGeoboardTapped', this);
-        triangleGeoboardButton.setPosition(0, -110);
-
-        var circleGeoboardButton = new cc.MenuItemImage.create(s_circle_geoboard_button, s_circle_geoboard_button, 'circleGeoboardTapped', this);
-        circleGeoboardButton.setScaleX(0.75);
-        circleGeoboardButton.setPosition(-30, -220);
+        var circleGeoboardButtonBase = new cc.MenuItemImage.create(s_circle_geoboard_button_base, s_circle_geoboard_button_base, 'circleGeoboardTapped', this);
+        var circleGeoboardButton = new cc.Sprite();
+        circleGeoboardButton.initWithFile(s_circle_geoboard_button);
+        circleGeoboardButton.setPosition(circleGeoboardButtonBase.getAnchorPointInPoints());
+        circleGeoboardButtonBase.addChild(circleGeoboardButton);
+        circleGeoboardButtonBase.setPosition(0, -220);
 
         var centrePinButton = new cc.MenuItemImage.create(s_centre_pin_button, s_centre_pin_button, 'centrePinTapped', this);
         centrePinButton.setPosition(85, -190);
@@ -51,21 +62,23 @@ var ToolLayer = cc.Layer.extend({
         var removePinButton = new cc.MenuItemImage.create(s_remove_pin_button, s_remove_pin_button, 'removePinTapped', this);
         removePinButton.setPosition(85, -260);
 
-        var geoboardTypesMenu = new cc.Menu.create(squareGeoboardButton, triangleGeoboardButton, circleGeoboardButton,
+        var geoboardTypesMenu = new cc.Menu.create(squareGeoboardButtonBase, triangleGeoboardButtonBase, circleGeoboardButtonBase,
             centrePinButton, addPinButton, removePinButton);
-        geoboardTypesMenu.setPosition(110, 500);
+        geoboardTypesMenu.setPosition(squareGeoboardButtonBase.getContentSize().width/2, 500);
         this.addChild(geoboardTypesMenu);
 
-        var addBandButton = new cc.MenuItemImage.create(s_add_band_button, s_add_band_button, 'addBandTapped', this);
-        addBandButton.setPosition(0, 10);
-        addBandButton.setScaleY(0.75);
+        var addBandButtonBase = new cc.MenuItemImage.create(s_add_band_button_base, s_add_band_button_base, 'addBandTapped', this);
+        var addBandButton = new cc.Sprite();
+        addBandButton.initWithFile(s_add_band_button);
+        addBandButton.setPosition(addBandButtonBase.getAnchorPointInPoints());
+        addBandButtonBase.addChild(addBandButton);
 
         var removeBandButton = new cc.MenuItemImage.create(s_remove_band_button, s_remove_band_button, 'removeBandTapped', this);
         removeBandButton.setPosition(0, -75);
         removeBandButton.setScaleY(0.75);
 
-        var addRemoveBandMenu = new cc.Menu.create(addBandButton, removeBandButton);
-        addRemoveBandMenu.setPosition(110, 130);
+        var addRemoveBandMenu = new cc.Menu.create(addBandButtonBase, removeBandButton);
+        addRemoveBandMenu.setPosition(addBandButtonBase.getContentSize().width/2, 130);
         this.addChild(addRemoveBandMenu);
 
         this.selectBandMenu = new cc.Menu.create();
@@ -73,84 +86,40 @@ var ToolLayer = cc.Layer.extend({
         this.addChild(this.selectBandMenu);
         this.selectBandButtons = new Array();
 
-        var propertiesIndicator = new cc.Node();
-        propertiesIndicator.setPosition(900, 500);
-        this.addChild(propertiesIndicator);
+        this.propertyDisplay = PropertyDisplays.NONE;
 
-        var regularIndicator = new cc.Sprite();
-        regularIndicator.initWithFile(s_property_background);
-        this.regularIndicatorLabel = new cc.LabelTTF.create("", "Arial", 24);
-        this.regularIndicatorLabel.setColor(0,0,0);
-        this.regularIndicatorLabel.setPosition(regularIndicator.getBoundingBox().width/2, regularIndicator.getBoundingBox().height/2);
-        regularIndicator.addChild(this.regularIndicatorLabel);
-        propertiesIndicator.addChild(regularIndicator);
+        this.propertyButtonsMenu = cc.Menu.create();
+        this.propertyButtonsMenu.setPosition(950, 515);
+        this.addChild(this.propertyButtonsMenu);
+        this.propertyButtons = [];
 
-        var shapeIndicator = new cc.Sprite();
-        shapeIndicator.initWithFile(s_property_background);
-        shapeIndicator.setPosition(0, -90);
-        this.shapeIndicatorLabel = new cc.LabelTTF.create("", "Arial", 24);
-        this.shapeIndicatorLabel.setColor(0,0,0);
-        this.shapeIndicatorLabel.setPosition(shapeIndicator.getBoundingBox().width/2, shapeIndicator.getBoundingBox().height/2);
-        shapeIndicator.addChild(this.shapeIndicatorLabel);
-        propertiesIndicator.addChild(shapeIndicator);
+        this.buttonYPosition = 0;
 
-        var perimeterIndicator = new cc.Sprite();
-        perimeterIndicator.initWithFile(s_property_background);
-        perimeterIndicator.setPosition(0, -180);        
-        var perimeterLabel = new cc.LabelTTF.create("Perimeter", "Arial", 24);
-        perimeterLabel.setColor(0,0,0);
-        perimeterLabel.setPosition(perimeterIndicator.getBoundingBox().width/2, 2/3 * perimeterIndicator.getBoundingBox().height)
-        perimeterIndicator.addChild(perimeterLabel);
-        this.perimeterIndicatorLabel = new cc.LabelTTF.create("", "Arial", 24);
-        this.perimeterIndicatorLabel.setColor(0,0,0);
-        this.perimeterIndicatorLabel.setPosition(perimeterIndicator.getBoundingBox().width/2, 1/3 * perimeterIndicator.getBoundingBox().height);
-        perimeterIndicator.addChild(this.perimeterIndicatorLabel);
-        propertiesIndicator.addChild(perimeterIndicator);
-
-        var areaIndicator = new cc.Sprite();
-        areaIndicator.initWithFile(s_property_background);
-        areaIndicator.setPosition(0, -270);
-        var areaLabel = new cc.LabelTTF.create("Area", "Arial", 24);
-        areaLabel.setColor(0,0,0);
-        areaLabel.setPosition(areaIndicator.getBoundingBox().width/2, 2/3 * areaIndicator.getBoundingBox().height);
-        areaIndicator.addChild(areaLabel);
-        this.areaIndicatorLabel = new cc.LabelTTF.create("", "Arial", 24);
-        this.areaIndicatorLabel.setColor(0,0,0);
-        this.areaIndicatorLabel.setPosition(areaIndicator.getBoundingBox().width/2, 1/3 * areaIndicator.getBoundingBox().height);
-        areaIndicator.addChild(this.areaIndicatorLabel);
-        propertiesIndicator.addChild(areaIndicator);
-
-        var showAnglesButtonUnselected = cc.MenuItemImage.create(s_show_angles_button, s_show_angles_button, null, null);
-        var showAnglesButtonSelected = cc.MenuItemImage.create(s_show_angles_button_selected, s_show_angles_button_selected, null, null);
-        this.showAnglesButton = cc.MenuItemToggle.create(showAnglesButtonUnselected, showAnglesButtonSelected, this.showAnglesTapped, this);
-        this.showAnglesButton.setPosition(-210, 50);
-
-        var showSameAnglesButtonUnselected = cc.MenuItemImage.create(s_show_same_angles_button, s_show_same_angles_button, null, null);
-        var showSameAnglesButtonSelected = cc.MenuItemImage.create(s_show_same_angles_button_selected, s_show_same_angles_button_selected, null, null);
-        this.showSameAnglesButton = cc.MenuItemToggle.create(showSameAnglesButtonUnselected, showSameAnglesButtonSelected, this.showSameAnglesTapped, this);
-        this.showSameAnglesButton.setPosition(40, 50);
-
-        var showSideLengthsButtonUnselected = cc.MenuItemImage.create(s_show_side_lengths_button, s_show_side_lengths_button, null, null);
-        var showSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_side_lengths_button_selected, s_show_side_lengths_button_selected, null, null);
-        this.showSideLengthsButton = cc.MenuItemToggle.create(showSideLengthsButtonUnselected, showSideLengthsButtonSelected, this.showSideLengthsTapped, this);
-        this.showSideLengthsButton.setPosition(-245, -30);
-
-        var showSameSideLengthsButtonUnselected = cc.MenuItemImage.create(s_show_same_side_lengths_button, s_show_same_side_lengths_button, null, null);
-        var showSameSideLengthsButtonSelected = cc.MenuItemImage.create(s_show_same_side_lengths_button_selected, s_show_same_side_lengths_button_selected, null, null);
-        this.showSameSideLengthsButton = cc.MenuItemToggle.create(showSameSideLengthsButtonUnselected, showSameSideLengthsButtonSelected, this.showSameSideLengthsTapped, this);
-        this.showSameSideLengthsButton.setPosition(-35, -30);
-
-        var showParallelSidesButtonUnselected = cc.MenuItemImage.create(s_show_parallel_sides_button, s_show_parallel_sides_button, null, null);
-        var showParallelSidesButtonSelected = cc.MenuItemImage.create(s_show_parallel_sides_button_selected, s_show_parallel_sides_button_selected, null, null);
-        this.showParallelSidesButton = cc.MenuItemToggle.create(showParallelSidesButtonUnselected, showParallelSidesButtonSelected, this.showParallelSidesTapped, this);
-        this.showParallelSidesButton.setPosition(175, -30);
-
-        var bandPropertiesMenu = cc.Menu.create(this.showAnglesButton, this.showSameAnglesButton,
-        this.showSideLengthsButton, this.showSameSideLengthsButton, this.showParallelSidesButton);
-        bandPropertiesMenu.setPosition(600, 100);
-        this.addChild(bandPropertiesMenu);
+        this.regularButton = this.setupPropertyButton(this.regularButtonTapped, "Regular?");
+        this.shapeButton = this.setupPropertyButton(this.shapeButtonTapped, "Shape");
+        this.perimeterButton = this.setupPropertyButton(this.perimeterButtonTapped, "Perimeter");
+        this.areaButton = this.setupPropertyButton(this.areaButtonTapped, "Area");
+        this.showAngleButton = this.setupPropertyButton(this.showAnglesTapped, "Angles");
+        this.showSameAnglesButton = this.setupPropertyButton(this.showSameAnglesTapped, "Equal angles");
+        this.showSideLengthsButton = this.setupPropertyButton(this.showSideLengthsTapped, "Side lengths");
+        this.showSameSideLengthsButton = this.setupPropertyButton(this.showSameSideLengthsTapped, "Equal sides");
+        this.showParallelSidesButton = this.setupPropertyButton(this.showParallelSidesTapped, "Parallel sides");
 
         return this;
+    },
+
+    setupPropertyButton:function(selector, label) {
+        var centreOfIndicator = cc.p(62, 35);
+        var button = cc.MenuItemImage.create(s_property_background, s_property_background, selector, this);
+        button.label = new cc.LabelTTF.create(label, "Arial", 15);
+        button.label.setPosition(centreOfIndicator);
+        button.label.setColor(0,0,0);
+        button.addChild(button.label);
+        button.setPosition(0, this.buttonYPosition);
+        this.propertyButtonsMenu.addChild(button);
+        this.propertyButtons.push(button);
+        this.buttonYPosition -= 55;
+        return button;
     },
 
     setupGeoboard:function (touches, event) {
@@ -190,6 +159,7 @@ var ToolLayer = cc.Layer.extend({
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
             this.clearPropertyButtonHighlights();
+            this.displaySelectedProperty();
         }
     },
 
@@ -201,6 +171,7 @@ var ToolLayer = cc.Layer.extend({
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
             this.clearPropertyButtonHighlights();
+            this.displaySelectedProperty();
         };
     },
 
@@ -212,6 +183,7 @@ var ToolLayer = cc.Layer.extend({
             this.geoboard.setPropertyIndicatorsForSelectedBand();
             this.clearBandSelectButtons();
             this.clearPropertyButtonHighlights();
+            this.displaySelectedProperty();
         };
     },
 
@@ -275,33 +247,113 @@ var ToolLayer = cc.Layer.extend({
         };
     },
 
+    deselectAllButtons:function() {
+        for (var i = 0; i < this.propertyButtons.length; i++) {
+            var button = this.propertyButtons[i];
+            button.propertyHighlight(false);
+        };
+    },
+
+    togglePropertyDisplay:function(propertyDisplay) {
+        if (this.propertyDisplay === propertyDisplay) {
+            this.propertyDisplay = PropertyDisplays.NONE;
+        } else {
+            this.propertyDisplay = propertyDisplay;
+        };
+    },
+
+    displaySelectedProperty:function() {
+        this.deselectAllButtons();
+        this.geoboard.setPropertyIndicatorsForSelectedBand();
+        this.geoboard.displayArea(false);
+        this.geoboard.displayAngles(false);
+        this.geoboard.displaySameAngles(false);
+        this.geoboard.displaySideLengths(false);
+        this.geoboard.displaySameSideLengths(false);
+        this.geoboard.displayParallelSides(false);
+        switch (this.propertyDisplay) {
+            case PropertyDisplays.NONE:
+                break;
+            case PropertyDisplays.REGULAR:
+                this.regularButton.propertyHighlight(true);
+                break;
+            case PropertyDisplays.SHAPE:
+                this.shapeButton.propertyHighlight(true);
+                break;
+            case PropertyDisplays.PERIMETER:
+                this.perimeterButton.propertyHighlight(true);
+                break;
+            case PropertyDisplays.AREA:
+                this.areaButton.propertyHighlight(true);
+                this.geoboard.displayArea(true);
+                break;
+            case PropertyDisplays.ANGLES:
+                this.showAngleButton.propertyHighlight(true);
+                this.geoboard.displayAngles(true);
+                break;
+            case PropertyDisplays.SAME_ANGLES:
+                this.showSameAnglesButton.propertyHighlight(true);
+                this.geoboard.displaySameAngles(true);
+                break;
+            case PropertyDisplays.SIDE_LENGTHS:
+                this.showSideLengthsButton.propertyHighlight(true);
+                this.geoboard.displaySideLengths(true);
+                break;
+            case PropertyDisplays.SAME_SIDE_LENGTHS:
+                this.showSameSideLengthsButton.propertyHighlight(true);
+                this.geoboard.displaySameSideLengths(true);
+                break;
+            case PropertyDisplays.PARALLEL_SIDES:
+                this.showParallelSidesButton.propertyHighlight(true);
+                this.geoboard.displayParallelSides(true);
+                break;                
+        }
+    },
+
+    regularButtonTapped:function() {
+        this.togglePropertyDisplay(PropertyDisplays.REGULAR);
+        this.displaySelectedProperty();
+    },
+
+    shapeButtonTapped:function() {
+        this.togglePropertyDisplay(PropertyDisplays.SHAPE);
+        this.displaySelectedProperty();
+
+    },
+
+    perimeterButtonTapped:function() {
+        this.togglePropertyDisplay(PropertyDisplays.PERIMETER);
+        this.displaySelectedProperty();
+    },
+
+    areaButtonTapped:function() {
+        this.togglePropertyDisplay(PropertyDisplays.AREA);
+        this.displaySelectedProperty();
+    },
+
     showAnglesTapped:function() {
-        this.geoboard.toggleAngleDisplay("angleValues");
-        this.showSameAnglesButton.setSelectedIndex(0);
+        this.togglePropertyDisplay(PropertyDisplays.ANGLES);
+        this.displaySelectedProperty();
     },
 
     showSameAnglesTapped:function() {
-        this.geoboard.toggleAngleDisplay("sameAngles");
-        this.showAnglesButton.setSelectedIndex(0);
+        this.togglePropertyDisplay(PropertyDisplays.SAME_ANGLES);
+        this.displaySelectedProperty();
     },
 
     showSideLengthsTapped:function() {
-        this.geoboard.toggleSideDisplay("sideLengthValues");
-        this.showSameSideLengthsButton.setSelectedIndex(0);
-        this.showParallelSidesButton.setSelectedIndex(0);
+        this.togglePropertyDisplay(PropertyDisplays.SIDE_LENGTHS);
+        this.displaySelectedProperty();
     },
 
     showSameSideLengthsTapped:function() {
-        this.geoboard.toggleSideDisplay("sameSideLengths");
-        this.showSideLengthsButton.setSelectedIndex(0);
-        this.showParallelSidesButton.setSelectedIndex(0);
-
+        this.togglePropertyDisplay(PropertyDisplays.SAME_SIDE_LENGTHS);
+        this.displaySelectedProperty();
     },
 
     showParallelSidesTapped:function() {
-        this.geoboard.toggleSideDisplay("parallelSides");
-        this.showSideLengthsButton.setSelectedIndex(0);
-        this.showSameSideLengthsButton.setSelectedIndex(0);
+        this.togglePropertyDisplay(PropertyDisplays.PARALLEL_SIDES);
+        this.displaySelectedProperty();
     },
 
     positionBandSelectButtons:function() {
@@ -316,28 +368,43 @@ var ToolLayer = cc.Layer.extend({
     },
 
     setRegularIndicatorWith:function(string) {
-        this.regularIndicatorLabel.setString(string);
+        if (this.propertyDisplay === PropertyDisplays.REGULAR) {
+            this.regularButton.label.setString(string);
+        } else {
+            this.regularButton.label.setString("Regular?");
+        };
     },
 
     setShapeIndicatorWith:function(string) {
-        this.shapeIndicatorLabel.setString(string);
+        if (this.propertyDisplay === PropertyDisplays.SHAPE) {
+            this.shapeButton.label.setString(string);
+        } else {
+            this.shapeButton.label.setString("Shape");
+        };
     },
 
     setPerimeterIndicatorWith:function(perimeter) {
-        var string = "";
-        if (perimeter !== null) {
-            string = (Math.round(perimeter * 10000)/10000).toString();
+        if (this.propertyDisplay === PropertyDisplays.PERIMETER) {    
+            var string = "";
+            if (perimeter !== null) {
+                string = (Math.round(perimeter * 10000)/10000).toString();
+            };
+            this.perimeterButton.label.setString(string);
+        } else {
+            this.perimeterButton.label.setString("Perimeter");
         };
-        this.perimeterIndicatorLabel.setString(string);
     },
 
     setAreaIndicatorWith:function(area) {
-        var string = "";
-        if (area !== null) {
-            string = (Math.round(area * 10000)/10000).toString();
+        if (this.propertyDisplay === PropertyDisplays.AREA) {        
+            var string = "";
+            if (area !== null) {
+                string = (Math.round(area * 10000)/10000).toString();
+            };
+            this.areaButton.label.setString(string);
+        } else {
+            this.areaButton.label.setString("Area");
         };
-        this.areaIndicatorLabel.setString(string);
-
     },
 
     clearBandSelectButtons:function() {
@@ -346,14 +413,22 @@ var ToolLayer = cc.Layer.extend({
     },
 
     clearPropertyButtonHighlights:function() {
-        this.showAnglesButton.setSelectedIndex(0);
-        this.showSameAnglesButton.setSelectedIndex(0);
-        this.showSideLengthsButton.setSelectedIndex(0);
-        this.showSameSideLengthsButton.setSelectedIndex(0);
-        this.showParallelSidesButton.setSelectedIndex(0);
     },
 
 });
+
+var PropertyDisplays = {
+    NONE:"none",
+    REGULAR:"regular",
+    SHAPE:"shape",
+    PERIMETER:"perimeter",
+    AREA:"area",
+    ANGLES:"angles",
+    SAME_ANGLES:"same angles",
+    SIDE_LENGTHS:"side lengths",
+    SAME_SIDE_LENGTHS:"same side lengths",
+    PARALLEL_SIDES:"parallel sides",
+};
 
 var setupInheritances = function() {
     inherits(RegularGeoboard, Geoboard);
@@ -448,6 +523,7 @@ function Geoboard() {
             this.groupSameSideLengths();
             this.groupParallelSides();
             this.setPropertyIndicatorsForSelectedBand();
+            this.layer.displaySelectedProperty();
         };
         this.setAllDrawAngles();
         this.movingBand = null;
@@ -462,7 +538,7 @@ function Geoboard() {
         for (var i = 0; i < this.bands.length; i++) {
             var band = this.bands[i];
             for (var j = 0; j < band.angles.length; j++) {
-                band.angles[j].setDrawAngle;
+                band.angles[j].setDrawAngle();
             };
         };
     }
@@ -490,8 +566,6 @@ function Geoboard() {
         };
         for (var i = 0; i < band.pins.length; i++) {
             var pin = band.pins[i];
-            //var colour = this.colourForPin(pin);
-            //pin.colourPin(colour);
         };
         this.groupSameAngles();
         this.groupSameSideLengths();
@@ -501,6 +575,7 @@ function Geoboard() {
 
     this.selectNoBand = function() {
         this.border.setColor(cc.c3b(255, 255, 255));
+        this.setPropertyIndicatorsForSelectedBand();
     }
 
     this.removeSelectedBand = function() {
@@ -510,14 +585,15 @@ function Geoboard() {
     }
 
     this.selectBand = function(band) {
-
         var index = this.bands.indexOf(band);
         this.bands.splice(index, 1);
         this.bands.splice(0, 0, band);
         this.setBandsZIndexToPriorityOrder();
         this.border.setColor(band.colour);
         this.setPropertyIndicatorsForSelectedBand();
-        //this.bands[0].colourAllPins();
+        if (this.layer.propertyDisplay === PropertyDisplays.AREA) {
+            this.displayArea(true);
+        };
     }
 
     this.selectBandFromButton = function(sender) {
@@ -538,8 +614,6 @@ function Geoboard() {
         this.groupSameAngles();
         this.groupSameSideLengths();
         this.groupParallelSides();
-        this.setupAngleDisplay();
-        this.setupSideDisplay();
     }
 
     this.setPropertyIndicatorsForSelectedBand = function() {
@@ -557,16 +631,34 @@ function Geoboard() {
         };
     }
 
-    this.toggleAngleDisplay = function(string) {
+    /*this.toggleAngleDisplay = function(string) {
         if (this.angleDisplay === string) {
             this.angleDisplay = "none"
         } else {
             this.angleDisplay = string;
         };
         this.setupAngleDisplay();
-    }
+    }*/
 
-    this.setupAngleDisplay = function() {
+    this.displayAngles = function(visible) {
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            band.angleNode.setVisible(visible);
+            band.displaySameAngles(false);
+        };
+        this.setAllDrawAngles();
+    };
+
+    this.displaySameAngles = function(visible) {
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            band.angleNode.setVisible(visible);
+            band.displaySameAngles(true);
+        };
+        this.setAllDrawAngles();
+    };
+
+/*    this.setupAngleDisplay = function() {
         for (var i = 0; i < this.bands.length; i++) {
             var band = this.bands[i];
             if (this.angleDisplay === "angleValues") {
@@ -584,8 +676,8 @@ function Geoboard() {
         };
         this.setAllDrawAngles();
     }
-
-    this.toggleSideDisplay = function(string) {
+*/
+/*    this.toggleSideDisplay = function(string) {
         if (this.sideDisplay === string) {
             this.sideDisplay = "none";
         } else {
@@ -593,8 +685,39 @@ function Geoboard() {
         };
         this.setupSideDisplay();
     }
+*/
+    this.displaySideLengths = function(visible) {
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            band.sideLengthsNode.setVisible(visible);
+        };
+    }
 
-    this.setupSideDisplay = function() {
+    this.displaySameSideLengths = function(visible) {
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            band.sameSideLengthNotchesVisible(visible);
+        };
+    }
+
+    this.displayParallelSides = function(visible) {
+        for (var i = 0; i < this.bands.length; i++) {
+            var band = this.bands[i];
+            band.parallelSideArrowsVisible(visible);
+        };
+    }
+
+    this.displayArea = function(visible) {
+        if (this.bands.length > 0) {
+            var band = this.bands[0];
+            band.areaNode.setVisible(visible);
+            for (var i = 1; i < this.bands.length; i++) {
+                this.bands[i].areaNode.setVisible(false);
+            };
+        };
+    };
+
+/*    this.setupSideDisplay = function() {
         for (var i = 0; i < this.bands.length; i++) {
             var band = this.bands[i];
             band.sideLengthsNode.setVisible(false);
@@ -610,7 +733,7 @@ function Geoboard() {
             }
         };
     }
-
+*/
     this.groupSameAngles = function() {
         var angles = [];
         for (var i = 0; i < this.bands.length; i++) {
@@ -728,25 +851,13 @@ function Geoboard() {
             };
         }
     }
-
-/*    this.colourForPin = function(pin) {
-        var colour = null;
-        for (var i = 0; i < this.bands.length; i++) {
-            var band = this.bands[i]
-            if (band.pins.indexOf(pin) !== -1) {
-                colour = band.colour;
-                break;
-            };
-        };
-        return colour;
-    }
-*/}
+}
 
 
 function RegularGeoboard() {
     Geoboard.call(this);
 
-    this.distanceBetweenPins = 40;
+    this.distanceBetweenPins = 50;
     this.unitDistance = this.distanceBetweenPins;
 
 
@@ -778,8 +889,8 @@ function RegularGeoboard() {
     }
 
     this.pinPosition = function(i, j) {
-        var xValue = 10 + this.distanceBetweenPins * (i + this.rowOffset * j);
-        var yValue = 10 + this.distanceBetweenPins * this.rowHeight * j;
+        var xValue = 20 + this.distanceBetweenPins * (i + this.rowOffset * j);
+        var yValue = 20 + this.distanceBetweenPins * this.rowHeight * j;
         var pinPosition = cc.p(xValue, yValue);
         return pinPosition;
     }
@@ -944,34 +1055,30 @@ function Pin() {
 
     this.highlightPin = function(highlight) {
         if (highlight) {
+            /*
             var highlightPinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_white_pin));
             this.sprite.setTexture(highlightPinTexture);
+            */
+        var highlightColour = cc.c3b(255,0,0);
+        this.sprite.setColor(highlightColour);
         } else {
-            var pinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_pin));
-            this.sprite.setTexture(pinTexture);
-        };
-    }
 
-// This function is supposed to colour pins in the same colour as the band, but is buggy at the moment (when selecting a band,
-// all pins in that band are coloured pure white instead of the same colour as the band). All references to colouring pins have been commented out
-/*    this.colourPin = function(colour) {
-        if (colour === null) {
-            var pinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_pin));
+/*            var pinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_pin));
             this.sprite.setTexture(pinTexture);
-            this.sprite.setColor(cc.c4f(255, 255, 255, 255));
-        } else {
-            var whitePinTexture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(s_white_pin));
-            this.sprite.setTexture(whitePinTexture);
-            this.sprite.setColor(colour);
-            this.sprite.setOpacity(255);
+*/      
+        var unHighlightColour = cc.c3b(255,255,255);
+        this.sprite.setColor(unHighlightColour);
         };
     }
-*/}
+}
 
 function Band() {
     this.bandNode = new cc.Node();
     this.bandPartsNode = new cc.Node();
     this.bandNode.addChild(this.bandPartsNode);
+    this.areaNode = new cc.DrawNode();
+    this.areaNode.setZOrder(-1);
+    this.bandNode.addChild(this.areaNode);
     this.bandParts = new Array();
     this.movingPin = null;
     this.sideLengthsLabels = new Array();
@@ -1005,6 +1112,10 @@ function Band() {
         this.geoboard.addBand(this);
         this.setupBandParts();
         this.setupPropertiesNode();
+
+        if (this.geoboard.layer) {
+            this.areaNode.setVisible(this.geoboard.layer.propertyDisplay === PropertyDisplays.AREA);
+        };
     }
 
     this.setupBandParts = function() {
@@ -1035,7 +1146,6 @@ function Band() {
         var bandPart = new BandPart();
         bandPart.setup(this, fromPin, toPin);
         bandPart.sprite.setColor(this.colour);
-        //bandPart.sprite.setOpacity(255);
         this.bandPartsNode.addChild(bandPart.baseNode);
         this.bandParts.push(bandPart);
         return bandPart;
@@ -1121,23 +1231,20 @@ function Band() {
             this.setupBandParts();
             this.setupAngles();
             this.setupSideLengths();
+            this.setDrawArea();
         };
     }
 
     this.unpinBandFromPin = function(index) {
         var pin = this.pins[index];
         this.movingPin = new Pin();
-        //this.movingPin.colourPin(this.colour);
         this.movingPin.sprite.setPosition(pin.sprite.getPosition());
         this.pins.splice(index, 1, this.movingPin);
         this.geoboard.pinNode.addChild(this.movingPin.sprite);
-        //var pinColour = this.geoboard.colourForPin(pin);
-        //pin.colourPin(pinColour);
     }
 
     this.splitBandPart = function(index, touchLocation) {
         this.movingPin = new Pin();
-        //this.movingPin.colourPin(this.colour);
         var pinPosition = this.bandNode.convertToNodeSpace(touchLocation);
         this.movingPin.sprite.setPosition(pinPosition);
         this.geoboard.pinNode.addChild(this.movingPin.sprite);
@@ -1149,6 +1256,7 @@ function Band() {
         this.setPositionAndRotationOfBandParts();
         this.setAngleValues();
         this.setSideLengthValues();
+        this.setDrawArea();
     }
 
     this.processEnd = function(touchLocation) {
@@ -1159,12 +1267,12 @@ function Band() {
         this.setupAngles();
         this.cleanPins();
         this.geoboard.setAllProperties();
+        this.setDrawArea();
     }
 
     this.pinBandOnPin = function(pin) {
         var movingPinIndex = this.pins.indexOf(this.movingPin);
         this.pins.splice(movingPinIndex, 1, pin);
-        //pin.colourPin(this.colour);
         this.dirtyProperties = true;
     }
 
@@ -1198,8 +1306,6 @@ function Band() {
             var indexOfStraightThroughPin = this.indexOfStraightThroughPin();
             while (indexOfStraightThroughPin != -1) {
                 var pin = this.pins[indexOfStraightThroughPin];
-                //var pinColour = this.geoboard.colourForPin(pin);
-                //pin.colourPin(pinColour);
                 this.pins.splice(indexOfStraightThroughPin, 1);
                 this.setupBandParts();
                 this.setupAngles();
@@ -1228,12 +1334,14 @@ function Band() {
         return indexToReturn;
     }
 
-    /*this.colourAllPins = function() {
+    this.setDrawArea = function() {
+        var vertices = [];
         for (var i = 0; i < this.pins.length; i++) {
-            var pin = this.pins[i];
-            pin.colourPin(this.colour);
+            vertices.push(this.pins[i].sprite.getPosition());
         };
-    }*/
+        this.areaNode.clear();
+        this.areaNode.drawPoly(vertices, cc.c4f(25, 25, 25, 0.35), 0, cc.c4f(0,0,0,0));
+    };
 
     this.setupAngles = function() {
         this.angles = [];
@@ -1243,9 +1351,11 @@ function Band() {
                 var angle = new Angle();
                 angle.init();
                 angle.setColour(this.colour);
-                var displaySameAngles = this.geoboard.angleDisplay === "sameAngles";
-                angle.displaySameAngles = displaySameAngles;
-                angle.background.setVisible(!displaySameAngles);
+                if (this.geoboard.layer) {
+                    var displaySameAngles = this.geoboard.layer.propertyDisplay === PropertyDisplays.SAME_ANGLES;
+                    angle.displaySameAngles = displaySameAngles;
+                    angle.background.setVisible(!displaySameAngles);
+                };
                 this.angles.push(angle);
                 var pin = this.pins[i];
                 angle.setPosition(pin.sprite.getPosition());
@@ -1653,6 +1763,7 @@ function BandPart() {
     this.baseNode = new cc.Node();
     this.sprite = new cc.Sprite(); 
     this.sprite.initWithFile(s_bandPart);
+    this.sprite.setScaleX(1.5);
     this.bandPartNode = new cc.Node();
     this.sprite.setAnchorPoint(cc.p(0.5, 0));
     this.baseNode.setAnchorPoint(cc.p(0.5, 0));
@@ -1871,7 +1982,7 @@ cc.Sprite.prototype.touched = function(touchLocation) {
 }
 
 cc.Sprite.prototype.touchClose = function(touchLocation) {
-    var closeDistance = 10;
+    var closeDistance = 20;
     var parent = this.getParent();
     var touchRelativeToParent = parent.convertToNodeSpace(touchLocation);
     var position = this.getPosition();
@@ -1900,4 +2011,16 @@ cc.DrawNode.prototype.drawSector = function(position, radius, startAngle, throug
     };
     vertices.push(position);
     this.drawPoly(vertices, fillColour, 1, borderColour);
+}
+
+cc.MenuItemImage.prototype.propertyHighlight = function(highlight) {
+    var filename;
+    if (highlight) {
+        filename = s_property_highlight;
+    } else {
+        filename = s_property_background;
+    };
+    var texture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(filename));
+    this.getNormalImage().setTexture(texture);
+    this.getSelectedImage().setTexture(texture);
 }
