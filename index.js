@@ -10,7 +10,11 @@ var seaportServiceName = 'teach-dev'
 
 var app = express()
 app.use(express.cookieParser())
-app.use(express.session({ key: 'beluga-teach-sid', secret: 'bdae701ef257c3d7bc2cf2b2f1fbf16f842470b775308ac02d27e82a31c3ebafd22d24b90ea4cac7cd27389ea598629b' }))
+app.use(express.session({
+  key: 'beluga-teach-sid', 
+  secret: 'bdae701ef257c3d7bc2cf2b2f1fbf16f842470b775308ac02d27e82a31c3ebafd22d24b90ea4cac7cd27389ea598629b',
+  cookie: { maxAge: 1000 * 60 * 30 }
+}))
 app.use(express.bodyParser())
 
 app.all('*', function(req, res, next) {
