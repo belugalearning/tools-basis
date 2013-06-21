@@ -13,7 +13,10 @@ var QLayer = cc.Layer.extend({
 
         this.titleLabel = cc.LabelTTF.create("Empty Tool!", "Helvetica", 38);
         this.titleLabel.setPosition(cc.p(size.width / 2, size.height - 40));
+        /*
+         * TEMP - Don't show question title
         this.addChild(this.titleLabel, 5);
+        //*/
 
         this.setupTool();
 
