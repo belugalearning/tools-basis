@@ -1132,6 +1132,7 @@ function CircleGeoboard(numberOfPins, includeCentre) {
             band.setupAngles();
             band.setupSideLengths();
             band.dirtyProperties = true;
+            band.setDrawArea();
         };
         this.groupSameAngles();
         this.groupSameSideLengths();
@@ -1149,9 +1150,6 @@ function CircleGeoboard(numberOfPins, includeCentre) {
                 break;
             };
         };
-        for (var i = 0; i < this.bands.length; i++) {
-            this.bands[i].dirtyProperties = true;
-        };
         this.numberOfPins--;
         this.positionEdgePins();
         this.removeDeletedPinFromBands(pinToDelete);
@@ -1160,6 +1158,10 @@ function CircleGeoboard(numberOfPins, includeCentre) {
         this.groupSameSideLengths();
         this.groupParallelSides();
         this.setPropertyIndicatorsForSelectedBand();
+        for (var i = 0; i < this.bands.length; i++) {
+            this.bands[i].dirtyProperties = true;
+            this.bands[i].setDrawArea();
+        };
     }
 
     this.positionEdgePins = function() {
