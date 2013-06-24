@@ -140,7 +140,7 @@ var ToolLayer = cc.Layer.extend({
     setupPropertyButton:function(selector, label) {
         var centreOfIndicator = cc.p(62, 35);
         var button = cc.MenuItemImage.create(s_property_background, s_property_background, selector, this);
-        button.label = new cc.LabelTTF.create(label, 'mikadoBold');
+        button.label = new cc.LabelTTF.create(label, 'mikadoBold', 13);
         button.label.setPosition(centreOfIndicator);
         button.label.setColor(0,0,0);
         button.addChild(button.label);
