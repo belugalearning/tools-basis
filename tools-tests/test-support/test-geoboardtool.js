@@ -142,7 +142,7 @@ var ToolLayer = cc.Layer.extend({
     setupPropertyButton:function(selector, label) {
         var centreOfIndicator = cc.p(62, 35);
         var button = cc.MenuItemImage.create(s_property_background, s_property_background, selector, this);
-        button.label = new cc.LabelTTF.create(label, 'mikadoBold', 17, cc.SizeMake(126, 59), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
+        button.label = new cc.LabelTTF.create(label, 'mikadoBold', 17, cc.SizeMake(110, 59), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
         button.label.setPosition(centreOfIndicator);
         button.label.setColor(cc.c3b(255,255,255));
         button.addChild(button.label);
@@ -515,6 +515,7 @@ var ToolLayer = cc.Layer.extend({
 
     movePropertyButtonsOffscreen:function() {
         this.propertyDisplay = PropertyDisplays.NONE;
+        this.deselectAllButtons();
         for (var i = 0; i < this.propertyButtons.length; i++) {
             var button = this.propertyButtons[i];
             var position = cc.p(200, button.getPosition().y);
