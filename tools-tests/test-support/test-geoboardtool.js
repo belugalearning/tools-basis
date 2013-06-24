@@ -33,7 +33,7 @@ var ToolLayer = cc.Layer.extend({
 
         var title = new cc.Sprite();
         title.initWithFile(s_geoboard_title);
-        title.setPosition(512, 700);
+        title.setPosition(485, 700);
         this.addChild(title);
 
         this.geoboard = new SquareGeoboard();
@@ -72,7 +72,7 @@ var ToolLayer = cc.Layer.extend({
         var numberBox = new cc.Sprite();
         numberBox.initWithFile(s_number_box);
         numberBox.setPosition(675, 390);
-        this.numberOfPinsLabel = cc.LabelTTF.create(this.circleNumberOfPins, "Arial", 24);
+        this.numberOfPinsLabel = cc.LabelTTF.create(this.circleNumberOfPins, "mikadoBold", 24);
         var boxSize = numberBox.getContentSize();
         this.numberOfPinsLabel.setPosition(boxSize.width/2, boxSize.height/2);
         this.numberOfPinsLabel.setColor(cc.c3b(0,0,0));
@@ -95,13 +95,14 @@ var ToolLayer = cc.Layer.extend({
         var addBandButton = new cc.Sprite();
         addBandButton.initWithFile(s_add_band_button);
         addBandButton.setPosition(addBandButtonBase.getAnchorPointInPoints());
+        addBandButtonBase.setPosition(0, -125);
         addBandButtonBase.addChild(addBandButton);
 
         var removeBandButtonBase = new cc.MenuItemImage.create(s_remove_band_button_base, s_remove_band_button_base, 'removeBandTapped', this);
         var removeBandButton = new cc.Sprite();
         removeBandButton.initWithFile(s_remove_band_button);
         removeBandButton.setPosition(removeBandButtonBase.getAnchorPointInPoints());
-        removeBandButtonBase.setPosition(0, -90);
+        removeBandButtonBase.setPosition(0, 10);
         removeBandButtonBase.addChild(removeBandButton);
 
         var addRemoveBandMenu = new cc.Menu.create(addBandButtonBase, removeBandButtonBase);
@@ -139,7 +140,7 @@ var ToolLayer = cc.Layer.extend({
     setupPropertyButton:function(selector, label) {
         var centreOfIndicator = cc.p(62, 35);
         var button = cc.MenuItemImage.create(s_property_background, s_property_background, selector, this);
-        button.label = new cc.LabelTTF.create(label, "Arial", 14);
+        button.label = new cc.LabelTTF.create(label, 'mikadoBold');
         button.label.setPosition(centreOfIndicator);
         button.label.setColor(0,0,0);
         button.addChild(button.label);
@@ -511,10 +512,12 @@ var ToolLayer = cc.Layer.extend({
     },
 
     movePropertyButtonsOffscreen:function() {
+        this.propertyDisplay = PropertyDisplays.NONE;
         for (var i = 0; i < this.propertyButtons.length; i++) {
             var button = this.propertyButtons[i];
             var position = cc.p(200, button.getPosition().y);
             var action = cc.MoveTo.create(0.3, position);
+            button.highlight = false;
             button.runAction(action);
         };
     },
@@ -1469,12 +1472,12 @@ function Band() {
     }
 
     this.setDrawArea = function() {
+        this.areaNode.clear();
         if (this.pins.length > 2) {
             var vertices = [];
             for (var i = 0; i < this.pins.length; i++) {
                 vertices.push(this.pins[i].sprite.getPosition());
             };
-            this.areaNode.clear();
             this.areaNode.drawPoly(vertices, cc.c4f(0, 0, 0, 0.35), 0, cc.c4f(0,0,0,0));
         };
     };
@@ -1568,7 +1571,7 @@ function Band() {
         this.sideLengthsLabels = [];
         for (var i = 0; i < this.bandParts.length; i++) {
             var bandPart = this.bandParts[i];
-            var label = cc.LabelTTF.create("", "Arial", 20);
+            var label = cc.LabelTTF.create("", "mikadoBold", 20);
             //label.setColor(cc.c4f(255,255,255,1));
             var labelBackground = new cc.Sprite();
             labelBackground.initWithFile(s_side_length_background);
@@ -2066,7 +2069,7 @@ var Angle = cc.DrawNode.extend({
         this.background = new cc.Sprite()
         this.background.initWithFile(s_angle_background);
         this.addChild(this.background);
-        this.label = cc.LabelTTF.create("", "Arial", 15);
+        this.label = cc.LabelTTF.create("", "mikadoBold", 15);
         this.label.setColor(cc.c4f(255,255,255,1));
         this.background.setPosition(0, 35);
         this.label.setPosition(this.background.getContentSize().width/2, this.background.getContentSize().height/2);
