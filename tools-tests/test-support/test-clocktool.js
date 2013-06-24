@@ -18,11 +18,16 @@ var ToolLayer = cc.Layer.extend({
 
         this.clock1 = new AnalogueClock();
         this.clock1.init();
-        this.clock1.setPosition(size.width/2, size.height/2);
+        this.clock1.setPosition(size.width * 1/4, size.height/2);
         this.addChild(this.clock1);
 
+        this.clock2 = new DigitalClock();
+        this.clock2.init();
+        this.clock2.setPosition(size.width * 3/4, size.height/2);
+        this.addChild(this.clock2);
+
         var time = new Time();
-        time.setTime(0,0);
+        time.setTime(3,15);
         this.clock1.setTime(time);
         this.clock1.displayTime(time);
 
@@ -128,10 +133,10 @@ var AnalogueClock = Clock.extend({
             if (type === HandTypes.HOUR) {
                 var timeInMinutes = Math.floor(angle * 2);
                 timeInMinutes += this.handPassesVertical(this.previousAngle, angle) * 12 * 60;
-                this.time.setTime(timeInMinutes/60, timeInMinutes % 60);
+                this.time.setTime(Math.floor(timeInMinutes/60), timeInMinutes % 60);
             } else if (type === HandTypes.MINUTE) {
                 this.time.addHours(this.handPassesVertical(this.previousAngle, angle));
-                var minutes = Math.round(angle/6);
+                var minutes = Math.floor(angle/6);
                 this.time.setTime(this.time.hours, minutes);
             };
             this.displayTime();
@@ -141,9 +146,9 @@ var AnalogueClock = Clock.extend({
 
     handPassesVertical:function(previousAngle, thisAngle) {
         var change = 0;
-        if (previousAngle <= 90 && thisAngle >= 270) {
+        if (previousAngle < 90 && thisAngle > 270) {
             change = -1;
-        } else if (previousAngle >= 270 && thisAngle <= 90) {
+        } else if (previousAngle > 270 && thisAngle < 90) {
             change = 1;
         };
         return change;
@@ -220,6 +225,41 @@ var HandHandle = cc.Sprite.extend({
     },
 });
 
+var DigitalClock = Clock.extend({
+    digits:null,
+
+    init:function() {
+        this._super();
+        this.initWithFile(s_digital_background);
+        this.setupDigits();
+    },
+
+    setupDigits:function() {
+        this.digits = [];
+        for (var i = 0; i < 4; i++) {
+            var digit = new cc.Sprite();
+            digit.initWithFile(s_digits[0]);
+            this.digits.push(digit);
+            this.addChild(digit);
+        };
+
+        this.digits[0].setPosition(80, 80);
+        this.digits[1].setPosition(170, 80);
+        this.digits[2].setPosition(270, 80);
+        this.digits[3].setPosition(360, 80);
+    },
+
+    displayTime:function(timeToSet) {
+        var hours = this.time.hours;
+        var minutes = this.time.minutes;
+        
+        var firstDigit = Math.floor(hours/10);
+        if (firstDigit === 0) {
+            this.setBlankDigit(1);
+        };
+    },
+});
+
 var Time = function() {
     this.hours = null;
     this.minutes = null;
@@ -231,7 +271,7 @@ var Time = function() {
             hoursToSet += (minutesToSet + 1)/this.minutesInHour - 1;
             minutesToSet += this.minutesInHour;
         } else {
-            hoursToSet += minutesToSet/this.minutesInHour;
+            hoursToSet += Math.floor(minutesToSet/this.minutesInHour);
             minutesToSet = minutesToSet % this.minutesInHour;
         };
 
@@ -267,7 +307,7 @@ cc.Sprite.prototype.touched = function(touchLocation) {
 };
 
 var numberInCorrectRange = function(number, lowerBound, upperBound) {
-    var result;
+    var result = number;
     var range = upperBound - lowerBound;
     if (number < lowerBound) {
         result = number + Math.floor((upperBound - number)/range) * range;

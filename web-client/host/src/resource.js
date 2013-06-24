@@ -63,6 +63,12 @@ var s_hour_hand = s_clockImagePath + "Hour_hand.png";
 var s_clockface_pin = s_clockImagePath + "Clock_Centre_Pin.png";
 var s_minute_handle = s_clockImagePath + "Minute_hand_handle.png";
 var s_hour_handle = s_clockImagePath + "Hour_hand_handle.png";
+var s_digital_background = s_clockImagePath + "digital_bg.png";
+
+var s_digits = [];
+for (var i = 0; i <= 9; i++) {
+    s_digits[i] = s_clockImagePath + "digits/" + i + ".png";
+};
 
 var g_ressources = [
     //image
@@ -135,3 +141,7 @@ var g_ressources = [
 
     //effect
 ];
+
+for (var i = 0; i < s_digits.length; i++) {
+    g_ressources.push({src:s_digits[i]});
+};

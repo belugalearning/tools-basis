@@ -42,8 +42,8 @@
 
 //             '../../tools-tests/test-support/test-emptytool.js',
 //            '../../tools-tests/test-support/test-disttool.js',
-           '../../tools-tests/test-support/test-geoboardtool.js',
-            // '../../tools-tests/test-support/test-clocktool.js',
+           // '../../tools-tests/test-support/test-geoboardtool.js',
+            '../../tools-tests/test-support/test-clocktool.js',
             '../../host-helpers/shared-createtoolscene.js'
         ]
     };
