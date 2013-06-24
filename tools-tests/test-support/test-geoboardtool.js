@@ -1115,6 +1115,7 @@ function CircleGeoboard(numberOfPins, includeCentre) {
             band.setupBandParts();
             band.setupAngles();
             band.setupSideLengths();
+            band.setDrawArea();
         };
     }
 
