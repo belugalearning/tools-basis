@@ -23,6 +23,8 @@ var ToolLayer = cc.Layer.extend({
 
         var size = cc.Director.getInstance().getWinSize();
 
+        cc.Director.getInstance().setDisplayStats(false);
+
         clc=cc.Layer.create();
         var background = new cc.Sprite();
         background.initWithFile(s_deep_water_background);
@@ -140,9 +142,9 @@ var ToolLayer = cc.Layer.extend({
     setupPropertyButton:function(selector, label) {
         var centreOfIndicator = cc.p(62, 35);
         var button = cc.MenuItemImage.create(s_property_background, s_property_background, selector, this);
-        button.label = new cc.LabelTTF.create(label, 'mikadoBold');
+        button.label = new cc.LabelTTF.create(label, 'mikadoBold', 17, cc.SizeMake(126, 59), cc.TEXT_ALIGNMENT_CENTER, cc.VERTICAL_TEXT_ALIGNMENT_CENTER);
         button.label.setPosition(centreOfIndicator);
-        button.label.setColor(0,0,0);
+        button.label.setColor(cc.c3b(255,255,255));
         button.addChild(button.label);
         button.setPosition(200, this.buttonYPosition);
         button.highlight = false;
@@ -2165,9 +2167,11 @@ cc.MenuItemImage.prototype.propertyHighlight = function(highlight) {
         var position;
         if (highlight) {
             position = cc.p(-15, this.getPosition().y);
+            this.label.setColor(cc.c3b(0,0,0));
             this.highlight = true;
         } else {
             position = cc.p(0, this.getPosition().y);
+            this.label.setColor(cc.c3b(255,255,255));
             this.highlight = false;
         };
         var moveAction = cc.MoveTo.create(0.3, position);
