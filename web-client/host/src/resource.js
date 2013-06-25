@@ -65,10 +65,17 @@ var s_minute_handle = s_clockImagePath + "Minute_hand_handle.png";
 var s_hour_handle = s_clockImagePath + "Hour_hand_handle.png";
 var s_digital_background = s_clockImagePath + "digital_bg.png";
 
+var s_clockDigitPath = s_clockImagePath + "digits/";
 var s_digits = [];
 for (var i = 0; i <= 9; i++) {
-    s_digits[i] = s_clockImagePath + "digits/" + i + ".png";
+    s_digits[i] = s_clockDigitPath + i + ".png";
 };
+var s_colon = s_clockDigitPath + "colon.png";
+var s_am_indicator = s_clockImagePath + "AM.png";
+var s_pm_indicator = s_clockImagePath + "PM.png";
+var s_arrow_up = s_clockImagePath + "Arrow_Up.png";
+var s_arrow_down = s_clockImagePath + "Arrow_Down.png";
+
 
 var g_ressources = [
     //image
@@ -130,6 +137,11 @@ var g_ressources = [
     {src:s_clockface_pin},
     {src:s_hour_handle},
     {src:s_minute_handle},
+    {src:s_colon},
+    {src:s_am_indicator},
+    {src:s_pm_indicator},
+    {src:s_arrow_up},
+    {src:s_arrow_down},
 
     //plist
 

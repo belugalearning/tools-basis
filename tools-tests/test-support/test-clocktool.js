@@ -4,6 +4,7 @@ var ToolLayer = cc.Layer.extend({
     clc:null,
     lastcount:null,
     label:null,
+    clocks:null,
 
     init:function () {
 
@@ -13,23 +14,35 @@ var ToolLayer = cc.Layer.extend({
  
         var size = cc.Director.getInstance().getWinSize();
 
-        clc=cc.LayerColor.create(cc.c4b(70,70,70,255));
+        clc=cc.Layer.create();
+        var background = new cc.Sprite();
+        background.initWithFile(s_deep_water_background);
+        background.setPosition(size.width/2, size.height/2);
+        clc.addChild(background);
         this.addChild(clc,0);
 
-        this.clock1 = new AnalogueClock();
-        this.clock1.init();
-        this.clock1.setPosition(size.width * 1/4, size.height/2);
-        this.addChild(this.clock1);
+        this.clocks = [];
 
-        this.clock2 = new DigitalClock();
-        this.clock2.init();
-        this.clock2.setPosition(size.width * 3/4, size.height/2);
-        this.addChild(this.clock2);
+        var clock1 = new AnalogueClock();
+        clock1.init();
+        clock1.setPosition(size.width * 1/4, size.height/2);
+        this.addChild(clock1);
+        this.clocks.push(clock1);
+
+        var clock2 = new DigitalClock();
+        clock2.init();
+        clock2.setPosition(size.width * 3/4, size.height/2);
+        this.addChild(clock2);
+        this.clocks.push(clock2);
+
+        clock1.linkedClock = clock2;
+        clock2.linkedClock = clock1;
 
         var time = new Time();
-        time.setTime(3,15);
-        this.clock1.setTime(time);
-        this.clock1.displayTime(time);
+        time.setTime(23, 59);
+        clock1.setupTime(time);
+        clock2.setupTime(time);
+        clock1.displayTimeOnLinkedClocks();
 
         return this;
     },
@@ -37,19 +50,28 @@ var ToolLayer = cc.Layer.extend({
     onTouchesBegan:function(touches, event) {
         var touch = touches[0];
         var touchLocation = this.convertTouchToNodeSpace(touch);
-        this.clock1.processTouch(touchLocation);
+        for (var i = 0; i < this.clocks.length; i++) {
+            var clock = this.clocks[i];
+            clock.processTouch(touchLocation);
+        };
     },
 
     onTouchesMoved:function(touches, event) {
         var touch = touches[0];
         var touchLocation = this.convertTouchToNodeSpace(touch);
-        this.clock1.processMove(touchLocation);
+        for (var i = 0; i < this.clocks.length; i++) {
+            var clock = this.clocks[i];
+            clock.processMove(touchLocation);
+        };
     },
 
     onTouchesEnded:function(touches, event) {
         var touch = touches[0];
         var touchLocation = this.convertTouchToNodeSpace(touch);
-        this.clock1.processEnd(touchLocation);
+        for (var i = 0; i < this.clocks.length; i++) {
+            var clock = this.clocks[i];
+            clock.processEnd(touchLocation);
+        };
     },
 });
 
@@ -57,9 +79,29 @@ var Clock = cc.Sprite.extend({
     linkedClock:null,
     time:null,
 
-    setTime:function(timeToSet) {
+    setupTime:function(timeToSet) {
         this.time = timeToSet;
-    }
+    },
+
+    setTime:function(hours, minutes) {
+        this.time.setTime(hours, minutes);
+        this.displayTimeOnLinkedClocks();
+    },
+
+    displayTimeOnLinkedClocks:function() {
+        this.displayTime();
+        if (this.linkedClock !== null) {
+            this.linkedClock.displayTime();
+        };
+    },
+
+    addHours:function(hoursToAdd) {
+        this.setTime(this.time.hours + hoursToAdd, this.time.minutes);
+    },
+
+    addMinutes:function(minutesToAdd) {
+        this.setTime(this.time.hours, this.time.minutes + minutesToAdd);
+    },
 });
 
 var AnalogueClock = Clock.extend({
@@ -131,13 +173,17 @@ var AnalogueClock = Clock.extend({
 
             var type = this.movingHand.type;
             if (type === HandTypes.HOUR) {
+                var pmMultiplier = this.time.hours >= 12 ? 1 : 0;
                 var timeInMinutes = Math.floor(angle * 2);
-                timeInMinutes += this.handPassesVertical(this.previousAngle, angle) * 12 * 60;
-                this.time.setTime(Math.floor(timeInMinutes/60), timeInMinutes % 60);
+                if (this.handPassesVertical(this.previousAngle, angle)) {
+                    pmMultiplier = 1 - pmMultiplier;
+                };
+                timeInMinutes += pmMultiplier * 12 * 60;
+                this.setTime(Math.floor(timeInMinutes/60), timeInMinutes % 60);
             } else if (type === HandTypes.MINUTE) {
-                this.time.addHours(this.handPassesVertical(this.previousAngle, angle));
+                this.addHours(this.handPassesVertical(this.previousAngle, angle));
                 var minutes = Math.floor(angle/6);
-                this.time.setTime(this.time.hours, minutes);
+                this.setTime(this.time.hours, minutes);
             };
             this.displayTime();
             this.previousAngle = angle;
@@ -227,11 +273,18 @@ var HandHandle = cc.Sprite.extend({
 
 var DigitalClock = Clock.extend({
     digits:null,
+    hour24:null,
+    buttons:null,
+    holdTimer:null,
 
     init:function() {
         this._super();
         this.initWithFile(s_digital_background);
         this.setupDigits();
+        this.setupColon();
+        this.setupPmIndicator();
+        this.setupButtons();
+        this.hour24 = true;
     },
 
     setupDigits:function() {
@@ -249,15 +302,126 @@ var DigitalClock = Clock.extend({
         this.digits[3].setPosition(360, 80);
     },
 
-    displayTime:function(timeToSet) {
-        var hours = this.time.hours;
-        var minutes = this.time.minutes;
+    setupColon:function() {
+        var colon = new cc.Sprite();
+        colon.initWithFile(s_colon);
+        colon.setPosition(220, 80);
+        this.addChild(colon);
+        var blinkOnce = cc.Blink.create(2, 1);
+        var continuousBlink = cc.RepeatForever.create(blinkOnce);
+        colon.runAction(continuousBlink);
+    },
+
+    setupPmIndicator:function() {
+        this.pmIndicator = new cc.Sprite();
+        this.pmIndicator.setPosition(cc.p(396, 120));
+        this.pmIndicator.setScale(0.5);
+        this.addChild(this.pmIndicator);
+    },
+
+    setupButtons:function() {
+        this.buttons = [];
+        this.buttonNode = new cc.Node();
+        this.setupButton(125, 190, true, 1);
+        this.setupButton(125, -40, true, -1);
+        this.setupButton(270, 190, false, 10);
+        this.setupButton(360, 190, false, 1);
+        this.setupButton(270, -40, false, -10);
+        this.setupButton(360, -40, false, -1);
+        this.addChild(this.buttonNode);
+    },
+
+    setupButton:function(positionX, positionY, changeHour, changeBy) {
+        var button = new cc.Sprite();
+        var filename = changeBy > 0 ? s_arrow_up : s_arrow_down;
+        button.initWithFile(filename);
+        button.setPosition(positionX, positionY);
+        button.changeHour = changeHour;
+        button.changeBy = changeBy;
+        this.buttonNode.addChild(button);
+        this.buttons.push(button);
+    },
+
+    displayTime:function() {
+        var hoursToDisplay = this.time.hours;
+        var minutesToDisplay = this.time.minutes;
+
+        if (!this.hour24) {
+            if (hoursToDisplay > 12) {
+                hoursToDisplay -= 12;
+            } else if (hoursToDisplay === 0) {
+                hoursToDisplay = 12;
+            };
+        };
         
-        var firstDigit = Math.floor(hours/10);
+        var firstDigit = Math.floor(hoursToDisplay/10);
         if (firstDigit === 0) {
             this.setBlankDigit(1);
+        } else {
+            this.setDigit(1, firstDigit);
+        };
+        var secondDigit = hoursToDisplay % 10;
+        this.setDigit(2, secondDigit);
+        var thirdDigit = Math.floor(minutesToDisplay/10);
+        this.setDigit(3, thirdDigit);
+        var fourthDigit = minutesToDisplay % 10;
+        this.setDigit(4, fourthDigit);
+
+        if (this.hour24) {
+            this.pmIndicator.setVisible(false);
+        } else {
+            this.pmIndicator.setVisible(true);
+            if (this.time.hours >= 12) {
+                this.pmIndicator.setTextureWithFilename(s_pm_indicator);
+            } else {
+                this.pmIndicator.setTextureWithFilename(s_am_indicator);
+            };
         };
     },
+
+    setDigit:function(position, digit) {
+        var digitSprite = this.digits[position - 1];
+        digitSprite.setVisible(true);
+        digitSprite.setTextureWithFilename(s_digits[digit]);
+    },
+
+    setBlankDigit:function(position) {
+        var digit = this.digits[position - 1];
+        digit.setVisible(false);
+    },
+
+    processTouch:function(touchLocation) {
+        for (var i = 0; i < this.buttons.length; i++) {
+            var button = this.buttons[i];
+            if (button.touched(touchLocation)) {
+                this.processButtonTouch(button);
+                this.displayTime();
+                //this.holdTimer = setTimeout(repeatButtonTouch, 1000);
+                break;
+            };
+        };
+    },
+
+    processButtonTouch:function(button) {
+        if (button.changeHour) {
+            this.addHours(button.changeBy);
+        } else {
+            this.addMinutes(button.changeBy);
+        };
+    },
+
+    processMove:function(touchLocation) {
+
+    },
+
+    processEnd:function(touchLocation) {
+
+    },
+});
+
+var DigitalClockButton = cc.Sprite.extend({
+    changeHour:null,
+    valueToChange:null,
 });
 
 var Time = function() {
@@ -268,29 +432,21 @@ var Time = function() {
 
     this.setTime = function(hoursToSet, minutesToSet) {
         if (minutesToSet < 0) {
-            hoursToSet += (minutesToSet + 1)/this.minutesInHour - 1;
+            hoursToSet += Math.floor((minutesToSet + 1)/this.minutesInHour);
             minutesToSet += this.minutesInHour;
         } else {
             hoursToSet += Math.floor(minutesToSet/this.minutesInHour);
             minutesToSet = minutesToSet % this.minutesInHour;
         };
 
+        hoursToSet = hoursToSet % this.hoursInDay;
         if (hoursToSet < 0) {
             hoursToSet += this.hoursInDay;
-            hoursToSet = hoursToSet % this.hoursInDay;
         };
 
         this.hours = hoursToSet;
         this.minutes = minutesToSet;
     };
-
-    this.addHours = function(hoursToAdd) {
-        this.setTime(this.hours + hoursToAdd, this.minutes);
-    };
-
-    this.addMinutes = function(minutesToAdd) {
-        this.setTime(this.hours, this.minutes + minutesToAdd);
-    }
 };
 
 var HandTypes = {
@@ -315,4 +471,9 @@ var numberInCorrectRange = function(number, lowerBound, upperBound) {
         result = number - Math.floor((number - lowerBound)/range) * range;
     };
     return result;
-}
+};
+
+cc.Sprite.prototype.setTextureWithFilename = function(filename) {
+    var texture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(filename));
+    this.setTexture(texture);
+};
