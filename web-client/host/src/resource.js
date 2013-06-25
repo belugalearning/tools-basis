@@ -49,7 +49,7 @@ var s_empty_select_band_button = s_geoboardImagePath + "colour_box_empty.png";
 var s_band_selected = s_geoboardImagePath + "colour_selected.png";
 var s_single_band_part = s_geoboardImagePath + "Band_Circle.png";
 
-var s_moving_pin = s_geoboardImagePath + "Hand.png";
+var s_moving_pin = s_geoboardImagePath + "hand_up.png";
 var s_pin_no_shadow = s_geoboardImagePath + "Pin_white_noShadow.png";
 var s_number_box = s_geoboardImagePath + "Number_box.png";
 
