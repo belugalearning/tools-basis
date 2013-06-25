@@ -1866,9 +1866,33 @@ function Band() {
                     isEarPin = false;
                 };
             };
+            var halfwayX = (previousPin.sprite.getPosition().x + nextPin.sprite.getPosition().x)/2;
+            var halfwayY = (previousPin.sprite.getPosition().y + nextPin.sprite.getPosition().y)/2;
+            if (!this.pointInsideBand(cc.p(halfwayX, halfwayY))) {
+                isEarPin = false;
+            };
         };
         return isEarPin;
     }
+
+    this.pointInsideBand = function(point) {
+        var dummyPinStart = new Pin();
+        dummyPinStart.sprite.setPosition(point);
+        var dummyPinEnd = new Pin();
+        dummyPinEnd.sprite.setPosition(point.x, point.y + 1000);
+        var bandPartUp = new BandPart();
+        bandPartUp.fromPin = dummyPinStart;
+        bandPartUp.toPin = dummyPinEnd;
+        var numberOfCrossings = 0;
+        for (var i = 0; i < this.bandParts.length; i++) {
+            var bandPart = this.bandParts[i];
+            if (bandPart.crosses(bandPartUp)) {
+                numberOfCrossings += 1;
+            };
+        };
+        var inside = (numberOfCrossings % 2) === 1;
+        return inside;
+    };
 
     this.areaOfEar = function(index) {
         var fromPart = this.bandParts.indexWraparound(index - 1);
