@@ -33,7 +33,7 @@ document.ccConfig = {
     appFiles:[]
 };
 
-require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, resources, extensions, geoboard) {
+require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, resources, extensions, tool) {
     'use strict';
 
     domReady(function() {
@@ -88,6 +88,6 @@ require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], func
             }
         });
 
-        var myApp = new Cocos2dApp(geoboard.ToolLayer.scene);
+        var myApp = new Cocos2dApp(tool.ToolLayer.scene);
     });
 });
