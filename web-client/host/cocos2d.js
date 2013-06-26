@@ -42,7 +42,21 @@
 
 //             '../../tools-tests/test-support/test-emptytool.js',
 //            '../../tools-tests/test-support/test-disttool.js',
-            '../../tools-tests/test-support/test-geoboardtool.js',
+            // '../../tools-tests/test-support/test-geoboardtool.js',
+
+            '../../tools/common/extensions.js',
+
+
+            '../../tools/geoboard/angle.js',
+            '../../tools/geoboard/band-part.js',
+            '../../tools/geoboard/band.js',
+            '../../tools/geoboard/constants.js',
+            '../../tools/geoboard/geoboard.js',
+            '../../tools/geoboard/pin.js',
+            '../../tools/geoboard/utils.js',
+            '../../tools/geoboard/main.js',
+
+
             '../../host-helpers/shared-createtoolscene.js'
         ]
     };
