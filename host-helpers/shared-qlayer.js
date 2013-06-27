@@ -1,51 +1,54 @@
+define(['cocos2d'], function (cc) {
+    var QLayer = cc.Layer.extend({
+        titleLabel:null,
+        clc:null,
+        lastcount:null,
+        label:null,
 
-var QLayer = cc.Layer.extend({
-    titleLabel:null,
-    clc:null,
-    lastcount:null,
-    label:null,
+        init:function () {
 
-    init:function () {
+            this._super();
 
-        this._super();
- 
-        var size = cc.Director.getInstance().getWinSize();
+            var size = cc.Director.getInstance().getWinSize();
 
-        this.titleLabel = cc.LabelTTF.create("Empty Tool!", "Helvetica", 38);
-        this.titleLabel.setPosition(cc.p(size.width / 2, size.height - 40));
-        /*
-         * TEMP - Don't show question title
-        this.addChild(this.titleLabel, 5);
-        //*/
+            this.titleLabel = cc.LabelTTF.create("Empty Tool!", "Helvetica", 38);
+            this.titleLabel.setPosition(cc.p(size.width / 2, size.height - 40));
+            /*
+             * TEMP - Don't show question title
+            this.addChild(this.titleLabel, 5);
+            //*/
 
-        this.setupTool();
+            this.setupTool();
 
-        return this;
-    },
+            return this;
+        },
 
-    setupTool:function(dt){
+        setupTool:function(dt){
 
-    },
+        },
 
-    update:function (dt) {        
-        if(emapData && emapData.question!=this.titleLabel.string)
-        {
-            this.titleLabel.setString(emapData.question);
-        }
-    },
+        update:function (dt) {        
+            if(emapData && emapData.question!=this.titleLabel.string)
+            {
+                this.titleLabel.setString(emapData.question);
+            }
+        },
 
-    onEnter:function () {
-        this._super();
-    },
+        onEnter:function () {
+            this._super();
+        },
 
-    onCleanup: function() {
-        this.unscheduleUpdate();
-    },
+        onCleanup: function() {
+            this.unscheduleUpdate();
+        },
 
-    onExit:function () {
-        this._super();
-    },
+        onExit:function () {
+            this._super();
+        },
 
+    });
+
+    return QLayer;
 });
 
 

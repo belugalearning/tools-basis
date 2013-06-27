@@ -54,14 +54,20 @@
         //load data & expr mappings
         [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"shared-resources/exprmap-defaults.js")];
         
-        //load resources
-        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"shared-resources/resource.js")];
-        
         //load a tool
 //		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-emptytool.js")];
-		// [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-disttool.js")];
-		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-geoboardtool.js")];
-  		// [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-clocktool.js")];
+//		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools-tests/test-support/test-disttool.js")];]
+        
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/common/extensions.js")];        
+        
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/angle.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/band-part.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/band.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/constants.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/geoboard.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/pin.js")];
+        [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/utils.js")];
+  		[[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"tools/geoboard/main.js")];
 
         //tool scene creation
         [[JSBCore sharedInstance] runScript:BUNDLE_FULL_PATH(@"host-helpers/shared-createtoolscene.js")];
