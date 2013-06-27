@@ -75,8 +75,26 @@ var s_am_indicator = s_clockImagePath + "AM.png";
 var s_pm_indicator = s_clockImagePath + "PM.png";
 var s_arrow_up = s_clockImagePath + "Arrow_Up.png";
 var s_arrow_down = s_clockImagePath + "Arrow_Down.png";
-var s_options_panel = s_clockImagePath + "Options_Panel.png";
-var s_options_open_button = s_clockImagePath + "Options_Open_button.png";
+
+var s_clockSettingsPath = s_clockImagePath + "settings/";
+var s_settings_panel = s_clockSettingsPath + "Free_Form_BG.png";
+var s_settings_button_base = s_clockSettingsPath + "Settings_button_base.png";
+var s_settings_button = s_clockSettingsPath + "Settings_button.png"
+var s_settings_close_button = s_clockSettingsPath + "Free_Form_CloseButton.png";
+var s_analogue_button_selected = s_clockSettingsPath + "Analog_Button_On.png";
+var s_analogue_button_unselected = s_clockSettingsPath + "Analog_Button_Off.png";
+var s_digital_button_selected = s_clockSettingsPath + "Digital_Button_On.png";
+var s_digital_button_unselected = s_clockSettingsPath + "Digital_Button_Off.png"
+var s_both_button_selected = s_clockSettingsPath + "Analog&Digital_Button_On.png";
+var s_both_button_unselected = s_clockSettingsPath + "Analog&Digital_Button_Off.png";
+var s_words_button_unselected = s_clockSettingsPath + "Words_Off.png";
+var s_words_button_selected = s_clockSettingsPath + "Words_On.png";
+var s_numbers_button_unselected = s_clockSettingsPath + "Numbers_Off.png";
+var s_numbers_button_selected = s_clockSettingsPath + "Numbers_On.png";
+var s_sentence_button_unselected = s_clockSettingsPath + "Sentence_Off.png";
+var s_sentence_button_selected = s_clockSettingsPath + "Sentence_On.png";
+
+/*var s_options_open_button = s_clockImagePath + "Options_Open_button.png";
 var s_options_close_button = s_clockImagePath + "Options_Close_button.png";
 var s_options_hour_button_unselected = s_clockImagePath + "Options_Hour_button_grey.png";
 var s_options_hour_button_selected = s_clockImagePath + "Options_Hour_button_Orange.png";
@@ -88,7 +106,7 @@ var s_options_words_button_unselected = s_clockImagePath + "Options_Words_button
 var s_options_words_button_selected = s_clockImagePath + "Options_Words_button_Orange.png";
 var s_options_sentence_button_unselected = s_clockImagePath + "Options_Sentence_button_grey.png";
 var s_options_sentence_button_selected = s_clockImagePath + "Options_Sentence_button_Orange.png";
-
+*/
 var s_clockCardsPath = s_clockImagePath + "clock_cards/";
 var s_clock_cards = [];
 for (var i = 0; i < 12; i++) {
@@ -161,8 +179,24 @@ var g_ressources = [
     {src:s_pm_indicator},
     {src:s_arrow_up},
     {src:s_arrow_down},
-    {src:s_options_panel},
-    {src:s_options_open_button},
+    {src:s_settings_panel},
+    {src:s_settings_button},
+    {src:s_settings_button_base},
+    {src:s_settings_close_button},
+    {src:s_analogue_button_selected},
+    {src:s_analogue_button_unselected},
+    {src:s_digital_button_selected},
+    {src:s_digital_button_unselected},
+    {src:s_both_button_selected},
+    {src:s_both_button_unselected},
+    {src:s_words_button_selected},
+    {src:s_words_button_unselected},
+    {src:s_numbers_button_selected},
+    {src:s_numbers_button_unselected},
+    {src:s_sentence_button_selected},
+    {src:s_sentence_button_unselected},
+
+/*    {src:s_options_open_button},
     {src:s_options_close_button},
     {src:s_options_hour_button_unselected},
     {src:s_options_hour_button_selected},
@@ -174,7 +208,7 @@ var g_ressources = [
     {src:s_options_words_button_selected},
     {src:s_options_sentence_button_unselected},
     {src:s_options_sentence_button_selected},
-
+*/
     //plist
 
     //fnt

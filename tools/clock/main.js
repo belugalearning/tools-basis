@@ -61,7 +61,7 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             this.clocks.push(clock3);
             clock3.setVisible(false);
 
-            this.setupOptionsPanel();
+            this.setupSettingsPanel();
 
             var time = new Time();
             time.setTime(23,59);
@@ -114,55 +114,73 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             };
         },
 
-        setupOptionsPanel:function() {
-            var optionsPanel = new cc.Sprite();
-            this.optionsPanel = optionsPanel;
-            optionsPanel.onScreen = false;
-            optionsPanel.initWithFile(s_options_panel);
-            optionsPanel.setPosition(this.size.width + 30, this.size.height/2);
-            this.addChild(optionsPanel);
-            var optionsOpenButton = new cc.MenuItemImage.create(s_options_open_button, s_options_open_button);
-            var optionsCloseButton = new cc.MenuItemImage.create(s_options_close_button, s_options_close_button);
-            var openClosePanel = new cc.MenuItemToggle.create(optionsOpenButton, optionsCloseButton, this.movePanel, this);
-            openClosePanel.setPosition(-50, 2);
-            this.optionsMenu = new cc.Menu.create(openClosePanel);
-            this.optionsMenu.setPosition(optionsPanel.getAnchorPointInPoints());
-            optionsPanel.addChild(this.optionsMenu);
-            this.optionsButtonYPosition = 110;
-            this.setupOptionsPanelButton(s_options_hour_button_unselected, s_options_hour_button_selected, this.hourButtonTapped);
-            this.setupOptionsPanelButton(s_options_minute_button_unselected, s_options_minute_button_selected, this.minuteButtonTapped);
-            this.setupOptionsPanelButton(s_options_digital_button_unselected, s_options_digital_button_selected, this.digitalButtonTapped);
-            this.setupOptionsPanelButton(s_options_words_button_unselected, s_options_words_button_selected, this.wordsButtonTapped);
-            this.setupOptionsPanelButton(s_options_sentence_button_unselected, s_options_sentence_button_selected, this.sentenceButtonTapped);
+        setupSettingsPanel:function() {
+            var settingsPanel = new cc.Sprite();
+            this.settingsPanel = settingsPanel;
+            settingsPanel.onScreen = false;
+            settingsPanel.initWithFile(s_settings_panel);
+            settingsPanel.setPosition(this.size.width/2, this.size.height * 3/2);
+            settingsPanel.setZOrder(1);
+            this.addChild(settingsPanel);
+            var settingsButtonBase = new cc.Sprite();
+            settingsButtonBase.initWithFile(s_settings_button_base);
+            settingsButtonBase.setPosition(settingsButtonBase.getContentSize().width/2, 650);
+            this.addChild(settingsButtonBase);
+            var settingsButton = new cc.MenuItemImage.create(s_settings_button, s_settings_button, this.moveSettingsOn, this);
+            settingsButton.setPosition(10, -2);
+            var settingsButtonMenu = new cc.Menu.create(settingsButton);
+            settingsButtonMenu.setPosition(settingsButtonBase.getAnchorPointInPoints());
+            settingsButtonBase.addChild(settingsButtonMenu);
+
+            var settingsCloseButton = new cc.MenuItemImage.create(s_settings_close_button, s_settings_close_button, this.moveSettingsOff, this);
+            settingsCloseButton.setPosition(440, 320);
+
+            var analogueButton = new cc.MenuItemImage.create(s_analogue_button_unselected, s_analogue_button_selected, this.selectAnalogue, this);
+            analogueButton.setPosition(-155, 50);
+
+            var digitalButton = new cc.MenuItemImage.create(s_digital_button_unselected, s_digital_button_selected, this.selectDigital, this);
+            digitalButton.setPosition(0, 50);
+
+            var bothSelected = new cc.MenuItemImage.create(s_both_button_unselected, s_both_button_selected, this.selectBoth, this);
+            bothSelected.setPosition(155, 50);
+
+            var wordsButtonUnselected = new cc.MenuItemImage.create(s_words_button_unselected, s_words_button_unselected);
+            var wordsButtonSelected = new cc.MenuItemImage.create(s_words_button_selected, s_words_button_selected);
+            var wordsButton = cc.MenuItemToggle.create(wordsButtonUnselected, wordsButtonSelected, this.wordsToggle, this);
+            wordsButton.setPosition(-200, -50);
+
+            var numbersButtonUnselected = new cc.MenuItemImage.create(s_numbers_button_unselected, s_numbers_button_unselected);
+            var numbersButtonSelected = new cc.MenuItemImage.create(s_numbers_button_selected, s_numbers_button_selected);
+            var numbersButton = new cc.MenuItemToggle.create(numbersButtonUnselected, numbersButtonSelected, this.numbersToggle, this);
+            numbersButton.setPosition(0, -50);
+
+            var sentenceButtonUnselected = new cc.MenuItemImage.create(s_sentence_button_unselected, s_sentence_button_unselected);
+            var sentenceButtonSelected = new cc.MenuItemImage.create(s_sentence_button_selected, s_sentence_button_selected);
+            var sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
+            sentenceButton.setPosition(200, -50);
+
+            var settingsMenu = new cc.Menu.create(settingsCloseButton, analogueButton, digitalButton, bothSelected, wordsButton, numbersButton, sentenceButton);
+            settingsPanel.addChild(settingsMenu);
         },
 
-        setupOptionsPanelButton:function(unselectedFilename, selectedFilename, selector) {
-            var unselectedButton = new cc.MenuItemImage.create(unselectedFilename, unselectedFilename);
-            var selectedButton = new cc.MenuItemImage.create(selectedFilename, selectedFilename);
-            var button = cc.MenuItemToggle.create(unselectedButton, selectedButton, selector, this);
-            button.setPosition(30, this.optionsButtonYPosition);
-            this.optionsButtonYPosition -= 50;
-            this.optionsMenu.addChild(button);
+        moveSettingsOn:function() {
+            var position = this.getAnchorPointInPoints();
+            var moveOn = cc.MoveTo.create(0.3, position);
+            this.settingsPanel.runAction(moveOn);
         },
 
-        movePanel:function() {
-            var position;
-            if (this.optionsPanel.onScreen) {
-                position = cc.p(this.size.width + 30, this.size.height/2);
-            } else {
-                position = cc.p(this.size.width - this.optionsPanel.getContentSize().width/2, this.size.height/2);
-            };
-            var moveAction = cc.MoveTo.create(0.3, position);
-            this.optionsPanel.runAction(moveAction);
-            this.optionsPanel.onScreen = !this.optionsPanel.onScreen;
+        moveSettingsOff:function() {
+            var position = cc.p(this.size.width/2, this.size.height * 3/2);
+            var moveOff = cc.MoveTo.create(0.3, position);
+            this.settingsPanel.runAction(moveOff);
         },
 
-        hourButtonTapped:function() {},
-        minuteButtonTapped:function() {},
-        digitalButtonTapped:function() {},
-        wordsButtonTapped:function() {},
+        selectAnalogue:function() {},
+        selectDigital:function() {},
+        selectBoth:function() {},
+        wordsToggle:function() {},
 
-        sentenceButtonTapped:function() {
+        sentenceToggle:function() {
             var wordClock = this.clocks[2];
             wordClock.setVisible(!wordClock.isVisible());
         },

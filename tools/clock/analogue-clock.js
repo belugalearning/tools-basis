@@ -42,6 +42,7 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             var clockfacePin = new cc.Sprite();
             clockfacePin.initWithFile(s_clockface_pin);
             clockfacePin.setPosition(clockCentre);
+            clockfacePin.setAnchorPoint(cc.p(0.5, 0.51));
             clockfacePin.setZOrder(2);
             this.addChild(clockfacePin);
         },
@@ -108,3 +109,14 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
 
 return AnalogueClock;
 })
+
+var numberInCorrectRange = function(number, lowerBound, upperBound) {
+    var result = number;
+    var range = upperBound - lowerBound;
+    if (number < lowerBound) {
+        result = number + Math.floor((upperBound - number)/range) * range;
+    } else if (number >= upperBound) {
+        result = number - Math.floor((number - lowerBound)/range) * range;
+    };
+    return result;
+};
