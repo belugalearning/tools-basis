@@ -89,10 +89,10 @@ var s_options_words_button_selected = s_clockImagePath + "Options_Words_button_O
 var s_options_sentence_button_unselected = s_clockImagePath + "Options_Sentence_button_grey.png";
 var s_options_sentence_button_selected = s_clockImagePath + "Options_Sentence_button_Orange.png";
 
-var s_clock_cards_path = s_clockImagePath + "clock_cards/";
+var s_clockCardsPath = s_clockImagePath + "clock_cards/";
 var s_clock_cards = [];
-for (var i = 1; i <= 12; i++) {
-    s_clock_cards[i] = s_clock_cards_path + "Clock_Card_" + i + ".png";
+for (var i = 0; i < 12; i++) {
+    s_clock_cards[i] = s_clockCardsPath + "Clock_Card_" + (i + 1) + ".png";
 };
 
 

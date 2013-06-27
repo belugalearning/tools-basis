@@ -50,6 +50,7 @@ define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
             clock3.setPosition(600, 50);
             this.addChild(clock3);
             this.clocks.push(clock3);
+            clock3.setVisible(false);
 
             this.setupOptionsPanel();
 
@@ -114,10 +115,10 @@ define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
             var optionsOpenButton = new cc.MenuItemImage.create(s_options_open_button, s_options_open_button);
             var optionsCloseButton = new cc.MenuItemImage.create(s_options_close_button, s_options_close_button);
             var openClosePanel = new cc.MenuItemToggle.create(optionsOpenButton, optionsCloseButton, this.movePanel, this);
-            openClosePanel.setPosition(-48, 2);
-            var optionsMenu = new cc.Menu.create(openClosePanel);
-            optionsMenu.setPosition(optionsPanel.getAnchorPointInPoints());
-            optionsPanel.addChild(optionsMenu);
+            openClosePanel.setPosition(-50, 2);
+            this.optionsMenu = new cc.Menu.create(openClosePanel);
+            this.optionsMenu.setPosition(optionsPanel.getAnchorPointInPoints());
+            optionsPanel.addChild(this.optionsMenu);
             this.optionsButtonYPosition = 110;
             this.setupOptionsPanelButton(s_options_hour_button_unselected, s_options_hour_button_selected, this.hourButtonTapped);
             this.setupOptionsPanelButton(s_options_minute_button_unselected, s_options_minute_button_selected, this.minuteButtonTapped);
@@ -151,7 +152,7 @@ define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
         minuteButtonTapped:function() {},
         digitalButtonTapped:function() {},
         wordsButtonTapped:function() {},
-        
+
         sentenceButtonTapped:function() {
             var wordClock = this.clocks[2];
             wordClock.setVisible(!wordClock.isVisible());
