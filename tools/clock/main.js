@@ -21,7 +21,7 @@ define(['cocos2d'], function(cocos2d) {
             this.size = cc.Director.getInstance().getWinSize();
             var size = this.size;
 
-            clc=cc.Layer.create();
+            var clc = cc.Layer.create();
             var background = new cc.Sprite();
             background.initWithFile(s_deep_water_background);
             background.setPosition(size.width/2, size.height/2);
