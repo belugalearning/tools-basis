@@ -2,7 +2,7 @@
 //     paths: {}
 // });
 
-define(['cocos2d'], function(cocos2d) {
+define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
     'use strict';
 
     var ToolLayer = cc.Layer.extend({
