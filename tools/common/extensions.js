@@ -58,4 +58,20 @@ define(['cocos2d'], function () {
         }
     };
 
+    var numberInCorrectRange = function(number, lowerBound, upperBound) {
+        var result = number;
+        var range = upperBound - lowerBound;
+        if (number < lowerBound) {
+            result = number + Math.floor((upperBound - number)/range) * range;
+        } else if (number >= upperBound) {
+            result = number - Math.floor((number - lowerBound)/range) * range;
+        };
+        return result;
+    };
+
+    cc.Sprite.prototype.setTextureWithFilename = function(filename) {
+        var texture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(filename));
+        this.setTexture(texture);
+    };
+
 });
