@@ -75,6 +75,9 @@ var s_am_indicator = s_clockImagePath + "AM.png";
 var s_pm_indicator = s_clockImagePath + "PM.png";
 var s_arrow_up = s_clockImagePath + "Arrow_Up.png";
 var s_arrow_down = s_clockImagePath + "Arrow_Down.png";
+var s_options_panel = s_clockImagePath + "Options_Panel.png";
+var s_options_open_button = s_clockImagePath + "Options_Open_button.png";
+var s_options_close_button = s_clockImagePath + "Options_Close_button.png";
 
 
 var g_ressources = [
@@ -142,6 +145,9 @@ var g_ressources = [
     {src:s_pm_indicator},
     {src:s_arrow_up},
     {src:s_arrow_down},
+    {src:s_options_panel},
+    {src:s_options_open_button},
+    {src:s_options_close_button},
 
     //plist
 

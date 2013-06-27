@@ -12,7 +12,8 @@ var ToolLayer = cc.Layer.extend({
  
         this.setTouchEnabled(true);
  
-        var size = cc.Director.getInstance().getWinSize();
+        this.size = cc.Director.getInstance().getWinSize();
+        var size = this.size;
 
         clc=cc.Layer.create();
         var background = new cc.Sprite();
@@ -25,31 +26,36 @@ var ToolLayer = cc.Layer.extend({
 
         var clock1 = new AnalogueClock();
         clock1.init();
+        clock1.layer = this;
         clock1.setPosition(size.width * 1/4, size.height/2);
         this.addChild(clock1);
         this.clocks.push(clock1);
 
         var clock2 = new DigitalClock();
         clock2.init();
+        clock2.layer = this;
         clock2.setPosition(size.width * 3/4, size.height/2);
         this.addChild(clock2);
         this.clocks.push(clock2);
 
         var clock3 = new WordClock();
         clock3.init();
+        clock3.layer = this;
         clock3.setPosition(600, 50);
         this.addChild(clock3);
+        this.clocks.push(clock3);
 
-        clock1.linkedClock = clock2;
-        clock2.linkedClock = clock1;
+        this.setupOptionsPanel();
 
         var time = new Time();
         time.setTime(23,59);
-        clock1.setupTime(time);
-        clock2.setupTime(time);
-        clock1.displayTimeOnLinkedClocks();
-        clock3.setupTime(time);
-        clock3.displayTime();
+        for (var i = 0; i < this.clocks.length; i++) {
+            var clock = this.clocks[i];
+            clock.setupTime(time);
+        };
+        this.displayTimeOnAllClocks();
+
+
 
         return this;
     },
@@ -61,6 +67,7 @@ var ToolLayer = cc.Layer.extend({
             var clock = this.clocks[i];
             clock.processTouch(touchLocation);
         };
+        this.displayTimeOnAllClocks();
     },
 
     onTouchesMoved:function(touches, event) {
@@ -68,18 +75,57 @@ var ToolLayer = cc.Layer.extend({
         var touchLocation = this.convertTouchToNodeSpace(touch);
         for (var i = 0; i < this.clocks.length; i++) {
             var clock = this.clocks[i];
-            clock.processMove(touchLocation);
+            clock.processMove(touchLocation)
         };
+        this.displayTimeOnAllClocks();
     },
 
     onTouchesEnded:function(touches, event) {
-        var touch = touches[0];
-        var touchLocation = this.convertTouchToNodeSpace(touch);
-        for (var i = 0; i < this.clocks.length; i++) {
-            var clock = this.clocks[i];
-            clock.processEnd(touchLocation);
+        if (touches.length > 0) {
+            var touch = touches[0];
+            var touchLocation = this.convertTouchToNodeSpace(touch);
+            for (var i = 0; i < this.clocks.length; i++) {
+                var clock = this.clocks[i];
+                clock.processEnd(touchLocation);
+            };
         };
     },
+
+    displayTimeOnAllClocks:function() {
+        for (var i = 0; i < this.clocks.length; i++) {
+            var clock = this.clocks[i];
+            clock.displayTime();
+        };
+    },
+
+    setupOptionsPanel:function() {
+        var optionsPanel = new cc.Sprite();
+        this.optionsPanel = optionsPanel;
+        optionsPanel.onScreen = false;
+        optionsPanel.initWithFile(s_options_panel);
+        optionsPanel.setPosition(this.size.width + 30, this.size.height/2);
+        this.addChild(optionsPanel);
+        var optionsOpenButton = new cc.MenuItemImage.create(s_options_open_button, s_options_open_button);
+        var optionsCloseButton = new cc.MenuItemImage.create(s_options_close_button, s_options_close_button);
+        var openClosePanel = new cc.MenuItemToggle.create(optionsOpenButton, optionsCloseButton, this.movePanel, this);
+        openClosePanel.setPosition(-48, 2);
+        var optionsMenu = new cc.Menu.create(openClosePanel);
+        optionsMenu.setPosition(optionsPanel.getAnchorPointInPoints());
+        optionsPanel.addChild(optionsMenu);
+    },
+
+    movePanel:function() {
+        var position;
+        if (this.optionsPanel.onScreen) {
+            position = cc.p(this.size.width + 30, this.size.height/2);
+        } else {
+            position = cc.p(this.size.width - this.optionsPanel.getContentSize().width/2, this.size.height/2);
+        };
+        var moveAction = cc.MoveTo.create(0.3, position);
+        this.optionsPanel.runAction(moveAction);
+        this.optionsPanel.onScreen = !this.optionsPanel.onScreen;
+    },
+
 });
 
 var Clock = cc.Sprite.extend({
@@ -92,14 +138,6 @@ var Clock = cc.Sprite.extend({
 
     setTime:function(hours, minutes) {
         this.time.setTime(hours, minutes);
-        this.displayTimeOnLinkedClocks();
-    },
-
-    displayTimeOnLinkedClocks:function() {
-        this.displayTime();
-        if (this.linkedClock !== null) {
-            this.linkedClock.displayTime();
-        };
     },
 
     addHours:function(hoursToAdd) {
@@ -109,6 +147,10 @@ var Clock = cc.Sprite.extend({
     addMinutes:function(minutesToAdd) {
         this.setTime(this.time.hours, this.time.minutes + minutesToAdd);
     },
+
+    processTouch:function() {},
+    processMove:function() {},
+    processEnd:function() {},
 });
 
 var AnalogueClock = Clock.extend({
@@ -166,7 +208,7 @@ var AnalogueClock = Clock.extend({
             if (hand.handleTouched(touchLocation)) {
                 this.movingHand = hand;
                 this.previousAngle = hand.getRotation();
-                break;
+                return true;
             };
         };
     },
@@ -194,6 +236,7 @@ var AnalogueClock = Clock.extend({
             };
             this.displayTime();
             this.previousAngle = angle;
+            return true;
         };
     },
 
@@ -416,6 +459,7 @@ var DigitalClock = Clock.extend({
         } else {
             this.addMinutes(button.changeBy);
         };
+        this.layer.displayTimeOnAllClocks();
     },
 
     repeatButtonTouch:function(button) {
@@ -457,7 +501,7 @@ var WordClock = Clock.extend({
         var minutes = this.time.minutes;
         var timeString = "It is ";
         if (minutes === 0) {
-            timeString += this.numberInWords(hours) + " o'clock";
+            timeString += this.hoursInWords(hours) + " o'clock";
         } else if (minutes <= 30) {
             timeString += this.minutesInWords(minutes) + " past " + this.hoursInWords(hours);
         } else {
