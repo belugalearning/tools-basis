@@ -14,9 +14,6 @@ require.config({
         },
         'resources': {
             exports: 'g_ressources'
-        },
-        'geoboardtool': {
-            exports: 'ToolLayer'
         }
     }
 });
@@ -33,7 +30,7 @@ document.ccConfig = {
     appFiles:[]
 };
 
-require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, resources, extensions, tool) {
+require(['domReady', 'cocos2d', 'qlayer', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
     domReady(function() {
@@ -88,6 +85,30 @@ require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], func
             }
         });
 
-        var myApp = new Cocos2dApp(tool.ToolLayer.scene);
+        var myApp = new Cocos2dApp(function () {
+            var scene = cc.Scene.create();
+            var layer = new tool.ToolLayer();
+            if (layer && layer.init(cc.c4b(255, 255, 255, 255))) {
+                scene.addChild(layer);
+
+                scene.layer = layer;
+
+                // scene.setMouseEnabled(true);
+                // scene.onMouseDown=function(event){cc.log("mouse down");};
+
+                scene.ql = new QLayer();
+                scene.ql.init();
+                layer.addChild(scene.ql, 99);
+
+                scene.update = function(dt) {
+                    this.layer.update(dt);
+                    this.ql.update(dt);
+                };
+                scene.scheduleUpdate();
+
+                return scene;
+            }
+            return null;
+        });
     });
 });
