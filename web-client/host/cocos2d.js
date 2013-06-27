@@ -6,7 +6,8 @@ require.config({
         'domReady': '../../tools/common/lib/domReady',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
-        'geoboardtool': '../../tools/geoboard/main'
+        'geoboardtool': '../../tools/geoboard/main',
+        'clocktool': '../../tools/clock/main'
     },
     shim: {
         'cocos2d': {
@@ -16,6 +17,9 @@ require.config({
             exports: 'g_ressources'
         },
         'geoboardtool': {
+            exports: 'ToolLayer'
+        },
+        'clocktool': {
             exports: 'ToolLayer'
         }
     }
@@ -33,7 +37,7 @@ document.ccConfig = {
     appFiles:[]
 };
 
-require(['domReady', 'cocos2d', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, resources, extensions, tool) {
+require(['domReady', 'cocos2d', 'resources', 'extensions', 'clocktool'], function(domReady, cocos2d, resources, extensions, tool) {
     'use strict';
 
     domReady(function() {
