@@ -1,9 +1,9 @@
-define([], function () {
+define(['pin', 'moving-pin', 'noshadow-pin'], function (Pin, MovingPin, NoShadowPin) {
     'use strict';
 
     function BandPart() {
         this.baseNode = new cc.Node();
-        this.sprite = new cc.Sprite(); 
+        this.sprite = new cc.Sprite();
         this.sprite.initWithFile(s_bandPart);
         this.sprite.setScaleX(1.5);
         this.bandPartNode = new cc.Node();
@@ -23,7 +23,7 @@ define([], function () {
             if (!(toPin instanceof MovingPin)) {
                 this.dummyEndPin = new NoShadowPin();
                 this.dummyEndPin.sprite.setZOrder(1);
-                this.baseNode.addChild(this.dummyEndPin.sprite);            
+                this.baseNode.addChild(this.dummyEndPin.sprite);         
             };
             if (!(fromPin instanceof MovingPin)) {
                 this.dummyStartPin = new NoShadowPin();
