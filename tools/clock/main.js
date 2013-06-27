@@ -118,6 +118,21 @@ define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
             var optionsMenu = new cc.Menu.create(openClosePanel);
             optionsMenu.setPosition(optionsPanel.getAnchorPointInPoints());
             optionsPanel.addChild(optionsMenu);
+            this.optionsButtonYPosition = 110;
+            this.setupOptionsPanelButton(s_options_hour_button_unselected, s_options_hour_button_selected, this.hourButtonTapped);
+            this.setupOptionsPanelButton(s_options_minute_button_unselected, s_options_minute_button_selected, this.minuteButtonTapped);
+            this.setupOptionsPanelButton(s_options_digital_button_unselected, s_options_digital_button_selected, this.digitalButtonTapped);
+            this.setupOptionsPanelButton(s_options_words_button_unselected, s_options_words_button_selected, this.wordsButtonTapped);
+            this.setupOptionsPanelButton(s_options_sentence_button_unselected, s_options_sentence_button_selected, this.sentenceButtonTapped);
+        },
+
+        setupOptionsPanelButton:function(unselectedFilename, selectedFilename, selector) {
+            var unselectedButton = new cc.MenuItemImage.create(unselectedFilename, unselectedFilename);
+            var selectedButton = new cc.MenuItemImage.create(selectedFilename, selectedFilename);
+            var button = cc.MenuItemToggle.create(unselectedButton, selectedButton, selector, this);
+            button.setPosition(30, this.optionsButtonYPosition);
+            this.optionsButtonYPosition -= 50;
+            this.optionsMenu.addChild(button);
         },
 
         movePanel:function() {
@@ -130,6 +145,16 @@ define(['cocos2d', 'qlayer'], function(cocos2d, QLayer) {
             var moveAction = cc.MoveTo.create(0.3, position);
             this.optionsPanel.runAction(moveAction);
             this.optionsPanel.onScreen = !this.optionsPanel.onScreen;
+        },
+
+        hourButtonTapped:function() {},
+        minuteButtonTapped:function() {},
+        digitalButtonTapped:function() {},
+        wordsButtonTapped:function() {},
+        
+        sentenceButtonTapped:function() {
+            var wordClock = this.clocks[2];
+            wordClock.setVisible(!wordClock.isVisible());
         },
 
     });

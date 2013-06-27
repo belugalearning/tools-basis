@@ -78,6 +78,22 @@ var s_arrow_down = s_clockImagePath + "Arrow_Down.png";
 var s_options_panel = s_clockImagePath + "Options_Panel.png";
 var s_options_open_button = s_clockImagePath + "Options_Open_button.png";
 var s_options_close_button = s_clockImagePath + "Options_Close_button.png";
+var s_options_hour_button_unselected = s_clockImagePath + "Options_Hour_button_grey.png";
+var s_options_hour_button_selected = s_clockImagePath + "Options_Hour_button_Orange.png";
+var s_options_minute_button_unselected = s_clockImagePath + "Options_Minute_button_grey.png";
+var s_options_minute_button_selected = s_clockImagePath + "Options_Minute_button_Orange.png";
+var s_options_digital_button_unselected = s_clockImagePath + "Options_Digital_button_grey.png";
+var s_options_digital_button_selected = s_clockImagePath + "Options_Digital_button_Orange.png";
+var s_options_words_button_unselected = s_clockImagePath + "Options_Words_button_grey.png";
+var s_options_words_button_selected = s_clockImagePath + "Options_Words_button_Orange.png";
+var s_options_sentence_button_unselected = s_clockImagePath + "Options_Sentence_button_grey.png";
+var s_options_sentence_button_selected = s_clockImagePath + "Options_Sentence_button_Orange.png";
+
+var s_clock_cards_path = s_clockImagePath + "clock_cards/";
+var s_clock_cards = [];
+for (var i = 1; i <= 12; i++) {
+    s_clock_cards[i] = s_clock_cards_path + "Clock_Card_" + i + ".png";
+};
 
 
 var g_ressources = [
@@ -148,6 +164,16 @@ var g_ressources = [
     {src:s_options_panel},
     {src:s_options_open_button},
     {src:s_options_close_button},
+    {src:s_options_hour_button_unselected},
+    {src:s_options_hour_button_selected},
+    {src:s_options_minute_button_unselected},
+    {src:s_options_minute_button_selected},
+    {src:s_options_digital_button_unselected},
+    {src:s_options_digital_button_selected},
+    {src:s_options_words_button_unselected},
+    {src:s_options_words_button_selected},
+    {src:s_options_sentence_button_unselected},
+    {src:s_options_sentence_button_selected},
 
     //plist
 
@@ -162,4 +188,8 @@ var g_ressources = [
 
 for (var i = 0; i < s_digits.length; i++) {
     g_ressources.push({src:s_digits[i]});
+};
+
+for (var i = 0; i < s_clock_cards.length; i++) {
+    g_ressources.push({src:s_clock_cards[i]});
 };
