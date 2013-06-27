@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0726434E177B1AFF0031C9A7 /* tools in Resources */ = {isa = PBXBuildFile; fileRef = 0726434D177B1AFF0031C9A7 /* tools */; };
 		7F0D2750175281A4007E9567 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0D274F175281A4007E9567 /* QuartzCore.framework */; };
 		7F0D2752175281A4007E9567 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0D2751175281A4007E9567 /* OpenGLES.framework */; };
 		7F0D2754175281A4007E9567 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0D2753175281A4007E9567 /* OpenAL.framework */; };
@@ -238,6 +239,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0726434D177B1AFF0031C9A7 /* tools */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tools; path = ../../../tools; sourceTree = "<group>"; };
 		7F0D274C175281A4007E9567 /* bl-ios-toolhost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bl-ios-toolhost.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F0D274F175281A4007E9567 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		7F0D2751175281A4007E9567 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -849,6 +851,7 @@
 		7F0D2763175281A4007E9567 /* bl-ios-toolhost */ = {
 			isa = PBXGroup;
 			children = (
+				0726434D177B1AFF0031C9A7 /* tools */,
 				7F29A5871754AAA100FD3EB8 /* Icon-72.png */,
 				7F29A5881754AAA200FD3EB8 /* Icon@2x.png */,
 				7F29A57F1754AA0800FD3EB8 /* 72_icon.jpg */,
@@ -1853,6 +1856,7 @@
 				7F29A58A1754AAA200FD3EB8 /* Icon@2x.png in Resources */,
 				7F29A58C1754AAB300FD3EB8 /* Icon-72.png in Resources */,
 				7F29A58E1754AABC00FD3EB8 /* Default-Landscape~ipad.png in Resources */,
+				0726434E177B1AFF0031C9A7 /* tools in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
