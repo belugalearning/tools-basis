@@ -33,8 +33,7 @@ document.ccConfig = {
     engineDir:'../cocos2d/',
     appFiles:[]
 };
-
-require(['domReady', 'cocos2d', 'qlayer', 'resources', 'extensions', 'geoboardtool'], function(domReady, cocos2d, QLayer, resources, extensions, tool) {
+require(['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions', 'geoboardtool'], function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
     domReady(function() {
