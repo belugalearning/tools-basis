@@ -88,16 +88,15 @@ require(['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions
             }
         });
 
-        var myApp = new Cocos2dApp(function () {
+        window.bl = window.bl || {};
+        window.bl.app = new Cocos2dApp(function () {
             var scene = cc.Scene.create();
             var layer = new tool.ToolLayer();
             if (layer && layer.init(cc.c4b(255, 255, 255, 255))) {
                 scene.addChild(layer);
 
                 scene.layer = layer;
-
-                // scene.setMouseEnabled(true);
-                // scene.onMouseDown=function(event){cc.log("mouse down");};
+                window.bl.toolLayer = layer;
 
                 scene.ql = new QLayer();
                 scene.ql.init();
