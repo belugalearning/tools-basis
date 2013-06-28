@@ -19,9 +19,6 @@ require.config({
         },
         'underscore': {
             exports: '_'
-        },
-        'clocktool': {
-            exports: 'ToolLayer'
         }
     }
 });

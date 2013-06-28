@@ -1,4 +1,4 @@
-define([], function() {
+define(['cocos2d'], function(cc) {
 
     var DigitalClockButton = cc.Sprite.extend({
         changeHour:null,

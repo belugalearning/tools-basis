@@ -9,15 +9,16 @@ require.config({
         'wordclock': '../../tools/clock/word-clock',
         'time': '../../tools/clock/time',
         'constants': '../../tools/clock/constants',
+        'toollayer': '../../tools/common/toollayer'
     }
 });
 
-define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'handhandle', 'digitalclock', 'digitalclockbutton', 'wordclock', 'time'], function(cocos2d, QLayer, constants, Clock, AnalogueClock, Hand, HandHandle, DigitalClock, DigitalClockButton, WordClock, Time) {
+define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'handhandle', 'digitalclock', 'digitalclockbutton', 'wordclock', 'time'], function(exports, cocos2d, ToolLayer, QLayer, constants, Clock, AnalogueClock, Hand, HandHandle, DigitalClock, DigitalClockButton, WordClock, Time) {
     'use strict';
 
     var HandTypes = constants['HandTypes'];
 
-    var ToolLayer = cc.Layer.extend({
+    var Tool = ToolLayer.extend({
         titleLabel:null,
         clc:null,
         lastcount:null,
@@ -279,38 +280,6 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
 
     });
 
-    ToolLayer.create = function () {
-        var sg = new ToolLayer();
-        if (sg && sg.init(cc.c4b(255, 255, 255, 255))) {
-            return sg;
-        }
-        return null;
-    };
+    exports.ToolLayer = Tool;
 
-    ToolLayer.scene = function () {
-        var scene = cc.Scene.create();
-        var layer = ToolLayer.create();
-        scene.addChild(layer);
-
-        scene.layer=layer;
-
-        // scene.setMouseEnabled(true);
-        // scene.onMouseDown=function(event){cc.log("mouse down");};
-
-        scene.ql=new QLayer();
-        scene.ql.init();
-        layer.addChild(scene.ql, 99);
-
-        scene.update = function(dt) {
-            this.layer.update(dt);
-            this.ql.update(dt);
-        };
-        scene.scheduleUpdate();
-
-        return scene;
-    };
-
-    return {
-        'ToolLayer': ToolLayer
-    };
 });

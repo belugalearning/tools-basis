@@ -1,4 +1,4 @@
-define(['constants'], function(constants) {
+define(['cocos2d', 'constants'], function(cc, constants) {
     'use strict';
 
     var HandTypes = constants['HandTypes'];
