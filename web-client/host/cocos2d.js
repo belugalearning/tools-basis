@@ -35,7 +35,15 @@ document.ccConfig = {
     appFiles:[]
 };
 
-require(['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions', 'geoboardtool'], function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
+var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions'];
+
+if (window.location.search.match('geoboard')) {
+    reqs.push('geoboardtool');
+} else {
+    reqs.push('clocktool');
+}
+
+require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
     domReady(function() {
