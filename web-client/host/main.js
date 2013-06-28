@@ -25,7 +25,9 @@ require.config({
 
 var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions'];
 
-if (window.location.search.match('geoboard')) {
+var url = top.location.search;
+
+if (url.match('geoboard')) {
     reqs.push('geoboardtool');
 } else {
     reqs.push('clocktool');
