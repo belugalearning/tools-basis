@@ -1,10 +1,33 @@
-define(['exports', 'cocos2d'], function (exports, cc) {
+define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
     'use strict';
 
     var ToolLayer = cc.Layer.extend({
 
         ctor: function () {
             this._super();
+        },
+
+        _controls: {},
+
+        registerControl: function (id, control) {
+            this._controls[id] = control;
+        },
+
+        getControls: function (pattern) {
+            var ret = [];
+            _.each(this._controls, function (v, k) {
+                if (k.match(pattern)) {
+                    ret.push(v);
+                }
+            });
+            return ret;
+        },
+
+        getControl: function (id) {
+            if (this._controls.hasOwnProperty(id)) {
+                return this._controls[id];
+            }
+            return null;
         },
 
         getState: function () {
