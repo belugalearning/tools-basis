@@ -98,10 +98,10 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
                 var touchLocationAR = this.convertToNodeSpaceAR(touchLocation);
                 var angle = Math.atan2(touchLocationAR.x, touchLocationAR.y);
                 angle = cc.RADIANS_TO_DEGREES(angle);
-                angle = numberInCorrectRange(angle, 0, 360);
 
                 var type = this.movingHand.type;
                 if (type === HandTypes.HOUR) {
+                    angle = numberInCorrectRange(angle, 0, 360);
                     var pmMultiplier = this.time.hours >= 12 ? 1 : 0;
                     var timeInMinutes = Math.floor(angle * 2);
                     if (this.handPassesVertical(this.previousAngle, angle)) {
@@ -110,6 +110,8 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
                     timeInMinutes += pmMultiplier * 12 * 60;
                     this.setTime(Math.floor(timeInMinutes/60), timeInMinutes % 60);
                 } else if (type === HandTypes.MINUTE) {
+                    angle += 3;
+                    angle = numberInCorrectRange(angle, 0, 360);
                     this.addHours(this.handPassesVertical(this.previousAngle, angle));
                     var minutes = Math.floor(angle/6);
                     this.setTime(this.time.hours, minutes);
