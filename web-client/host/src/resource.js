@@ -166,6 +166,7 @@ var g_ressources = [
     {src:s_clockface_pin},
     {src:s_hour_handle},
     {src:s_minute_handle},
+    {src:s_digital_background},
     {src:s_colon},
     {src:s_am_indicator},
     {src:s_pm_indicator},

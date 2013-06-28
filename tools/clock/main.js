@@ -45,29 +45,23 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             title.setPosition(this.size.width/2, 700);
             this.addChild(title);
 
-
-            this.centrePosition = cc.p(size.width/2, size.height/2 - 50);
-            this.leftPosition = cc.p(size.width * 0.29, size.height/2 - 50);
-            this.rightPosition = cc.p(size.width * 0.74, size.height/2 - 50);
-            this.veryRightPosition = cc.p(size.width * 0.79, size.height/2 - 50);
-
             this.clocks = [];
 
             this.analogueClock = new AnalogueClock();
             this.analogueClock.layer = this;
-            this.analogueClock.setPosition(this.leftPosition);
             this.addChild(this.analogueClock);
             this.clocks.push(this.analogueClock);
 
             this.digitalClock = new DigitalClock();
             this.digitalClock.layer = this;
-            this.digitalClock.setPosition(this.rightPosition);
             this.addChild(this.digitalClock);
             this.clocks.push(this.digitalClock);
 
+            this.positionClocks();
+
             this.wordClock = new WordClock();
             this.wordClock.layer = this;
-            this.wordClock.setPosition(this.size.width/2, 70);
+            this.wordClock.setPosition(this.size.width/2, 65);
             this.addChild(this.wordClock);
             this.clocks.push(this.wordClock);
             this.wordClock.setVisible(false);
@@ -75,7 +69,9 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             this.setupSettingsPanel();
 
             var time = new Time();
-            time.setTime(0,1);
+            var randomHours = Math.floor(Math.random() * 24);
+            var randomMinutes = Math.floor(Math.random() * 60);
+            time.setTime(randomHours, randomMinutes);
             for (var i = 0; i < this.clocks.length; i++) {
                 var clock = this.clocks[i];
                 clock.setupTime(time);
@@ -198,7 +194,7 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
         selectAnalogue:function() {
             this.digitalClock.setVisible(false);
             this.analogueClock.setVisible(true);
-            this.analogueClock.setPosition(this.centrePosition);
+            this.positionClocks();
             this.unselectClockTypeButtons();
             this.analogueButton.selected();
         },
@@ -206,7 +202,7 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
         selectDigital:function() {
             this.analogueClock.setVisible(false);
             this.digitalClock.setVisible(true);
-            this.digitalClock.setPosition(this.centrePosition);
+            this.positionClocks();
             this.unselectClockTypeButtons();
             this.digitalButton.selected();
         },
@@ -214,12 +210,7 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
         selectBoth:function() {
             this.analogueClock.setVisible(true);
             this.digitalClock.setVisible(true);
-            this.analogueClock.setPosition(this.leftPosition);
-            if (this.analogueClock.wordNode.isVisible()) {
-                this.digitalClock.setPosition(this.veryRightPosition);
-            } else {
-                this.digitalClock.setPosition(this.rightPosition);
-            };
+            this.positionClocks();
             this.unselectClockTypeButtons();
             this.bothButton.selected();
         },
@@ -249,13 +240,7 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
         wordsToggle:function() {
             var wordNode = this.analogueClock.wordNode;
             wordNode.setVisible(!wordNode.isVisible());
-            if (this.digitalClock.isVisible()) {
-                if (wordNode.isVisible()) {
-                    this.digitalClock.setPosition(this.veryRightPosition);
-                } else {
-                    this.digitalClock.setPosition(this.rightPosition);
-                };
-            };
+            this.positionClocks();
         },
 
         numbersToggle:function() {
@@ -265,6 +250,31 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
 
         sentenceToggle:function() {
             this.wordClock.setVisible(!this.wordClock.isVisible());
+        },
+
+        positionClocks:function() {
+            var centrePosition = cc.p(this.size.width/2, this.size.height/2 - 50);
+            var leftPosition = cc.p(this.size.width * 0.29, this.size.height/2 - 50);
+            var rightPosition = cc.p(this.size.width * 0.74, this.size.height/2 - 50);
+            var veryRightPosition = cc.p(this.size.width * 0.79, this.size.height/2 - 50);
+
+            var analogueVisible = this.analogueClock.isVisible();
+            var digitalVisible = this.digitalClock.isVisible();
+            var wordsVisible = this.analogueClock.wordNode.isVisible();
+            if (analogueVisible) {
+                if (digitalVisible) {
+                    this.analogueClock.setPosition(leftPosition);
+                    if (wordsVisible) {
+                        this.digitalClock.setPosition(veryRightPosition);
+                    } else {
+                        this.digitalClock.setPosition(rightPosition);
+                    };
+                } else {
+                    this.analogueClock.setPosition(centrePosition);
+                };
+            } else {
+                this.digitalClock.setPosition(centrePosition);
+            };
         },
 
     });
