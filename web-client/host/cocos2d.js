@@ -4,6 +4,7 @@ require.config({
         'cocos2d': 'cocosloader',
         'resources': 'src/resource',
         'domReady': '../../tools/common/lib/domReady',
+        'underscore': '../../tools/common/lib/underscore',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'geoboardtool': '../../tools/geoboard/main'
@@ -14,6 +15,9 @@ require.config({
         },
         'resources': {
             exports: 'g_ressources'
+        },
+        'underscore': {
+            exports: '_'
         }
     }
 });
