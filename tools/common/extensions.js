@@ -58,4 +58,9 @@ define(['cocos2d'], function () {
         }
     };
 
+    cc.Sprite.prototype.setTextureWithFilename = function(filename) {
+        var texture = cc.TextureCache.getInstance().textureForKey(cc.FileUtils.getInstance().fullPathForFilename(filename));
+        this.setTexture(texture);
+    };
+
 });

@@ -7,7 +7,8 @@ require.config({
         'underscore': '../../tools/common/lib/underscore',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
-        'geoboardtool': '../../tools/geoboard/main'
+        'geoboardtool': '../../tools/geoboard/main',
+        'clocktool': '../../tools/clock/main'
     },
     shim: {
         'cocos2d': {
@@ -18,6 +19,9 @@ require.config({
         },
         'underscore': {
             exports: '_'
+        },
+        'clocktool': {
+            exports: 'ToolLayer'
         }
     }
 });
@@ -33,6 +37,7 @@ document.ccConfig = {
     engineDir:'../cocos2d/',
     appFiles:[]
 };
+
 require(['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions', 'geoboardtool'], function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
