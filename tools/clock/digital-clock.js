@@ -14,7 +14,7 @@ define(['clock', 'digitalclockbutton'], function(Clock, DigitalClockButton) {
             this.setupColon();
             this.setupPmIndicator();
             this.setupButtons();
-            this.hour24 = true;
+            this.hour24 = false;
         },
 
         setupDigits:function() {
@@ -44,7 +44,8 @@ define(['clock', 'digitalclockbutton'], function(Clock, DigitalClockButton) {
 
         setupPmIndicator:function() {
             this.pmIndicator = new cc.Sprite();
-            this.pmIndicator.setPosition(cc.p(396, 120));
+            this.pmIndicator.initWithFile(s_pm_indicator);
+            this.pmIndicator.setPosition(cc.p(407, 125));
             this.pmIndicator.setScale(0.5);
             this.addChild(this.pmIndicator);
         },
@@ -146,10 +147,6 @@ define(['clock', 'digitalclockbutton'], function(Clock, DigitalClockButton) {
             this.buttonTouch(button);
             var that = this;
             this.holdTimer = setTimeout(function() {that.repeatButtonTouch(button)}, 100);
-        },
-
-        processMove:function(touchLocation) {
-
         },
 
         processEnd:function(touchLocation) {

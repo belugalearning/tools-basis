@@ -15,7 +15,36 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
 
             this.initWithFile(s_analogue_clockface);
 
+            var clockSize = this.getContentSize();
+            this.clockCentre = cc.p(clockSize.width * 0.5, clockSize.height * 0.51);
+
+            this.setupNumbers();
+            this.setupWords();
             this.setupHands();
+        },
+
+        setupNumbers:function() {
+            this.numbers = new cc.Sprite();
+            this.numbers.initWithFile(s_clock_numbers);
+            this.numbers.setPosition(this.clockCentre);
+            this.addChild(this.numbers);
+            this.numbers.setVisible(false);
+        },
+
+        setupWords:function() {
+            this.wordNode = new cc.Node();
+            this.wordNode.setPosition(this.clockCentre);
+            this.addChild(this.wordNode);
+            var lowerRadius = this.getContentSize().width/2 + 10;
+            var upperRadius = this.getContentSize().width/2 + 35;
+            for (var i = 0; i < s_clock_cards.length; i++) {
+                var card = new cc.Sprite();
+                card.initWithFile(s_clock_cards[i]);
+
+                card.setPosition(upperRadius * Math.sin(2 * Math.PI * i/12), lowerRadius * Math.cos(2 * Math.PI * i/12));
+                this.wordNode.addChild(card);
+            };
+            this.wordNode.setVisible(false);
         },
 
         setupHands:function() {
@@ -27,13 +56,10 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             this.minuteHand.initWithHandType(HandTypes.MINUTE);
             this.minuteHand.setZOrder(0);
 
-            var clockSize = this.getContentSize();
-            var clockCentre = cc.p(clockSize.width * 1/2, clockSize.height * 1/2);
-
             var hands = [this.hourHand, this.minuteHand];
             for (var i = 0; i < hands.length; i++) {
                 var hand = hands[i];
-                hand.setPosition(clockCentre);
+                hand.setPosition(this.clockCentre);
                 hand.clock = this;
                 this.addChild(hand);
                 hand.setupHandle();
@@ -41,7 +67,7 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
 
             var clockfacePin = new cc.Sprite();
             clockfacePin.initWithFile(s_clockface_pin);
-            clockfacePin.setPosition(clockCentre);
+            clockfacePin.setPosition(this.clockCentre);
             clockfacePin.setAnchorPoint(cc.p(0.5, 0.51));
             clockfacePin.setZOrder(2);
             this.addChild(clockfacePin);
@@ -93,6 +119,8 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
         },
 
         handPassesVertical:function(previousAngle, thisAngle) {
+            previousAngle = numberInCorrectRange(previousAngle, 0, 360);
+            thisAngle = numberInCorrectRange(thisAngle, 0, 360);
             var change = 0;
             if (previousAngle < 90 && thisAngle > 270) {
                 change = -1;

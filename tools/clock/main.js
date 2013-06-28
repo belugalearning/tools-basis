@@ -40,38 +40,47 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             clc.addChild(background);
             this.addChild(clc,0);
 
+            var title = new cc.Sprite();
+            title.initWithFile(s_clock_title);
+            title.setPosition(this.size.width/2, 700);
+            this.addChild(title);
+
+
+            this.centrePosition = cc.p(size.width/2, size.height/2 - 50);
+            this.leftPosition = cc.p(size.width * 0.29, size.height/2 - 50);
+            this.rightPosition = cc.p(size.width * 0.74, size.height/2 - 50);
+            this.veryRightPosition = cc.p(size.width * 0.79, size.height/2 - 50);
+
             this.clocks = [];
 
-            var clock1 = new AnalogueClock();
-            clock1.layer = this;
-            clock1.setPosition(size.width * 1/4, size.height/2);
-            this.addChild(clock1);
-            this.clocks.push(clock1);
+            this.analogueClock = new AnalogueClock();
+            this.analogueClock.layer = this;
+            this.analogueClock.setPosition(this.leftPosition);
+            this.addChild(this.analogueClock);
+            this.clocks.push(this.analogueClock);
 
-            var clock2 = new DigitalClock();
-            clock2.layer = this;
-            clock2.setPosition(size.width * 3/4, size.height/2);
-            this.addChild(clock2);
-            this.clocks.push(clock2);
+            this.digitalClock = new DigitalClock();
+            this.digitalClock.layer = this;
+            this.digitalClock.setPosition(this.rightPosition);
+            this.addChild(this.digitalClock);
+            this.clocks.push(this.digitalClock);
 
-            var clock3 = new WordClock();
-            clock3.layer = this;
-            clock3.setPosition(600, 50);
-            this.addChild(clock3);
-            this.clocks.push(clock3);
-            clock3.setVisible(false);
+            this.wordClock = new WordClock();
+            this.wordClock.layer = this;
+            this.wordClock.setPosition(this.size.width/2, 70);
+            this.addChild(this.wordClock);
+            this.clocks.push(this.wordClock);
+            this.wordClock.setVisible(false);
 
             this.setupSettingsPanel();
 
             var time = new Time();
-            time.setTime(23,59);
+            time.setTime(0,1);
             for (var i = 0; i < this.clocks.length; i++) {
                 var clock = this.clocks[i];
                 clock.setupTime(time);
             };
             this.displayTimeOnAllClocks();
-
-
 
             return this;
         },
@@ -135,14 +144,24 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             var settingsCloseButton = new cc.MenuItemImage.create(s_settings_close_button, s_settings_close_button, this.moveSettingsOff, this);
             settingsCloseButton.setPosition(440, 320);
 
-            var analogueButton = new cc.MenuItemImage.create(s_analogue_button_unselected, s_analogue_button_selected, this.selectAnalogue, this);
-            analogueButton.setPosition(-155, 50);
+            this.analogueButton = new cc.MenuItemImage.create(s_analogue_button_unselected, s_analogue_button_selected, this.selectAnalogue, this);
+            this.analogueButton.setPosition(-170, 140);
 
-            var digitalButton = new cc.MenuItemImage.create(s_digital_button_unselected, s_digital_button_selected, this.selectDigital, this);
-            digitalButton.setPosition(0, 50);
+            this.digitalButton = new cc.MenuItemImage.create(s_digital_button_unselected, s_digital_button_selected, this.selectDigital, this);
+            this.digitalButton.setPosition(-5, 140);
 
-            var bothSelected = new cc.MenuItemImage.create(s_both_button_unselected, s_both_button_selected, this.selectBoth, this);
-            bothSelected.setPosition(155, 50);
+            this.bothButton = new cc.MenuItemImage.create(s_both_button_unselected, s_both_button_selected, this.selectBoth, this);
+            this.bothButton.setPosition(160, 140);
+
+            this.bothButton.selected();
+
+            this.hour12Button = new cc.MenuItemImage.create(s_hour_12_button_unselected, s_hour_12_button_selected, this.select12Hour, this);
+            this.hour12Button.setPosition(-85, 43);
+
+            this.hour24Button = new cc.MenuItemImage.create(s_hour_24_button_unselected, s_hour_24_button_selected, this.select24Hour, this);
+            this.hour24Button.setPosition(75, 43);
+
+            this.hour12Button.selected();
 
             var wordsButtonUnselected = new cc.MenuItemImage.create(s_words_button_unselected, s_words_button_unselected);
             var wordsButtonSelected = new cc.MenuItemImage.create(s_words_button_selected, s_words_button_selected);
@@ -159,8 +178,9 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             var sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
             sentenceButton.setPosition(200, -50);
 
-            var settingsMenu = new cc.Menu.create(settingsCloseButton, analogueButton, digitalButton, bothSelected, wordsButton, numbersButton, sentenceButton);
+            var settingsMenu = new cc.Menu.create(settingsCloseButton, this.analogueButton, this.digitalButton, this.bothButton, this.hour12Button, this.hour24Button, wordsButton, numbersButton, sentenceButton);
             settingsPanel.addChild(settingsMenu);
+
         },
 
         moveSettingsOn:function() {
@@ -175,14 +195,76 @@ define(['cocos2d', 'qlayer', 'constants', 'clock', 'analogueclock', 'hand', 'han
             this.settingsPanel.runAction(moveOff);
         },
 
-        selectAnalogue:function() {},
-        selectDigital:function() {},
-        selectBoth:function() {},
-        wordsToggle:function() {},
+        selectAnalogue:function() {
+            this.digitalClock.setVisible(false);
+            this.analogueClock.setVisible(true);
+            this.analogueClock.setPosition(this.centrePosition);
+            this.unselectClockTypeButtons();
+            this.analogueButton.selected();
+        },
+
+        selectDigital:function() {
+            this.analogueClock.setVisible(false);
+            this.digitalClock.setVisible(true);
+            this.digitalClock.setPosition(this.centrePosition);
+            this.unselectClockTypeButtons();
+            this.digitalButton.selected();
+        },
+
+        selectBoth:function() {
+            this.analogueClock.setVisible(true);
+            this.digitalClock.setVisible(true);
+            this.analogueClock.setPosition(this.leftPosition);
+            if (this.analogueClock.wordNode.isVisible()) {
+                this.digitalClock.setPosition(this.veryRightPosition);
+            } else {
+                this.digitalClock.setPosition(this.rightPosition);
+            };
+            this.unselectClockTypeButtons();
+            this.bothButton.selected();
+        },
+
+        select12Hour:function() {
+            for (var i = 0; i < this.clocks.length; i++) {
+                this.clocks[i].setHour24(false);
+            };
+            this.hour24Button.unselected();
+            this.hour12Button.selected();
+        },
+
+        select24Hour:function() {
+            for (var i = 0; i < this.clocks.length; i++) {
+                this.clocks[i].setHour24(true);
+            };
+            this.hour12Button.unselected();
+            this.hour24Button.selected();
+        },
+
+        unselectClockTypeButtons:function() {
+            this.analogueButton.unselected();
+            this.digitalButton.unselected();
+            this.bothButton.unselected();
+        },
+
+        wordsToggle:function() {
+            var wordNode = this.analogueClock.wordNode;
+            wordNode.setVisible(!wordNode.isVisible());
+            if (this.digitalClock.isVisible()) {
+                if (wordNode.isVisible()) {
+                    this.digitalClock.setPosition(this.veryRightPosition);
+                } else {
+                    this.digitalClock.setPosition(this.rightPosition);
+                };
+            };
+        },
+
+        numbersToggle:function() {
+            var numbers = this.analogueClock.numbers;
+            numbers.setVisible(!numbers.isVisible());
+        },
 
         sentenceToggle:function() {
-            var wordClock = this.clocks[2];
-            wordClock.setVisible(!wordClock.isVisible());
+            this.wordClock.setVisible(!this.wordClock.isVisible());
         },
 
     });

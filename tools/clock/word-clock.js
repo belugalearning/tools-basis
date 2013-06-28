@@ -7,7 +7,7 @@ define(['clock'], function(Clock) {
 
         ctor:function() {
             this._super();
-            this.label = cc.LabelTTF.create("HELLO!", "mikadoBold", 24);
+            this.label = cc.LabelTTF.create("", "mikadoBold", 40);
             this.addChild(this.label);
             this.hour24 = false;
         },
@@ -20,14 +20,19 @@ define(['clock'], function(Clock) {
         timeInWords:function() {
             var hours = this.time.hours;
             var minutes = this.time.minutes;
-            var timeString = "It is ";
+            var timeString = "";
             if (minutes === 0) {
-                timeString += this.hoursInWords(hours) + " o'clock";
+                if (hours === 0) {
+                    timeString += "midnight";
+                } else {
+                    timeString += this.hoursInWords(hours) + " o'clock";
+                };
             } else if (minutes <= 30) {
                 timeString += this.minutesInWords(minutes) + " past " + this.hoursInWords(hours);
             } else {
                 timeString += this.minutesInWords(60 - minutes) + " to " + this.hoursInWords(hours + 1);
             }
+            timeString = timeString.charAt(0).toUpperCase() + timeString.slice(1);
             return timeString;
         },
 
@@ -46,10 +51,16 @@ define(['clock'], function(Clock) {
         hoursInWords:function(hours) {
             var hoursInWords;
             hours %= 24;
-            if (this.hour24) {
+            if (hours === 0) {
+                hoursInWords = "midnight";
+            } else if (this.hour24) {
                 hoursInWords = this.numberInWords(hours);
             } else {
-                hoursInWords = this.numberInWords(hours % 12);
+                if (hours === 12) {
+                    hoursInWords = "twelve";
+                } else {
+                    hoursInWords = this.numberInWords(hours % 12);
+                };
             };
             return hoursInWords;
         },

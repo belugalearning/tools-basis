@@ -29,6 +29,11 @@ define([], function() {
         processTouch:function() {},
         processMove:function() {},
         processEnd:function() {},
+        
+        setHour24:function(hour24) {
+            this.hour24 = hour24;
+            this.displayTime();
+        },
     });
 
     return Clock;
