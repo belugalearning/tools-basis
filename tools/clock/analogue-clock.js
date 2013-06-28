@@ -68,7 +68,7 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             var clockfacePin = new cc.Sprite();
             clockfacePin.initWithFile(s_clockface_pin);
             clockfacePin.setPosition(this.clockCentre);
-            clockfacePin.setAnchorPoint(cc.p(0.545, 0.544));
+            clockfacePin.setAnchorPoint(cc.p(0.5, 0.5));
             clockfacePin.setZOrder(2);
             this.addChild(clockfacePin);
         },
