@@ -15,7 +15,7 @@ define(['handhandle', 'constants'], function(HandHandle, constants) {
             switch (this.type) {
                 case HandTypes.HOUR:
                     fileName = s_hour_hand;
-                    anchorPoint = cc.p(0.48, 0.02);
+                    anchorPoint = cc.p(0.5, 0.02);
                     break;
                 case HandTypes.MINUTE:
                     fileName = s_minute_hand;

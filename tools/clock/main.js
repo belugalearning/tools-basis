@@ -67,14 +67,11 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             this.wordClock.setPosition(this.size.width/2, 65);
             this.addChild(this.wordClock);
             this.clocks.push(this.wordClock);
-            this.wordClock.setVisible(false);
 
             this.setupSettingsPanel();
 
             var time = new Time();
-            var randomHours = Math.floor(Math.random() * 24);
-            var randomMinutes = Math.floor(Math.random() * 60);
-            time.setTime(randomHours, randomMinutes);
+            time.setTime(10, 10);
             for (var i = 0; i < this.clocks.length; i++) {
                 var clock = this.clocks[i];
                 clock.setupTime(time);
@@ -171,11 +168,13 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             var numbersButtonSelected = new cc.MenuItemImage.create(s_numbers_button_selected, s_numbers_button_selected);
             var numbersButton = new cc.MenuItemToggle.create(numbersButtonUnselected, numbersButtonSelected, this.numbersToggle, this);
             numbersButton.setPosition(0, -50);
+            numbersButton.setSelectedIndex(1);
 
             var sentenceButtonUnselected = new cc.MenuItemImage.create(s_sentence_button_unselected, s_sentence_button_unselected);
             var sentenceButtonSelected = new cc.MenuItemImage.create(s_sentence_button_selected, s_sentence_button_selected);
             var sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
             sentenceButton.setPosition(200, -50);
+            sentenceButton.setSelectedIndex(1);
 
             var settingsMenu = new cc.Menu.create(settingsCloseButton, this.analogueButton, this.digitalButton, this.bothButton, this.hour12Button, this.hour24Button, wordsButton, numbersButton, sentenceButton);
             settingsPanel.addChild(settingsMenu);

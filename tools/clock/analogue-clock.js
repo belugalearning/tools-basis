@@ -28,7 +28,6 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             this.numbers.initWithFile(s_clock_numbers);
             this.numbers.setPosition(this.clockCentre);
             this.addChild(this.numbers);
-            this.numbers.setVisible(false);
         },
 
         setupWords:function() {
@@ -40,7 +39,6 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             for (var i = 0; i < s_clock_cards.length; i++) {
                 var card = new cc.Sprite();
                 card.initWithFile(s_clock_cards[i]);
-
                 card.setPosition(upperRadius * Math.sin(2 * Math.PI * i/12), lowerRadius * Math.cos(2 * Math.PI * i/12));
                 this.wordNode.addChild(card);
             };
