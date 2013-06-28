@@ -8,14 +8,14 @@ define(['exports', 'cocos2d'], function (exports, cc) {
         },
 
         getState: function () {
-            console.log('getState');
+            throw {name : "NotImplementedError", message : "This needs implementing"};
         },
 
-        setQuestion: function () {
-            console.log('setQuestion');
+        setQuestion: function (question) {
+            throw {name : "NotImplementedError", message : "This needs implementing"};
         },
 
-        emptyFunction: function() {}
+        noop: function() {}
 
     });
 
