@@ -30,6 +30,8 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             this._super();
      
             this.setTouchEnabled(true);
+
+            cc.Director.getInstance().setDisplayStats(false);
      
             this.size = cc.Director.getInstance().getWinSize();
             var size = this.size;
