@@ -25,7 +25,7 @@ require.config({
 
 var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions'];
 
-var url = top.location.search;
+var url = top.location.href;
 
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
