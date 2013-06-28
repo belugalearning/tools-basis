@@ -1,7 +1,7 @@
 
 require.config({
     paths: {
-        'cocos2d': 'cocosloader',
+        'cocos2d': 'cocosLoader',
         'resources': 'src/resource',
         'domReady': '../../tools/common/lib/domReady',
         'underscore': '../../tools/common/lib/underscore',
