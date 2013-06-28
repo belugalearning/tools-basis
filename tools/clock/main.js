@@ -161,22 +161,22 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
 
             var wordsButtonUnselected = new cc.MenuItemImage.create(s_words_button_unselected, s_words_button_unselected);
             var wordsButtonSelected = new cc.MenuItemImage.create(s_words_button_selected, s_words_button_selected);
-            var wordsButton = cc.MenuItemToggle.create(wordsButtonUnselected, wordsButtonSelected, this.wordsToggle, this);
-            wordsButton.setPosition(-200, -50);
+            this.wordsButton = cc.MenuItemToggle.create(wordsButtonUnselected, wordsButtonSelected, this.wordsToggle, this);
+            this.wordsButton.setPosition(-200, -50);
 
             var numbersButtonUnselected = new cc.MenuItemImage.create(s_numbers_button_unselected, s_numbers_button_unselected);
             var numbersButtonSelected = new cc.MenuItemImage.create(s_numbers_button_selected, s_numbers_button_selected);
-            var numbersButton = new cc.MenuItemToggle.create(numbersButtonUnselected, numbersButtonSelected, this.numbersToggle, this);
-            numbersButton.setPosition(0, -50);
-            numbersButton.setSelectedIndex(1);
+            this.numbersButton = new cc.MenuItemToggle.create(numbersButtonUnselected, numbersButtonSelected, this.numbersToggle, this);
+            this.numbersButton.setPosition(0, -50);
+            this.numbersButton.setSelectedIndex(1);
 
             var sentenceButtonUnselected = new cc.MenuItemImage.create(s_sentence_button_unselected, s_sentence_button_unselected);
             var sentenceButtonSelected = new cc.MenuItemImage.create(s_sentence_button_selected, s_sentence_button_selected);
-            var sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
-            sentenceButton.setPosition(200, -50);
-            sentenceButton.setSelectedIndex(1);
+            this.sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
+            this.sentenceButton.setPosition(200, -50);
+            this.sentenceButton.setSelectedIndex(1);
 
-            var settingsMenu = new cc.Menu.create(settingsCloseButton, this.analogueButton, this.digitalButton, this.bothButton, this.hour12Button, this.hour24Button, wordsButton, numbersButton, sentenceButton);
+            var settingsMenu = new cc.Menu.create(settingsCloseButton, this.analogueButton, this.digitalButton, this.bothButton, this.hour12Button, this.hour24Button, this.wordsButton, this.numbersButton, this.sentenceButton);
             settingsPanel.addChild(settingsMenu);
 
         },
@@ -199,6 +199,7 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             this.positionClocks();
             this.unselectClockTypeButtons();
             this.analogueButton.selected();
+            this.setUnusedButtonsEnabled(true);
         },
 
         selectDigital:function() {
@@ -207,6 +208,7 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             this.positionClocks();
             this.unselectClockTypeButtons();
             this.digitalButton.selected();
+            this.setUnusedButtonsEnabled(false);
         },
 
         selectBoth:function() {
@@ -215,20 +217,34 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             this.positionClocks();
             this.unselectClockTypeButtons();
             this.bothButton.selected();
+            this.setUnusedButtonsEnabled(true);
+        },
+
+        setUnusedButtonsEnabled:function(enabled) {
+            var opacity = enabled ? 255 : 128;
+            var buttons = [this.wordsButton, this.numbersButton];
+            for (var i = 0; i < buttons.length; i++) {
+                var button = buttons[i];
+                button.setOpacity(opacity);
+                button.setEnabled(enabled);
+                if (!enabled) {
+                    button.setSelectedIndex(0);
+                };
+            };
+            if (!enabled) {
+                this.analogueClock.wordNode.setVisible(false);
+                this.analogueClock.numbers.setVisible(false);
+            };
         },
 
         select12Hour:function() {
-            for (var i = 0; i < this.clocks.length; i++) {
-                this.clocks[i].setHour24(false);
-            };
+            this.digitalClock.setHour24(false);
             this.hour24Button.unselected();
             this.hour12Button.selected();
         },
 
         select24Hour:function() {
-            for (var i = 0; i < this.clocks.length; i++) {
-                this.clocks[i].setHour24(true);
-            };
+            this.digitalClock.setHour24(true);
             this.hour12Button.unselected();
             this.hour24Button.selected();
         },

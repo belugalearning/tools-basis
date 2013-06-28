@@ -24,6 +24,8 @@ define(['clock'], function(Clock) {
             if (minutes === 0) {
                 if (hours === 0) {
                     timeString += "midnight";
+                } else if (hours === 12) {
+                    timeString == "noon";
                 } else {
                     timeString += this.hoursInWords(hours) + " o'clock";
                 };
@@ -57,7 +59,7 @@ define(['clock'], function(Clock) {
                 hoursInWords = this.numberInWords(hours);
             } else {
                 if (hours === 12) {
-                    hoursInWords = "twelve";
+                    hoursInWords = "noon";
                 } else {
                     hoursInWords = this.numberInWords(hours % 12);
                 };
