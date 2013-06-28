@@ -68,7 +68,7 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
             var clockfacePin = new cc.Sprite();
             clockfacePin.initWithFile(s_clockface_pin);
             clockfacePin.setPosition(this.clockCentre);
-            clockfacePin.setAnchorPoint(cc.p(0.5, 0.51));
+            clockfacePin.setAnchorPoint(cc.p(0.545, 0.544));
             clockfacePin.setZOrder(2);
             this.addChild(clockfacePin);
         },
@@ -80,13 +80,15 @@ define (['clock', 'hand', 'constants'], function(Clock, Hand, constants) {
         },
 
         processTouch:function(touchLocation) {
-            var hands = [this.hourHand, this.minuteHand];
-            for (var i = 0; i < hands.length; i++) {
-                var hand = hands[i];
-                if (hand.handleTouched(touchLocation)) {
-                    this.movingHand = hand;
-                    this.previousAngle = hand.getRotation();
-                    return true;
+            if (this.isVisible()) {            
+                var hands = [this.hourHand, this.minuteHand];
+                for (var i = 0; i < hands.length; i++) {
+                    var hand = hands[i];
+                    if (hand.handleTouched(touchLocation)) {
+                        this.movingHand = hand;
+                        this.previousAngle = hand.getRotation();
+                        return true;
+                    };
                 };
             };
         },

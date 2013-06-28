@@ -122,14 +122,16 @@ define(['clock', 'digitalclockbutton'], function(Clock, DigitalClockButton) {
         },
 
         processTouch:function(touchLocation) {
-            for (var i = 0; i < this.buttons.length; i++) {
-                var button = this.buttons[i];
-                if (button.touched(touchLocation)) {
-                    this.buttonTouch(button);
-                    this.displayTime();
-                    var that = this;
-                    this.holdTimer = setTimeout(function() {that.repeatButtonTouch(button)}, 700);
-                    break;
+            if (this.isVisible()) {            
+                for (var i = 0; i < this.buttons.length; i++) {
+                    var button = this.buttons[i];
+                    if (button.touched(touchLocation)) {
+                        this.buttonTouch(button);
+                        this.displayTime();
+                        var that = this;
+                        this.holdTimer = setTimeout(function() {that.repeatButtonTouch(button)}, 700);
+                        break;
+                    };
                 };
             };
         },
