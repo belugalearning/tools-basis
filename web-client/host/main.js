@@ -8,7 +8,8 @@ require.config({
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'geoboardtool': '../../tools/geoboard/main',
-        'clocktool': '../../tools/clock/main'
+        'clocktool': '../../tools/clock/main',
+        'longdivisiontool': '../../tools/long_division/main',
     },
     shim: {
         'cocos2d': {
