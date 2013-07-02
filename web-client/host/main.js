@@ -30,8 +30,10 @@ var url = top.location.href;
 
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
-} else {
+} else if (url.match('clock')) {
     reqs.push('clocktool');
+} else {
+    reqs.push('longdivisiontool');
 }
 
 require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
@@ -54,6 +56,8 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
             d.body.style.background = '#ffffff';
             return;
         }
+
+        
 
         var Cocos2dApp = cc.Application.extend({
             config:document['ccConfig'],

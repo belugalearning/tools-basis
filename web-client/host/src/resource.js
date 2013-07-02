@@ -103,8 +103,17 @@ for (var i = 0; i < 12; i++) {
     s_clock_cards[i] = s_clockCardsPath + "Clock_Card_" + (i + 1) + ".png";
 };
 var s_clock_numbers = s_clockImagePath + "Clock_Numbers_All.png";
-var s_clock_title = s_clockImagePath + "Title.png"
+var s_clock_title = s_clockImagePath + "Title.png";
 
+
+//Long division images
+var s_long_division_path = s_imagePath + "long_division/";
+
+var s_number_wheel_backgrounds = [];
+for (var i = 1; i <= 6; i++) {
+    s_number_wheel_backgrounds[i-1] = s_long_division_path + "NW_" + i + "_ov.png";
+};
+var s_number_wheel_section_background = s_long_division_path + "numberWheelSectionBackground.png";
 
 var g_ressources = [
     //image
@@ -195,6 +204,9 @@ var g_ressources = [
     {src:s_clock_numbers},
     {src:s_clock_title},
 
+    //long division
+    {src:s_number_wheel_section_background},
+
 
     //plist
 
@@ -213,4 +225,8 @@ for (var i = 0; i < s_digits.length; i++) {
 
 for (var i = 0; i < s_clock_cards.length; i++) {
     g_ressources.push({src:s_clock_cards[i]});
+};
+
+for (var i = 0; i < s_number_wheel_backgrounds.length; i++) {
+    g_ressources.push({src:s_number_wheel_backgrounds[i]});
 };
