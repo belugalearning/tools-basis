@@ -10,10 +10,16 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
         _controls: {},
 
         registerControl: function (id, control) {
+            /* 
+            Used to register a control with the toolLayer, which in turn exposes access to the ToolHandler
+            */
             this._controls[id] = control;
         },
 
         getControls: function (pattern) {
+            /* 
+            Returns an array of controls whose id matches a pattern
+            */
             var ret = [];
             _.each(this._controls, function (v, k) {
                 if (k.match(pattern)) {
@@ -24,6 +30,9 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
         },
 
         getControl: function (id) {
+            /* 
+            Returns a control for an id
+            */
             if (this._controls.hasOwnProperty(id)) {
                 return this._controls[id];
             }
