@@ -16,3 +16,19 @@ References to tools can then be fetched by using `getControl(id)` or `getControl
 ### State
 
 All tools should respond to `setQuestion(question)` and `getState()`.
+
+
+## Tools
+
+### Sorting
+
+#### Expected behaviour
+
+Content service will send:
++ Array of dropzone images & locations
++ Array of dropzone paths & locations
++ Array of draggables & locations
+
+Tool will be able to:
++ Tool will try to fit all draggables within an area when they have been dropped, scaling if necessary
++ Send back the positions of all dragables
