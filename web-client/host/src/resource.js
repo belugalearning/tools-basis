@@ -126,6 +126,8 @@ var s_decimal_point = s_longDivisionImagePath + "DecimalPoint.png";
 var s_number_picker_left = s_longDivisionImagePath + "NumberPicker_Left_Arrow.png";
 var s_number_picker_right = s_longDivisionImagePath + "NumberPicker_Right_Arrow.png";
 
+var s_bars_box = s_longDivisionImagePath + "BarsBox.png";
+
 var s_test_big_box = s_longDivisionImagePath + "testBigWhiteBox.png";
 
 var g_ressources = [
@@ -227,6 +229,8 @@ var g_ressources = [
     {src:s_number_box_down},
     {src:s_number_picker_left},
     {src:s_number_picker_right},
+
+    {src:s_bars_box},
 
     {src:s_test_big_box},
 
