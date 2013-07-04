@@ -14,11 +14,11 @@ define(['handhandle', 'constants'], function(HandHandle, constants) {
             var anchorPoint;
             switch (this.type) {
                 case HandTypes.HOUR:
-                    fileName = s_hour_hand;
+                    fileName = bl.resources['images_clock_hour_hand'];
                     anchorPoint = cc.p(0.5, 0.02);
                     break;
                 case HandTypes.MINUTE:
-                    fileName = s_minute_hand;
+                    fileName = bl.resources['images_clock_minute_hand'];
                     anchorPoint = cc.p(0.5, 0.02);
                     break;
             }
