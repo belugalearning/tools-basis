@@ -63,4 +63,15 @@ define(['cocos2d'], function () {
         this.setTexture(texture);
     };
 
+    Number.prototype.numberInCorrectRange = function(lowerBound, upperBound) {
+        var result = this;
+        var range = upperBound - lowerBound;
+        if (result < lowerBound) {
+            result += Math.floor((upperBound - result)/range) * range;
+        } else if (result >= upperBound) {
+            result -= Math.floor((result - lowerBound)/range) * range;
+        };
+    return result;
+};
+
 });

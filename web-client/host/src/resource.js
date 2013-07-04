@@ -106,14 +106,27 @@ var s_clock_numbers = s_clockImagePath + "Clock_Numbers_All.png";
 var s_clock_title = s_clockImagePath + "Title.png";
 
 
-//Long division images
-var s_long_division_path = s_imagePath + "long_division/";
+//Number wheel images
+var s_number_wheel_path = s_imagePath + "number_wheel/";
 
 var s_number_wheel_backgrounds = [];
 for (var i = 1; i <= 6; i++) {
-    s_number_wheel_backgrounds[i-1] = s_long_division_path + "NW_" + i + "_ov.png";
+    s_number_wheel_backgrounds[i-1] = s_number_wheel_path + "NW_" + i + "_ov.png";
 };
-var s_number_wheel_section_background = s_long_division_path + "numberWheelSectionBackground.png";
+var s_number_wheel_section_background = s_number_wheel_path + "numberWheelSectionBackground.png";
+
+//Long division images
+var s_longDivisionImagePath = s_imagePath + "long_division/";
+
+var s_number_picker_box = s_longDivisionImagePath + "NumberPickerBox.png";
+var s_number_container = s_longDivisionImagePath + "NumberBox.png";
+var s_number_box_up = s_longDivisionImagePath + "NumberPicker_Up_Arrow.png";
+var s_number_box_down = s_longDivisionImagePath + "NumberPicker_Down_Arrow.png";
+var s_decimal_point = s_longDivisionImagePath + "DecimalPoint.png";
+var s_number_picker_left = s_longDivisionImagePath + "NumberPicker_Left_Arrow.png";
+var s_number_picker_right = s_longDivisionImagePath + "NumberPicker_Right_Arrow.png";
+
+var s_test_big_box = s_longDivisionImagePath + "testBigWhiteBox.png";
 
 var g_ressources = [
     //image
@@ -204,9 +217,18 @@ var g_ressources = [
     {src:s_clock_numbers},
     {src:s_clock_title},
 
-    //long division
+    //number wheel
     {src:s_number_wheel_section_background},
 
+    //long division
+    {src:s_number_picker_box},
+    {src:s_number_container},
+    {src:s_number_box_up},
+    {src:s_number_box_down},
+    {src:s_number_picker_left},
+    {src:s_number_picker_right},
+
+    {src:s_test_big_box},
 
     //plist
 
