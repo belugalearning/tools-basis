@@ -28,23 +28,23 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
         init:function () {
 
             this._super();
-     
+
             this.setTouchEnabled(true);
 
             cc.Director.getInstance().setDisplayStats(false);
-     
+
             this.size = cc.Director.getInstance().getWinSize();
             var size = this.size;
 
             var clc = cc.Layer.create();
             var background = new cc.Sprite();
-            background.initWithFile(s_deep_water_background);
+            background.initWithFile(bl.resources['images_deep_water_background']);
             background.setPosition(size.width/2, size.height/2);
             clc.addChild(background);
             this.addChild(clc,0);
 
             var title = new cc.Sprite();
-            title.initWithFile(s_clock_title);
+            title.initWithFile(bl.resources['images_clock_title']);
             title.setPosition(this.size.width/2, 700);
             this.addChild(title);
 
@@ -123,55 +123,55 @@ define(['exports', 'cocos2d', 'toollayer', 'qlayer', 'constants', 'clock', 'anal
             var settingsPanel = new cc.Sprite();
             this.settingsPanel = settingsPanel;
             settingsPanel.onScreen = false;
-            settingsPanel.initWithFile(s_settings_panel);
+            settingsPanel.initWithFile(bl.resources['images_clock_settings_free_form_bg']);
             settingsPanel.setPosition(this.size.width/2, this.size.height * 3/2);
             settingsPanel.setZOrder(1);
             this.addChild(settingsPanel);
             var settingsButtonBase = new cc.Sprite();
-            settingsButtonBase.initWithFile(s_settings_button_base);
+            settingsButtonBase.initWithFile(bl.resources['images_clock_settings_settings_button_base']);
             settingsButtonBase.setPosition(settingsButtonBase.getContentSize().width/2, 650);
             this.addChild(settingsButtonBase);
-            var settingsButton = new cc.MenuItemImage.create(s_settings_button, s_settings_button, this.moveSettingsOn, this);
+            var settingsButton = new cc.MenuItemImage.create(bl.resources['images_clock_settings_settings_button'], bl.resources['images_clock_settings_settings_button'], this.moveSettingsOn, this);
             settingsButton.setPosition(10, -2);
             var settingsButtonMenu = new cc.Menu.create(settingsButton);
             settingsButtonMenu.setPosition(settingsButtonBase.getAnchorPointInPoints());
             settingsButtonBase.addChild(settingsButtonMenu);
 
-            var settingsCloseButton = new cc.MenuItemImage.create(s_settings_close_button, s_settings_close_button, this.moveSettingsOff, this);
+            var settingsCloseButton = new cc.MenuItemImage.create(bl.resources['images_clock_settings_free_form_closebutton'], bl.resources['images_clock_settings_free_form_closebutton'], this.moveSettingsOff, this);
             settingsCloseButton.setPosition(440, 320);
 
-            this.analogueButton = new cc.MenuItemImage.create(s_analogue_button_unselected, s_analogue_button_selected, this.selectAnalogue, this);
+            this.analogueButton = new cc.MenuItemImage.create(bl.resources['images_clock_settings_analog_button_off'], bl.resources['images_clock_settings_analog_button_on'], this.selectAnalogue, this);
             this.analogueButton.setPosition(-170, 140);
 
-            this.digitalButton = new cc.MenuItemImage.create(s_digital_button_unselected, s_digital_button_selected, this.selectDigital, this);
+            this.digitalButton = new cc.MenuItemImage.create(bl.resources['images_clock_settings_digital_button_off'], bl.resources['images_clock_settings_digital_button_on'], this.selectDigital, this);
             this.digitalButton.setPosition(-5, 140);
 
-            this.bothButton = new cc.MenuItemImage.create(s_both_button_unselected, s_both_button_selected, this.selectBoth, this);
+            this.bothButton = new cc.MenuItemImage.create(bl.resources['images_clock_settings_analoganddigital_button_off'], bl.resources['images_clock_settings_analoganddigital_button_on'], this.selectBoth, this);
             this.bothButton.setPosition(160, 140);
 
             this.bothButton.selected();
 
-            this.hour12Button = new cc.MenuItemImage.create(s_hour_12_button_unselected, s_hour_12_button_selected, this.select12Hour, this);
+            this.hour12Button = new cc.MenuItemImage.create(bl.resources['images_clock_settings_12hr_off'], bl.resources['images_clock_settings_12hr_on'], this.select12Hour, this);
             this.hour12Button.setPosition(-85, 43);
 
-            this.hour24Button = new cc.MenuItemImage.create(s_hour_24_button_unselected, s_hour_24_button_selected, this.select24Hour, this);
+            this.hour24Button = new cc.MenuItemImage.create(bl.resources['images_clock_settings_24hr_off'], bl.resources['images_clock_settings_24hr_on'], this.select24Hour, this);
             this.hour24Button.setPosition(75, 43);
 
             this.hour12Button.selected();
 
-            var wordsButtonUnselected = new cc.MenuItemImage.create(s_words_button_unselected, s_words_button_unselected);
-            var wordsButtonSelected = new cc.MenuItemImage.create(s_words_button_selected, s_words_button_selected);
+            var wordsButtonUnselected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_words_off'], bl.resources['images_clock_settings_words_off']);
+            var wordsButtonSelected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_words_on'], bl.resources['images_clock_settings_words_on']);
             this.wordsButton = cc.MenuItemToggle.create(wordsButtonUnselected, wordsButtonSelected, this.wordsToggle, this);
             this.wordsButton.setPosition(-200, -50);
 
-            var numbersButtonUnselected = new cc.MenuItemImage.create(s_numbers_button_unselected, s_numbers_button_unselected);
-            var numbersButtonSelected = new cc.MenuItemImage.create(s_numbers_button_selected, s_numbers_button_selected);
+            var numbersButtonUnselected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_numbers_off'], bl.resources['images_clock_settings_numbers_off']);
+            var numbersButtonSelected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_numbers_on'], bl.resources['images_clock_settings_numbers_on']);
             this.numbersButton = new cc.MenuItemToggle.create(numbersButtonUnselected, numbersButtonSelected, this.numbersToggle, this);
             this.numbersButton.setPosition(0, -50);
             this.numbersButton.setSelectedIndex(1);
 
-            var sentenceButtonUnselected = new cc.MenuItemImage.create(s_sentence_button_unselected, s_sentence_button_unselected);
-            var sentenceButtonSelected = new cc.MenuItemImage.create(s_sentence_button_selected, s_sentence_button_selected);
+            var sentenceButtonUnselected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_sentence_off'], bl.resources['images_clock_settings_sentence_off']);
+            var sentenceButtonSelected = new cc.MenuItemImage.create(bl.resources['images_clock_settings_sentence_on'], bl.resources['images_clock_settings_sentence_on']);
             this.sentenceButton = new cc.MenuItemToggle.create(sentenceButtonUnselected, sentenceButtonSelected, this.sentenceToggle, this);
             this.sentenceButton.setPosition(200, -50);
             this.sentenceButton.setSelectedIndex(1);
