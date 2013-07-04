@@ -9,7 +9,7 @@ echo "Compiling Resources"
 echo "  Collecting Files"
 echo "window.bl = window.bl || {};" >> $targetFile
 echo "window.bl.resources = {" >> $targetFile
-findResults=($(find ./shared-resources -not \( -iname "*@2x.png" -o -iname "*.js" \)))
+findResults=($(find ./shared-resources -not \( -iname "*@2x.png" -o -iname "*.js" -o -iname "*.otf" -o -iname "*.ttf" \)))
 last=$(( ${#findResults[@]} - 1 ))
 resource_i=0
 for i in  "${!findResults[@]}"
