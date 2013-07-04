@@ -8,9 +8,15 @@ resources=()
 #images first
 echo "Compiling Resources"
 echo "  Collecting Files"
-i=0
-for f in `find ./shared-resources -not \( -iname "*@2x.png" -o -iname "*.js" \)`
+echo "window.bl = window.bl || {};" >> $targetFile
+echo "window.bl.resources = {" >> $targetFile
+findResults=($(find ./shared-resources -not \( -iname "*@2x.png" -o -iname "*.js" \)))
+last=$(( ${#findResults[@]} - 1 ))
+resource_i=0
+for i in  "${!findResults[@]}"
 do
+	f=${findResults[$i]}
+	echo "        $f"
 	# remove the starting .
 	strippedPath=`echo "$f" | sed "s/\.\//\//g"`
 	# clean up the filename
@@ -18,17 +24,25 @@ do
 	#remove the extension
 	varName=${fileNameClean%.*}
 
+	suffix=","
+
+	if [[ $i == $last ]]
+	then
+		suffix=""
+	fi
+
 	# if this is not a directory
 	if [[ $fileNameClean == *.* ]]
 	then
-		echo "var $varName = \"$strippedPath\";" >> $targetFile
-		resources[$i]="$varName"
-		i=$((i+1))
+		echo "    \"$varName\": \"$strippedPath\"$suffix" >> $targetFile
+		resources[$resource_i]="window.bl.resources['$varName']"
+		resource_i=$((resource_i+1))
 	else
 		# append a trailing slash
-		echo "var $varName = \"$strippedPath/\";" >> $targetFile
+		echo "    \"$varName\": \"$strippedPath/\"$suffix" >> $targetFile
 	fi
 done
+echo "};" >> $targetFile
 
 echo "  Writing Resources"
 echo "// Cocos Preloaded Resources" >> $targetFile
@@ -36,14 +50,19 @@ echo "var g_resources = [" >> $targetFile
 
 # get the last index of the array
 last=$(( ${#resources[*]} - 1 ))
-for r in "${!resources[@]}"
+for i in "${!resources[@]}"
 do
-	if [[ $r == $last ]]
+
+	suffix=","
+
+	echo $i $last
+	if [[ $i == $last ]]
 	then
-		echo "    {src:${resources[$r]}}" >> $targetFile
-	else 
-		echo "    {src:${resources[$r]}}," >> $targetFile
-	fi 
+		suffix=""
+	fi
+
+	echo "    {src:${resources[$i]}}$suffix" >> $targetFile
+
 done
 echo "];" >> $targetFile
 
