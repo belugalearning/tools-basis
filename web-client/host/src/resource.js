@@ -3,8 +3,6 @@ window.bl = window.bl || {};
 window.bl.resources = {
     "_shared_resources": "../../shared-resources/",
     "fonts": "../../shared-resources/fonts/",
-    "fonts_beluga_mikado_bold": "../../shared-resources/fonts/Beluga_Mikado-Bold.otf",
-    "fonts_belugamikadobold": "../../shared-resources/fonts/belugamikadobold.ttf",
     "images": "../../shared-resources/images/",
     "images_clock": "../../shared-resources/images/clock/",
     "images_clock_am": "../../shared-resources/images/clock/AM.png",
@@ -169,8 +167,6 @@ window.bl.resources = {
 };
 // Cocos Preloaded Resources
 var g_resources = [
-    {src:window.bl.resources['fonts_beluga_mikado_bold']},
-    {src:window.bl.resources['fonts_belugamikadobold']},
     {src:window.bl.resources['images_clock_am']},
     {src:window.bl.resources['images_clock_am_small']},
     {src:window.bl.resources['images_clock_arrow_down']},
