@@ -208,9 +208,9 @@ var g_resources = [
 ];
 
 for (var i = 0; i < s_digits.length; i++) {
-    g_ressources.push({src:s_digits[i]});
+    g_resources.push({src:s_digits[i]});
 };
 
 for (var i = 0; i < s_clock_cards.length; i++) {
-    g_ressources.push({src:s_clock_cards[i]});
+    g_resources.push({src:s_clock_cards[i]});
 };
