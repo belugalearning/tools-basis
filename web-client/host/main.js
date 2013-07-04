@@ -15,7 +15,7 @@ require.config({
             exports: 'cc'
         },
         'resources': {
-            exports: 'g_ressources'
+            exports: 'g_resources'
         },
         'underscore': {
             exports: '_'
@@ -80,7 +80,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
                 director.setAnimationInterval(1.0 / this.config['frameRate']);
 
                 //load resources
-                cc.LoaderScene.preload(g_ressources, function () {
+                cc.LoaderScene.preload(g_resources, function () {
                     director.replaceScene(new this.startScene());
                 }, this);
 

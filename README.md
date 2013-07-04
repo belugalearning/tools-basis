@@ -1,5 +1,9 @@
 # Tools Basis
 
+## Handy Tools:
+
+Run `./compile_resources.sh` to update the references in resource.js
+
 ## Releasing:
 
 To update the teach.belugalearning.com page with the latest tools see: https://github.com/belugalearning/teach.belugalearning.com#update-to-latest

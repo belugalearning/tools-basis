@@ -12,10 +12,10 @@ define(['cocos2d', 'constants'], function(cc, constants) {
             var fileName;
             switch (this.type) {
                 case HandTypes.HOUR:
-                    fileName = s_hour_handle;
+                    fileName = bl.resources['images_clock_hour_hand_handle'];
                     break;
                 case HandTypes.MINUTE:
-                    fileName = s_minute_handle;
+                    fileName = bl.resources['images_clock_minute_hand_handle'];
                     break;
             }
             this.initWithFile(fileName);
