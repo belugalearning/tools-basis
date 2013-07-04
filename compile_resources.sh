@@ -1,6 +1,6 @@
 #!/bin/bash
 
-targetFile=res.js
+targetFile=web-client/host/src/resource.js
 echo "" > $targetFile
 resources=()
 
