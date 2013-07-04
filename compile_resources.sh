@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 targetFile=res.js
 echo "" > $targetFile
 resources=()
@@ -23,6 +22,7 @@ do
 	fileNameClean=`echo "$strippedPath" | sed "s/\/shared\-resources\///g" | sed "s/\/images\///g" | sed "s/\/fonts\///g" | sed "s/\//\_/g" | sed "s/\-/\_/g" | awk '{print tolower($0)}'`
 	#remove the extension
 	varName=${fileNameClean%.*}
+	finalPath="../..$strippedPath"
 
 	suffix=","
 
@@ -34,12 +34,12 @@ do
 	# if this is not a directory
 	if [[ $fileNameClean == *.* ]]
 	then
-		echo "    \"$varName\": \"$strippedPath\"$suffix" >> $targetFile
+		echo "    \"$varName\": \"$finalPath\"$suffix" >> $targetFile
 		resources[$resource_i]="window.bl.resources['$varName']"
 		resource_i=$((resource_i+1))
 	else
 		# append a trailing slash
-		echo "    \"$varName\": \"$strippedPath/\"$suffix" >> $targetFile
+		echo "    \"$varName\": \"$finalPath/\"$suffix" >> $targetFile
 	fi
 done
 echo "};" >> $targetFile
@@ -55,7 +55,6 @@ do
 
 	suffix=","
 
-	echo $i $last
 	if [[ $i == $last ]]
 	then
 		suffix=""
