@@ -15,7 +15,7 @@ require.config({
             exports: 'cc'
         },
         'resources': {
-            exports: 'g_ressources'
+            exports: 'g_resources'
         },
         'underscore': {
             exports: '_'

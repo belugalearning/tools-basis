@@ -106,7 +106,7 @@ var s_clock_numbers = s_clockImagePath + "Clock_Numbers_All.png";
 var s_clock_title = s_clockImagePath + "Title.png"
 
 
-var g_ressources = [
+var g_resources = [
     //image
     {src:s_HelloWorld},
     {src:s_CloseNormal},
