@@ -8,7 +8,9 @@ require.config({
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'geoboardtool': '../../tools/geoboard/main',
-        'clocktool': '../../tools/clock/main'
+        'toollayer': '../../tools/common/toollayer',
+        'clocktool': '../../tools/clock/main',
+        'sortingtool': '../../tools/sorting/main'
     },
     shim: {
         'cocos2d': {
@@ -29,6 +31,8 @@ var url = top.location.href;
 
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
+} else if (url.match('sorting')) {
+    reqs.push('sortingtool');
 } else {
     reqs.push('clocktool');
 }

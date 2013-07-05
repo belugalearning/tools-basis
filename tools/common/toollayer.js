@@ -44,7 +44,34 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
         },
 
         setQuestion: function (question) {
-            throw {name : "NotImplementedError", message : "This needs implementing"};
+            var self = this;
+            this.question = question;
+
+            var controls = question.toolConfig.controls;
+
+            function recursiveApply (control, state) {
+                if (state.hasOwnProperty('enabled') && typeof control.setEnabled === 'function') {
+                    control.setEnabled(state.enabled || false);
+                }
+                if (state.hasOwnProperty('opacity') && typeof control.setOpacity === 'function') {
+                    control.setOpacity(state.opacity || 0);
+                }
+                if (control._children) {
+                    _.each(control._children, function (child) {
+                        recursiveApply(child, state);
+                    });
+                }
+            }
+
+            _.each(controls, function (v, k) {
+                var control = self.getControl(k);
+                if (control) {
+                    recursiveApply(control, v);
+                    if (v.set) {
+                        control.click();
+                    }
+                }
+            });
         },
 
         noop: function() {}
