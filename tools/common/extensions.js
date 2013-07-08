@@ -71,7 +71,7 @@ define(['cocos2d'], function () {
         } else if (result >= upperBound) {
             result -= Math.floor((result - lowerBound)/range) * range;
         };
-    return result;
-};
+        return result;
+    };
 
 });
