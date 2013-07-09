@@ -74,4 +74,20 @@ define(['cocos2d'], function () {
         return result;
     };
 
+    String.prototype.removeUnnecessaryZerosFromNumberString = function() {
+        var numberString = this;
+        if (numberString.indexOf(".") !== -1) {
+            while (numberString[numberString.length - 1] === "0") {
+                numberString = numberString.slice(0, numberString.length - 1);
+            };
+        };
+        while (numberString[0] === "0" && numberString[1] !== ".") {
+            numberString = numberString.slice(1);
+        };
+        if (numberString[numberString.length - 1] === ".") {
+            numberString = numberString.slice(0, numberString.length - 1);
+        };
+        return numberString;
+    };
+
 });
