@@ -58,6 +58,10 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
             return;
         }
 
+        if (url.match('debug')) {
+            cc.SPRITE_DEBUG_DRAW = 1;
+        }
+
         var Cocos2dApp = cc.Application.extend({
             config:document['ccConfig'],
             ctor:function (scene) {
