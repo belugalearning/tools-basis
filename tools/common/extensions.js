@@ -63,4 +63,8 @@ define(['cocos2d'], function () {
         this.setTexture(texture);
     };
 
+    RegExp.quote = function(str) {
+         return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    };
+
 });

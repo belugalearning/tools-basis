@@ -3,6 +3,7 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
     var ToolLayer = cc.Layer.extend({
 
+        tag: '',
         ctor: function () {
             this._super();
         },

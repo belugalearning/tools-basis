@@ -9,7 +9,7 @@ echo "Compiling Resources"
 echo "  Collecting Files"
 echo "window.bl = window.bl || {};" >> $targetFile
 echo "window.bl.resources = {" >> $targetFile
-findResults=($(find ./shared-resources -not \( -iname ".*" -o -iname "*@2x.png" -o -iname "*.js" -o -iname "*.otf" -o -iname "*.ttf" \)))
+findResults=($(find ./shared-resources ./tools -type f \( -iname "*.png" -o -iname "*.jpg" \) -not \( -iname "*@2x.*" \)))
 last=$(( ${#findResults[@]} - 1 ))
 resource_i=0
 for i in  "${!findResults[@]}"
@@ -22,6 +22,10 @@ do
 	fileNameClean=`echo "$strippedPath" | sed "s/\/shared\-resources\///g" | sed "s/\/images\///g" | sed "s/\/fonts\///g" | sed "s/\//\_/g" | sed "s/\-/\_/g" | awk '{print tolower($0)}'`
 	#remove the extension
 	varName=${fileNameClean%.*}
+	#strip out un-useful bits
+	varName=${varName##*tools_}
+	varName=`echo $varName | sed "s/resources\_//"`
+
 	finalPath="../..$strippedPath"
 
 	suffix=","

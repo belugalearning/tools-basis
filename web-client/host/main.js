@@ -37,6 +37,36 @@ if (url.match('geoboard')) {
     reqs.push('clocktool');
 }
 
+window.bl = window.bl || {
+
+    _tool_resources: undefined,
+    getResource: function (key, resources) {
+
+        if (_.isUndefined(this._tool_resources)) {
+            this._tool_resources = this.getResources(bl.toolTag);
+        }
+
+        resources = _.isUndefined(resources) 
+            ? this._tool_resources 
+            : this.getResources(resources);
+
+        var rxp = new RegExp(RegExp.quote(key), 'i');
+        var exact = _.find(resources, function (x) {
+            return x.match(rxp);
+        });
+        return window.bl.resources[exact];
+
+    },
+
+    getResources: function (key) {
+
+        return _.filter(_.keys(window.bl.resources), function (x) {
+            return x.match(key);
+        });
+
+    }
+};
+
 require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
@@ -96,7 +126,6 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
             }
         });
 
-        window.bl = window.bl || {};
         window.bl.app = new Cocos2dApp(function () {
             var scene = cc.Scene.create();
             var layer = new tool.ToolLayer();
