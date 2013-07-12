@@ -1,0 +1,12 @@
+[submodule "tools/clock"]
+	path = tools/clock
+	url = git@github.com:belugalearning/tool-clock.git
+[submodule "tools/geoboard"]
+	path = tools/geoboard
+	url = git@github.com:belugalearning/tool-geoboard.git
+[submodule "tools/sorting"]
+	path = tools/sorting
+	url = git@github.com:belugalearning/tool-sorting.git
+[submodule "tools/longdivision"]
+	path = tools/longdivision
+	url = git@github.com:belugalearning/tool-longdivision.git
