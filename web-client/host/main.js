@@ -10,7 +10,7 @@ require.config({
         'toollayer': '../../tools/common/toollayer',
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
-        'longdivisiontool': '../../tools/long_division/main',
+        'longdivisiontool': '../../tools/longdivision/main',
         'sortingtool': '../../tools/sorting/main'
     },
     shim: {
@@ -47,6 +47,7 @@ window.bl = window.bl || {
 
         if (_.isUndefined(this._tool_resources)) {
             this._tool_resources = this.getResources(bl.toolTag);
+            this._tool_resources = this._tool_resources.concat(this.getResources('images_'));
         }
 
         resources = _.isUndefined(resources) 
