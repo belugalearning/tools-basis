@@ -7,9 +7,10 @@ require.config({
         'underscore': '../../tools/common/lib/underscore',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
-        'geoboardtool': '../../tools/geoboard/main',
         'toollayer': '../../tools/common/toollayer',
+        'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
+        'longdivisiontool': '../../tools/long_division/main',
         'sortingtool': '../../tools/sorting/main'
     },
     shim: {
@@ -31,10 +32,12 @@ var url = top.location.href;
 
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
+} else if (url.match('clock')) {
+    reqs.push('clocktool');
 } else if (url.match('sorting')) {
     reqs.push('sortingtool');
 } else {
-    reqs.push('clocktool');
+    reqs.push('longdivisiontool');
 }
 
 window.bl = window.bl || {
