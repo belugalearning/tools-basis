@@ -1,6 +1,0 @@
-[submodule "tools/geoboard"]
-	path = tools/geoboard
-	url = git@github.com:belugalearning/tool-geoboard.git
-[submodule "tools/sorting"]
-	path = tools/sorting
-	url = git@github.com:belugalearning/tool-sorting.git
