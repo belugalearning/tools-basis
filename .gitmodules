@@ -4,6 +4,3 @@
 [submodule "tools/sorting"]
 	path = tools/sorting
 	url = git@github.com:belugalearning/tool-sorting.git
-[submodule "tools/clock"]
-	path = tools/clock
-	url = git@github.com:belugalearning/tool-clock.git
