@@ -41,6 +41,30 @@ define(['cocos2d'], function () {
         this.drawPoly(vertices, fillColour, 1, borderColour);
     };
 
+    cc.DrawNode.generateCircle = function(position, radius) {
+        var vertices = [];
+        var x = 0;
+        var y = radius;
+        var angle = 0;
+        var range = 2 * Math.PI;
+
+        var vertices = [];
+        while (angle < range) {
+           angle += 0.01;
+           x = position.x + (radius * Math.cos(angle));
+           y = position.y + (radius * Math.sin(angle));
+           vertices.push(cc.p(x, y));
+        }
+
+        return vertices;
+    };
+
+    cc.DrawNode.prototype.drawCircle = function(position, radius, fillColour, borderWidth, borderColour) {
+
+        var vertices = cc.DrawNode.generateCircle(position, radius);
+        this.drawPoly(vertices, fillColour, 1, borderColour);
+    };
+
     cc.MenuItemImage.prototype.propertyHighlight = function(highlight) {
         if (highlight !== this.highlight) {
             var position;
