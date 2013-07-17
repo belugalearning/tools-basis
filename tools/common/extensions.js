@@ -94,19 +94,20 @@ define(['cocos2d'], function () {
          return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     };
 
-    cc.LabelTTF.prototype.setStringAutoFontSize = function(string, maxSize) {
+    cc.LabelTTF.prototype.setStringAutoFontSize = function(string, maxSize, tolerance) {
         var upperLimit = maxSize;
         var lowerLimit = 0;
         this.setString(string);
         while (true) {
             var halfway = (upperLimit + lowerLimit)/2;
             this.setFontSize(halfway);
+            var contentSize = this.getContentSize();
             if (this.getContentSize().width > this.boundary.width || this.getContentSize().height > this.boundary.height) {
                 upperLimit = halfway;
             } else {
                 lowerLimit = halfway;
             }
-            if (upperLimit - lowerLimit < 1) {
+            if (upperLimit - lowerLimit < tolerance) {
                 this.setFontSize(lowerLimit);
                 break;
             };
