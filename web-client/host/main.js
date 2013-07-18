@@ -7,6 +7,7 @@ require.config({
         'underscore': '../../tools/common/lib/underscore',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
+        'bldrawnode': '../../tools/common/BLDrawNode',
         'toollayer': '../../tools/common/toollayer',
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
