@@ -48,8 +48,6 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
             var self = this;
             this.question = question;
 
-            var controls = question.toolConfig.controls;
-
             function recursiveApply (control, state) {
                 if (state.hasOwnProperty('enabled') && typeof control.setEnabled === 'function') {
                     control.setEnabled(state.enabled || false);
@@ -64,15 +62,20 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
                 }
             }
 
-            _.each(controls, function (v, k) {
-                var control = self.getControl(k);
-                if (control) {
-                    recursiveApply(control, v);
-                    if (v.set) {
-                        control.click();
+            if (question.hasOwnProperty('toolConfig') && question.toolConfig.hasOwnProperty('controls')) {
+
+                var controls = question.toolConfig.controls;
+
+                _.each(controls, function (v, k) {
+                    var control = self.getControl(k);
+                    if (control) {
+                        recursiveApply(control, v);
+                        if (v.set) {
+                            control.click();
+                        }
                     }
-                }
-            });
+                });
+            }
         },
 
         noop: function() {}
