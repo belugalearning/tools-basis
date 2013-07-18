@@ -12,6 +12,7 @@ require.config({
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'bldrawnode': '../../tools/common/BLDrawNode',
+        'stackedsprite': '../../tools/common/stacked-sprite',
         'toollayer': '../../tools/common/toollayer',
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
