@@ -1,37 +1,40 @@
-define([], function() {
+define(['cocos2d', 'underscore'], function(cc, _) {
 	'use strict';
 
 	var StackedSprite = cc.Node.extend({
-		ctor:function() {
+		ctor: function() {
 			this._super();
+            // Set the default anchor point
+            this.ignoreAnchorPointForPosition(false);
+            this.setAnchorPoint(cc.p(1, 1));
 		},
 
-		setup:function(instructions) {
-			var backingColor = instructions['backingColor'];
-			if (backingColor) {
-				var height = backingColor['height'];
-				var width = backingColor['width'];
-				var color = cc.c4b(backingColor['color'].r, backingColor['color'].g, backingColor['color'].b, 255);
-				var colorLayer = new cc.LayerColor();
-				colorLayer.init(color, height, width);
-				colorLayer.setPosition(-height/2, -width/2);
-				this.addChild(colorLayer);
-			};
-			var images = instructions['images'];
-			for (var i = 0; i < images.length; i++) {
-				var image = images[i];
-				var filename = image['filename'];
-				var resource = window.bl.getResource(filename);
-				var sprite = new cc.Sprite();
-				sprite.initWithFile(resource);
-				this.addChild(sprite);
-				var priority = image['priority'] || 0;
-				sprite.setZOrder(priority);
-				var position = image['position'];
+		setup: function(instructions) {
+			var self = this;
+			var layers = instructions['layers'];
+			_.each(layers, function (layer) {
+				var l;
+				var height = layer.height;
+				var width = layer.width;
+				if (layer.hasOwnProperty('color')) {
+					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
+					l = new cc.LayerColor();
+					l.init(color, width, height);
+				} else {
+					var filename = layer.filename;
+					var resource = window.bl.getResource(filename);
+					var l = new cc.Sprite();
+					l.initWithFile(resource);
+				}
+				var position = layer.position;
 				if (position) {
-					sprite.setPosition(position['x'], position['y']);
-				};
-			};
+					l.setPosition(position['x'], position['y']);
+				}
+				var priority = layer.priority || 0;
+				l.setZOrder(priority);
+				self.addChild(l);
+				self.setContentSize(l.getBoundingBox().size)
+			});
 		},
 	})
 

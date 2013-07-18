@@ -42,10 +42,15 @@ Tool will be able to:
 Stacked sprite creates a node with sprites stacked on top of each other from an object in the following format:
 
 	{
-		backingColor (optional): {height: int, width: int, color:{r: int, g: int, b: int}},
-
-		images:[
-			{filename: string, priority (optional): int, position (optional):{x: int, y: int}},
+		layers:[
+			{
+				filename (optional): string, 
+				color (optional):{r: int, g: int, b: int, a},
+					height (when color): int, 
+					width (when color): int, 
+				priority (optional): int, 
+				position (optional):{x: int, y: int}
+			},
 			...
 		],
 	}
