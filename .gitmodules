@@ -10,3 +10,6 @@
 [submodule "tools/longdivision"]
 	path = tools/longdivision
 	url = git@github.com:belugalearning/tool-longdivision.git
+[submodule "expression-service"]
+	path = expression-service
+	url = git@github.com:belugalearning/expression-service.git
