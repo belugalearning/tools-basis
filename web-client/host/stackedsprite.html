@@ -1,0 +1,61 @@
+<html>
+<head>
+	<title>Stacked Sprite interface</title>
+</head>
+<body>
+	<script type="text/javascript" src="../../tools/stackedspritepreview/processInput.js"></script>
+	<h1>Interface for creating stacked sprites:</h1>
+	<form name="stackedSpriteForm">
+		<input type="radio" name="layer" value="image">Image<br>
+		<input type="radio" name="layer" value="color">Color<br>
+		Filename:<input type="text" class="clearInput" name="filename"><br>
+		Color: Red:<input type="text" class="clearInput" name="red"> Green:<input type="text" class="clearInput" name="green"> Blue:<input type="text" class="clearInput" name="blue"> Alpha:<input type="text" class="clearInput" name="alpha"><br>
+		Height: <input type="text" class="clearInput" name="height"> Width: <input type="text" class="clearInput" name="width"><br>
+		Priority:<input type="text" class="clearInput" name="priority"><br>
+		Position: x:<input type="text" class="clearInput" name="xPosition"> y:<input type="text" class="clearInput" name="yPosition"><br>
+		<input type="button" value="Add" onClick="processInput()">
+	</form>
+
+	<h3>Object:</h3>
+	<div style="border-style:dashed;border-width:1px">
+		<span id="objectDisplay"></span>
+	</div>
+	<script type="text/javascript">
+		var objectDisplay = document.getElementById("objectDisplay");
+		objectDisplay.innerHTML = JSON.stringify({layers:[]});
+	</script>
+
+	<h3>Preview:</h3>
+
+    <!-- // <script type="text/javascript" src="/content-service/index.js"></script> -->
+    <script type="text/javascript" src="../../tools/common/lib/require.js"></script>
+
+
+	<canvas id="gameCanvas"></canvas>
+
+	<script type="text/javascript">
+	    document.ccConfig = {
+	        COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
+	        box2d:false,
+	        chipmunk:true,
+	        showFPS:true,
+	        loadExtension:true,
+	        frameRate:60,
+	        tag:'gameCanvas', //the dom element to run cocos2d on
+	        engineDir:'../cocos2d/',
+	        appFiles:[]
+		};
+	</script>
+
+	<script src="../cocos2d/platform/jsloader.js"></script>
+
+	<script type="text/javascript" src="../../shared-resources/exprmap-defaults.js"></script>
+
+	<script type="text/javascript" src="emapCopyDefaults.js"></script>
+
+
+
+
+
+</body>
+</html>

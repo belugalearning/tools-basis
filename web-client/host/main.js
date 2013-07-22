@@ -17,7 +17,8 @@ require.config({
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
         'longdivisiontool': '../../tools/longdivision/main',
-        'sortingtool': '../../tools/sorting/main'
+        'sortingtool': '../../tools/sorting/main',
+        'stackedspritepreviewtool': '../../tools/stackedspritepreview/main'
     },
     shim: {
         'cocos2d': {
@@ -36,12 +37,17 @@ var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensi
 
 var url = top.location.href;
 
+// reqs.push('stackedspritepreviewtool');
+// reqs.push('clocktool');
+
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
 } else if (url.match('clock')) {
     reqs.push('clocktool');
 } else if (url.match('sorting')) {
     reqs.push('sortingtool');
+} else if (url.match('stackedsprite')) {
+    reqs.push('stackedspritepreviewtool');
 } else {
     reqs.push('longdivisiontool');
 }
