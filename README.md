@@ -55,4 +55,4 @@ Stacked sprite creates a node with sprites stacked on top of each other from an 
 		],
 	}
 
-The filenames are those in resource.js
+The filenames are those in resource.js. A basic interface for creating stacked sprites is in web-client/host/stackedsprite.html
