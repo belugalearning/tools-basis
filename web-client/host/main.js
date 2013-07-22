@@ -46,8 +46,7 @@ if (url.match('geoboard')) {
     reqs.push('longdivisiontool');
 }
 
-window.bl = window.bl || {
-
+window.bl = top.$.extend(window.bl, {
     _tool_resources: undefined,
     getResource: function (key, resources) {
 
@@ -75,7 +74,7 @@ window.bl = window.bl || {
         });
 
     }
-};
+}, true);
 
 require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
