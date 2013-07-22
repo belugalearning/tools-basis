@@ -1,6 +1,13 @@
 define(['cocos2d'], function () {
     'use strict';
 
+
+
+    window.bl = window.bl || {};
+    window.bl.PolyRectMake = function (x, y, width, height) {
+        return [{x:x, y:y}, {x:x, y:y+height}, {x:x+width, y:y+height}, {x:x+width, y:y}];
+    }
+
     cc.Sprite.prototype.touched = function(touchLocation) {
         var parent = this.getParent();
         var touchRelativeToParent = parent.convertToNodeSpace(touchLocation);

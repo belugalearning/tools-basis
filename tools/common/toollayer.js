@@ -10,6 +10,11 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
         _controls: {},
 
+        reset: function () {
+            this._controls = {}; 
+            this.removeAllChildren();
+        },
+
         registerControl: function (id, control) {
             /* 
             Used to register a control with the toolLayer, which in turn exposes access to the ToolHandler
