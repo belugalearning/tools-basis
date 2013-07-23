@@ -23,7 +23,7 @@ define(['cocos2d', 'underscore'], function(cc, _) {
 					self.addChild(layer);
 					layer.drawShape(shape, color, 0, cc.c4f(0,0,0,1));
 
-				if (layer.hasOwnProperty('color')) {
+				} else if (layer.hasOwnProperty('color')) {
 					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
 					l = new cc.LayerColor();
 					l.init(color, width, height);
