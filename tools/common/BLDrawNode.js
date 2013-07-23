@@ -5,9 +5,9 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     bl.DRAWNODE_TYPE_CIRCLE = 'circle';
     bl.DRAWNODE_TYPE_DART = 'dart';
     bl.DRAWNODE_TYPE_IRREGULAR_POLYGON = 'irregular_polygon';
-    bl.DRAWNODE_TYPE_SHORT_ISOSCELES = 'isosceles_triangle';
+    bl.DRAWNODE_TYPE_SHORT_ISOSCELES = 'short_isosceles_triangle';
     bl.DRAWNODE_TYPE_EQUILATERAL = 'equilateral_triangle';
-    bl.DRAWNODE_TYPE_TALL_ISOSCELES = 'tall_isosceles';
+    bl.DRAWNODE_TYPE_TALL_ISOSCELES = 'isosceles_triangle';
     bl.DRAWNODE_TYPE_KITE = 'kite';
     bl.DRAWNODE_TYPE_PARALLELOGRAM = 'parallelogram';
     bl.DRAWNODE_TYPE_RECTANGLE = 'rectangle';
@@ -140,18 +140,18 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
 
                     context.beginPath();
-                    context.moveTo(30, 96);
+                    context.moveTo(30, 66);
                     context.lineTo((53), (element.a));
-                    context.lineTo(76, 96);
-                    context.lineTo(30, 96);
+                    context.lineTo(76, 66);
+                    context.lineTo(30, 66);
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
                     context.beginPath();
-                    context.moveTo(6, 90);
+                    context.moveTo(26, 90);
                     context.lineTo((53), (element.a));
                     context.lineTo(100, 90);
-                    context.lineTo(6, 90);
+                    context.lineTo(206, 90);
                     context.stroke();
 
                 } else if (element.type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
@@ -268,7 +268,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
 
-                element.a = Math.floor(Math.random() * 45) + 5;
+                element.a = Math.floor(Math.random() * 65) + 5;
 
             } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
