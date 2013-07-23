@@ -16,6 +16,13 @@ define(['cocos2d', 'underscore'], function(cc, _) {
 				var l;
 				var height = layer.height;
 				var width = layer.width;
+				if (layer.hasOwnProperty('shape')) {
+
+					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
+					var layer = new BLDrawNode();
+					self.addChild(layer);
+					layer.drawShape(shape, color, 0, cc.c4f(0,0,0,1));
+
 				if (layer.hasOwnProperty('color')) {
 					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
 					l = new cc.LayerColor();
