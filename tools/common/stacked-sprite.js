@@ -1,4 +1,4 @@
-define(['cocos2d', 'underscore'], function(cc, _) {
+define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 	'use strict';
 
 	var StackedSprite = cc.Node.extend({
@@ -16,7 +16,14 @@ define(['cocos2d', 'underscore'], function(cc, _) {
 				var l;
 				var height = layer.height;
 				var width = layer.width;
-				if (layer.hasOwnProperty('color')) {
+				if (layer.hasOwnProperty('shape')) {
+
+					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
+					l = new BLDrawNode();
+					l.drawShape(layer.shape, color, 0, cc.c4f(0,0,0,0));
+					l.setContentSize(cc.SizeMake(width, height));
+
+				} else if (layer.hasOwnProperty('color')) {
 					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
 					l = new cc.LayerColor();
 					l.init(color, width, height);
