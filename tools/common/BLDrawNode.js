@@ -6,6 +6,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     bl.DRAWNODE_TYPE_DART = 'dart';
     bl.DRAWNODE_TYPE_IRREGULAR_POLYGON = 'irregular_polygon';
     bl.DRAWNODE_TYPE_SHORT_ISOSCELES = 'isosceles_triangle';
+    bl.DRAWNODE_TYPE_EQUILATERAL = 'equilateral_triangle';
     bl.DRAWNODE_TYPE_TALL_ISOSCELES = 'tall_isosceles';
     bl.DRAWNODE_TYPE_KITE = 'kite';
     bl.DRAWNODE_TYPE_PARALLELOGRAM = 'parallelogram';
@@ -77,7 +78,21 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     context.lineTo(element.b, 0);
                     context.lineTo(0, 0);
 
-                } else if (element.type === bl.DRAWNODE_TYPE_PENTAGON ||
+                } else if (element.type === bl.DRAWNODE_TYPE_EQUILATERAL) {
+
+                    var side = 53;
+                    var h = side * (Math.sqrt(3)/2);
+
+                    context.beginPath();
+                    context.translate(50, 40);
+                    context.moveTo(0, -h / 2);
+                    context.lineTo( -side / 2, h / 2);
+                    context.lineTo(side / 2, h / 2);
+                    context.lineTo(0, -h / 2);
+
+                } else if (
+                    element.type === bl.DRAWNODE_TYPE_EQUILATERAL ||
+                    element.type === bl.DRAWNODE_TYPE_PENTAGON ||
                     element.type === bl.DRAWNODE_TYPE_HEXAGON ||
                     element.type === bl.DRAWNODE_TYPE_HEPTAGON ||
                     element.type === bl.DRAWNODE_TYPE_OCTAGON ||
@@ -87,9 +102,9 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     element.type === bl.DRAWNODE_TYPE_DODECAGON) {
 
                     context.beginPath();
-                    context.moveTo(103, 53);
-                    for (var n = 1; n < element.sides + 1; n++) {
-                        context.lineTo(53 + 50 * Math.cos(n * element.theta), 53 + 50 * Math.sin(n * element.theta));
+                    context.moveTo(0, 0);
+                    for (var i = 0; i < element.sides; i++) {
+                        context.lineTo(53 * Math.cos(i * element.theta), 53 * Math.sin(i * element.theta));
                     }
 
                 } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
@@ -153,15 +168,16 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 } else if (element.type === bl.DRAWNODE_TYPE_DART) {
 
                     context.beginPath();
-                    context.moveTo(53, 40);
-                    context.lineTo((53 + element.b), (40 - element.c));
-                    context.lineTo(53, (40 + element.d));
-                    context.lineTo((53 - element.b), (40 - element.c));
-                    context.lineTo(53, 40);
+                    context.moveTo(0, 0);
+                    context.lineTo((0 + element.b), (0 - element.c));
+                    context.lineTo(0, (0 + element.d));
+                    context.lineTo((0 - element.b), (0 - element.c));
+                    context.lineTo(0, 0);
 
                 }
                 context.fill();
                 context.stroke();
+                context.closePath();
             });
         },
 
@@ -175,8 +191,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 element.x = Math.floor(Math.random() * 25) + 0;
                 element.x2 = Math.floor(Math.random() * 20) + 5;
-                element.a = Math.floor(Math.random() * 35) + 20;
-                element.y = Math.floor(Math.random() * 75) + 30;
+                element.a = Math.floor(Math.random() * 15) + 20;
+                element.y = Math.floor(Math.random() * 25) + 30;
 
             } else if (element.type === bl.DRAWNODE_TYPE_SQUARE) {
 
@@ -192,6 +208,11 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 element.a = Math.floor(Math.random() * 45) + 10;
                 element.b = Math.floor(Math.random() * 45) + 10;
+
+            } else if (element.type === bl.DRAWNODE_TYPE_EQUILATERAL) {
+
+                element.sides = 3;
+                element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_PENTAGON) {
 
