@@ -180,7 +180,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_SQUARE) {
 
-                element.x = Math.floor(Math.random() * 86) + 20;
+                element.x = Math.floor(Math.random() * 36) + 20;
 
             } else if (element.type === bl.DRAWNODE_TYPE_SCALENE) {
 
@@ -190,8 +190,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
 
-                element.a = Math.floor(Math.random() * 95) + 10;
-                element.b = Math.floor(Math.random() * 95) + 10;
+                element.a = Math.floor(Math.random() * 45) + 10;
+                element.b = Math.floor(Math.random() * 45) + 10;
 
             } else if (element.type === bl.DRAWNODE_TYPE_PENTAGON) {
 
@@ -230,8 +230,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
 
-                element.b = Math.floor(Math.random() * 56) + 40;
-                element.a = Math.floor(Math.random() * 30) + 10;
+                element.b = Math.floor(Math.random() * 16) + 40;
+                element.a = Math.floor(Math.random() * 30) + 15;
 
             } else if (element.type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
 
@@ -242,7 +242,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             } else if (element.type === bl.DRAWNODE_TYPE_KITE) {
 
                 element.a = Math.floor(Math.random() * 20) + 10;
-                element.b = Math.floor(Math.random() * 45) + 30;
+                element.b = Math.floor(Math.random() * 25) + 30;
                 element.c = Math.floor(Math.random() * 30) + 15;
 
             } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
