@@ -17,12 +17,11 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 				var height = layer.height;
 				var width = layer.width;
 				if (layer.hasOwnProperty('shape')) {
-
-					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
+					var color = cc.c4FFromccc4B(cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a));
+					console.log(layer.color, color)
 					l = new BLDrawNode();
 					l.drawShape(layer.shape, color, 0, cc.c4f(0,0,0,0));
 					l.setContentSize(cc.SizeMake(width, height));
-
 				} else if (layer.hasOwnProperty('color')) {
 					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
 					l = new cc.LayerColor();
