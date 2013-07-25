@@ -79,6 +79,8 @@ window.bl = top.$.extend(window.bl, {
 require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
     'use strict';
 
+    window.bl.qs = window.bl.getQueryParams(window.top.location.search);
+
     domReady(function() {
 
         var d = document;
@@ -115,7 +117,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
                 // initialize director
                 var director = cc.Director.getInstance();
 
-                cc.EGLView.getInstance().setDesignResolutionSize(1024,768,cc.RESOLUTION_POLICY.SHOW_ALL);
+                cc.EGLView.getInstance().setDesignResolutionSize(window.bl.qs.width || 1024, window.bl.qs.height || 768,cc.RESOLUTION_POLICY.SHOW_ALL);
 
                 // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
                 //director.enableRetinaDisplay(true);
