@@ -138,4 +138,12 @@ define(['cocos2d'], function () {
         }
     };
 
+    Array.prototype.spaceNodesLinear = function(horizontalSpacing, verticalSpacing) {
+        for (var i = 0; i < this.length; i++) {
+              var xPosition = -horizontalSpacing * (this.length-1)/2 + horizontalSpacing * i;
+              var yPosition = -verticalSpacing * (this.length-1)/2 + verticalSpacing * i;
+              this[i].setPosition(xPosition, yPosition);
+        };
+    };
+
 });
