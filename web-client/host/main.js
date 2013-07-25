@@ -22,7 +22,8 @@ require.config({
         'longdivisiontool': '../../tools/longdivision/main',
         'sortingtool': '../../tools/sorting/main',
         'shapebuilder': '../../tools/tests/shapebuilder/main',
-        'tool_base': '../../tools/tests/tool_base/main'
+        'tool_base': '../../tools/tests/tool_base/main',
+        'numberbondstool': '../../tools/numberbonds/main'
     },
     shim: {
         'cocos2d': {
@@ -51,6 +52,8 @@ if (url.match('geoboard')) {
     reqs.push('shapebuilder');
 } else if (url.match('tool_base')) {
     reqs.push('tool_base');
+} else if (url.match('numberbonds')) {
+    reqs.push('numberbondstool');
 } else {
     reqs.push('longdivisiontool');
 }
