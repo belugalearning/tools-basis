@@ -1,9 +1,3 @@
-require.config({
-	paths: {
-		'buttonsprite': '../../tools/common/button-sprite'
-	}
-})
-
 define(['buttonsprite'], function(ButtonSprite) {
 
 	backgroundFilename:null;
