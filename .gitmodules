@@ -13,3 +13,6 @@
 [submodule "expression-service"]
 	path = expression-service
 	url = git@github.com:belugalearning/expression-service.git
+[submodule "tools/numberbonds"]
+	path = tools/numberbonds
+	url = git@github.com:belugalearning/tool-numberbonds.git
