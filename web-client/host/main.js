@@ -38,7 +38,8 @@ var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensi
 
 var url = top.location.href;
 
-reqs.push('longdivisiontool');
+reqs.push('piesplittertool');
+// reqs.push('longdivisiontool');
 
 /*if (url.match('geoboard')) {
     reqs.push('geoboardtool');

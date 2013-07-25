@@ -30,7 +30,7 @@ define(['buttonsprite'], function(ButtonSprite) {
 			this.background = background;
 
             this.closeButton = new ButtonSprite();
-            this.closeButton.initWithFile(window.bl.getResource('settings_free_form_closebutton'));
+            this.closeButton.initWithFile(window.bl.getResource('free_form_closebutton'));
             this.closeButton.setPosition(960, 710);
             this.closeButton.pressFunction = this.processCloseSettings;
             this.closeButton.target = this;
@@ -38,7 +38,6 @@ define(['buttonsprite'], function(ButtonSprite) {
 
             this.onPosition = cc.p(size.width/2, size.height/2);
             this.offPosition = cc.p(size.width/2, size.height * 3/2);
-            // this.closeButtonPosition = cc.p
 
             var settingsButtonBase = new cc.Sprite();
             settingsButtonBase.initWithFile(window.bl.getResource('settings_button_base'));
@@ -51,10 +50,12 @@ define(['buttonsprite'], function(ButtonSprite) {
             this.settingsButton.target = this;
             this.settingsButton.setPosition(cc.pAdd(settingsButtonBase.getAnchorPointInPoints(), cc.p(8, -2)));
             settingsButtonBase.addChild(this.settingsButton);
+
+            this.touchProcessors.push(this.closeButton);
 		},
 
 		registerWithTouchDispatcher:function() {
-			cc.Director.getInstance().getTouchDispatcher.addTargetedDelegate(this, this._touchPriority, true);
+			cc.Director.getInstance().getTouchDispatcher().addTargetedDelegate(this, this._touchPriority, true);
 		},
 
 		onTouchBegan:function(touch, event) {
