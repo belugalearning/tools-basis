@@ -14,6 +14,7 @@ require.config({
         'bldrawnode': '../../tools/common/BLDrawNode',
         'stackedsprite': '../../tools/common/stacked-sprite',
         'toollayer': '../../tools/common/toollayer',
+        'settingslayer': '../../tools/common/settings-layer',
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
         'longdivisiontool': '../../tools/longdivision/main',
@@ -37,7 +38,7 @@ var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensi
 
 var url = top.location.href;
 
-reqs.push('piesplittertool');
+reqs.push('longdivisiontool');
 
 /*if (url.match('geoboard')) {
     reqs.push('geoboardtool');
