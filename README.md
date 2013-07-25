@@ -24,6 +24,16 @@ All tools should respond to `setQuestion(question)` and `getState()`.
 
 ## Tools
 
+### Creating a new Tool
+
++ Duplicate `tools/tests/tools_base` into it's own folder outside of the project
++ Rename it something suitable
++ Initialise it as a git repo
++ Add it to the tools-basis repo as a submodule
++ Add it to the require paths in `tools-basis/web-client/host/main.js`
++ Add it to the if/else block in `tools-basis/web-client/host/main.js`
++ Run it using `python -m SimpleHTTPServer 2222 && open "http://localhost:2222/web-client/host/?{{ tool_name }}"
+
 ### Sorting
 
 #### Expected behaviour
