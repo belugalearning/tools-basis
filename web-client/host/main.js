@@ -14,11 +14,15 @@ require.config({
         'bldrawnode': '../../tools/common/BLDrawNode',
         'stackedsprite': '../../tools/common/stacked-sprite',
         'toollayer': '../../tools/common/toollayer',
+        'draggable': '../../tools/common/draggable',
+        'draggableLayer': '../../tools/common/draggableLayer',
+
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
         'longdivisiontool': '../../tools/longdivision/main',
         'sortingtool': '../../tools/sorting/main',
-        'shapebuilder': '../../tools/tests/shapebuilder/main'
+        'shapebuilder': '../../tools/tests/shapebuilder/main',
+        'tool_base': '../../tools/tests/tool_base/main'
     },
     shim: {
         'cocos2d': {
@@ -45,6 +49,8 @@ if (url.match('geoboard')) {
     reqs.push('sortingtool');
 } else if (url.match('shape')) {
     reqs.push('shapebuilder');
+} else if (url.match('tool_base')) {
+    reqs.push('tool_base');
 } else {
     reqs.push('longdivisiontool');
 }
