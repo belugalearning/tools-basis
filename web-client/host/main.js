@@ -17,7 +17,8 @@ require.config({
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
         'longdivisiontool': '../../tools/longdivision/main',
-        'sortingtool': '../../tools/sorting/main'
+        'sortingtool': '../../tools/sorting/main',
+        'shapebuilder': '../../tools/tests/shapebuilder/main'
     },
     shim: {
         'cocos2d': {
@@ -42,9 +43,12 @@ if (url.match('geoboard')) {
     reqs.push('clocktool');
 } else if (url.match('sorting')) {
     reqs.push('sortingtool');
+} else if (url.match('shape')) {
+    reqs.push('shapebuilder');
 } else {
     reqs.push('longdivisiontool');
 }
+
 
 window.bl = top.$.extend(window.bl, {
     _tool_resources: undefined,
