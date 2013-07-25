@@ -16,6 +16,7 @@ require.config({
         'toollayer': '../../tools/common/toollayer',
         'draggable': '../../tools/common/draggable',
         'draggableLayer': '../../tools/common/draggableLayer',
+        'blbutton': '../../tools/common/blbutton',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
