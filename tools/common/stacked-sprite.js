@@ -5,8 +5,8 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 		ctor: function() {
 			this._super();
             // Set the default anchor point
-            this.ignoreAnchorPointForPosition(false);
-            this.setAnchorPoint(cc.p(1, 1));
+            // this.ignoreAnchorPointForPosition(false);
+            // this.setAnchorPoint(cc.p(0., 1));
 		},
 
 		setup: function(instructions) {
@@ -17,6 +17,7 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 				var height = layer.height;
 				var width = layer.width;
 				if (layer.hasOwnProperty('shape')) {
+					console.log(layer);
 					var color = cc.c4FFromccc4B(cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a));
 					l = new BLDrawNode();
 					l.drawShape(layer.shape, color, 0, cc.c4f(0,0,0,0));
