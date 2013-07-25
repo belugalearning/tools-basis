@@ -32,7 +32,7 @@ All tools should respond to `setQuestion(question)` and `getState()`.
 + Add it to the tools-basis repo as a submodule
 + Add it to the require paths in `tools-basis/web-client/host/main.js`
 + Add it to the if/else block in `tools-basis/web-client/host/main.js`
-+ Run it using `python -m SimpleHTTPServer 2222 && open "http://localhost:2222/web-client/host/?{{ tool_name }}"
++ Run it using `open "http://localhost:2222/web-client/host/?{{ tool_name }}" && python -m SimpleHTTPServer 2222`
 
 ### Sorting
 
