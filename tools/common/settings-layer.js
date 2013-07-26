@@ -40,7 +40,7 @@ define(['buttonsprite'], function(ButtonSprite) {
 
             this.settingsButton = new ButtonSprite();
             this.settingsButton.initWithFile(window.bl.getResource('settings_button'));
-            this.settingsButton.pressFunction = this.moveSettingsOn;
+            this.settingsButton.pressFunction = this.processOpenSettings;
             this.settingsButton.target = this;
             this.settingsButton.setPosition(cc.pAdd(settingsButtonBase.getAnchorPointInPoints(), cc.p(8, -2)));
             settingsButtonBase.addChild(this.settingsButton);
@@ -57,7 +57,8 @@ define(['buttonsprite'], function(ButtonSprite) {
 			if (this.active) {
 				for (var i = 0; i < this.touchProcessors.length; i++) {
 					var touchProcessor = this.touchProcessors[i];
-					touchProcessor.processTouch(touchLocation);
+					var argumentsToPass = touchProcessor.argumentsToPass || [];
+					touchProcessor.processTouch(touchLocation, argumentsToPass);
 				};
 			} else {
 				this.settingsButton.processTouch(touchLocation);
@@ -75,6 +76,10 @@ define(['buttonsprite'], function(ButtonSprite) {
             var moveOff = cc.MoveTo.create(0.3, this.offPosition);
             this.background.runAction(moveOff);
             this.active = false;
+        },
+
+        processOpenSettings:function() {
+        	this.moveSettingsOn();
         },
 
 		processCloseSettings:function() {

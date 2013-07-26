@@ -9,7 +9,8 @@ define([], function() {
 
 		processTouch:function(touchLocation) {
 			if (this.touched(touchLocation)) {
-				this.pressFunction.call(this.target);
+				var argumentsToPass = _.rest(arguments)[0];
+				this.pressFunction.call(this.target, argumentsToPass);
 			};
 		},
 
