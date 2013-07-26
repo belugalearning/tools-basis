@@ -18,4 +18,4 @@
 	url = git@github.com:belugalearning/tool-numberbonds.git
 [submodule "tools/piesplitter"]
 	path = tools/piesplitter
-	url = git@github.com:brontosaurus/tool-piesplitter.git
+	url = git@github.com:belugalearning/tool-piesplitter.git
