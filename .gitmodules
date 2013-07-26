@@ -16,3 +16,6 @@
 [submodule "tools/numberbonds"]
 	path = tools/numberbonds
 	url = git@github.com:belugalearning/tool-numberbonds.git
+[submodule "tools/piesplitter"]
+	path = tools/piesplitter
+	url = git@github.com:brontosaurus/tool-piesplitter.git
