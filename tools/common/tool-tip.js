@@ -5,7 +5,7 @@ define([], function() {
 		ctor:function() {
 			this._super();
 			this.initWithFile(window.bl.getResource('tooltip'));
-			this.label = new cc.LabelTTF.create("a", "mikadoBold", 14);
+			this.label = new cc.LabelTTF.create("", "mikadoBold", 14);
 			this.label.setColor(0,0,0);
 			this.label.setPosition(32, 28);
 			this.addChild(this.label);

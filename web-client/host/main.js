@@ -17,6 +17,7 @@ require.config({
         'draggable': '../../tools/common/draggable',
         'draggableLayer': '../../tools/common/draggableLayer',
         'blbutton': '../../tools/common/BLButton',
+        'settingslayer': '../../tools/common/settings-layer',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
@@ -24,7 +25,8 @@ require.config({
         'sortingtool': '../../tools/sorting/main',
         'shapebuilder': '../../tools/tests/shapebuilder/main',
         'tool_base': '../../tools/tests/tool_base/main',
-        'numberbondstool': '../../tools/numberbonds/main'
+        'numberbondstool': '../../tools/numberbonds/main',
+        'piesplittertool': '../../tools/piesplitter/main'
     },
     shim: {
         'cocos2d': {
@@ -55,10 +57,11 @@ if (url.match('geoboard')) {
     reqs.push('tool_base');
 } else if (url.match('numberbonds')) {
     reqs.push('numberbondstool');
+} else if (url.match('piesplitter')) {
+    reqs.push('piesplittertool');
 } else {
     reqs.push('longdivisiontool');
 }
-
 
 window.bl = top.$.extend(window.bl, {
     _tool_resources: undefined,
