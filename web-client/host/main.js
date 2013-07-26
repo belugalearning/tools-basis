@@ -62,7 +62,7 @@ if (url.match('geoboard')) {
 
 window.bl = top.$.extend(window.bl, {
     _tool_resources: undefined,
-    getResource: function (key, resources) {
+    _getResource: function (key, resources) {
 
         if (_.isUndefined(this._tool_resources)) {
             this._tool_resources = this.getResources(bl.toolTag);
@@ -87,7 +87,22 @@ window.bl = top.$.extend(window.bl, {
             return x.match(key);
         });
 
-    }
+    },
+
+    getResource: function (key, resources) {
+
+        var image = new Image();
+        var res = window.bl._getResource(key, resources);
+        image.src = res.src
+        image.width = res.width;
+        image.height = res.height;
+        return image;
+    },
+
+    getResourceAsSprite: function (key, resources) {
+        return cc.Sprite.createWithTexture(bl.getResourceAsImage(key, resources));
+    },
+
 }, true);
 
 require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
@@ -143,7 +158,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool
                 director.setAnimationInterval(1.0 / this.config['frameRate']);
 
                 //load resources
-                cc.LoaderScene.preload(g_resources, function () {
+                cc.LoaderScene.preload([], function () {
                     director.replaceScene(new this.startScene());
                 }, this);
 
