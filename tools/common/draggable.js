@@ -2,38 +2,15 @@ require.config({
     paths: {}
 });
 
-define(['cocos2d'], function (cc) {
+define(['cocos2d', 'blbutton'], function (cc, BlButton) {
     'use strict';
 
-    var Draggable = cc.ControlButton.extend({
+    var Draggable = BlButton.extend({
 
-        tag: '',
         _lastPosition: undefined,
 
         ctor:function() {
             this._super();
-        },
-
-        initWithFile: function (file) {
-            var sprite = new cc.Sprite();
-            sprite.initWithFile(file);
-            var s = sprite.getBoundingBox().size;
-            var label = new cc.LabelTTF();
-            label.initWithString('');
-            label.setOpacity(0);
-            label.setDimensions(s);
-            this.initWithLabelAndBackgroundSprite(label, sprite);
-            this.setMargins(0, 0);
-        },
-
-        initWithSprite: function (sprite) {
-            var s = sprite.getBoundingBox().size;
-            var label = new cc.LabelTTF();
-            label.initWithString('');
-            label.setOpacity(0);
-            label.setDimensions(s);
-            this.initWithLabelAndBackgroundSprite(label, sprite);
-            this.setMargins(0, 0);
         },
 
         returnToLastPosition: function () {
