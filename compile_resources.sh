@@ -1,6 +1,6 @@
 #!/bin/bash
 
-targetFile=web-client/host/src/resource.js
+targetFile=web-client/host/src/resource.json
 resources=()
 
 set -x
