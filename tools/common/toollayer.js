@@ -17,6 +17,8 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
         reset: function () {
             this._controls = {}; 
+            this._background = undefined;
+            this._backgroundLayer = undefined;
             this.removeAllChildren();
         },
 
