@@ -20,6 +20,11 @@ define(['cocos2d'], function() {
         }];
     };
 
+    window.bl.animation = {};
+    window.bl.animation.popIn = function () {
+        return cc.Sequence.create(cc.FadeIn.create(0.4), cc.ScaleTo.create(0.2, 1.2, 1.2), cc.ScaleTo.create(0.2, 1, 1));
+    }
+
     window.bl.getQueryParams = function(queryString) {
         var query = (queryString || window.location.search).substring(1); // delete ?
         if (!query) {
@@ -34,6 +39,48 @@ define(['cocos2d'], function() {
             .object()
             .value();
     };
+
+    window.bl.isPointInsideArea = function (point, area, offset) {
+            var self = this;
+
+        var nCross = 0;
+
+        _.each(area, function (p1, i) {
+            p1 = {
+                x: p1.x + (offset.x),
+                y: p1.y + (offset.y)
+            };
+            var p2 = area[(i + 1) % area.length];
+            p2 = {
+                x: p2.x + (offset.x),
+                y: p2.y + (offset.y)
+            };
+
+            if (p1.y == p2.y) {
+                return;
+            }
+
+            if (point.y < Math.min(p1.y, p2.y)) {
+                return;
+            }
+
+            if (point.y >= Math.max(p1.y, p2.y)) {
+                return;
+            }
+
+            var x = (point.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
+
+
+            if (x > point.x) {
+                nCross++;
+            }
+        });
+
+        if (nCross % 2 == 1) {
+            return true;
+        }
+        return false;
+    }
 
     cc.Sprite.prototype.touched = function(touchLocation) {
         var parent = this.getParent();
@@ -172,4 +219,11 @@ define(['cocos2d'], function() {
         }
     };
 
+    Array.prototype.spaceNodesLinear = function(horizontalSpacing, verticalSpacing) {
+        for (var i = 0; i < this.length; i++) {
+              var xPosition = -horizontalSpacing * (this.length-1)/2 + horizontalSpacing * i;
+              var yPosition = -verticalSpacing * (this.length-1)/2 + verticalSpacing * i;
+              this[i].setPosition(xPosition, yPosition);
+        };
+    };
 });

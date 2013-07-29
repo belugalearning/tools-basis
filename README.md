@@ -2,6 +2,8 @@
 
 ## Handy Tools:
 
+You'll need to install optipng first. `brew install optipng` if you have http://brew.sh/ installed.
+
 Run `./compile_resources.sh` to update the references in resource.js
 
 ## Releasing:
