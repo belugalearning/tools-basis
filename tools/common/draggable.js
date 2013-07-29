@@ -17,7 +17,12 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         },
 
         _posCount: 0,
-        setPosition: function (pos) {
+        setPosition: function (pos, anchorBottomLeft) {
+            if (anchorBottomLeft) {
+                var size = this.getContentSize();
+                pos.x += size.width * 0.5;
+                pos.y += size.height * 0.5;
+            }
             if (this._posCount == 0) {
                 this._homePosition = pos;
             }

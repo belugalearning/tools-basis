@@ -38,6 +38,7 @@ require.config({
         'draggableLayer': '../../tools/common/draggableLayer',
         'blbutton': '../../tools/common/BLButton',
         'settingslayer': '../../tools/common/settings-layer',
+        'dropzone': '../../tools/common/dropzone',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',

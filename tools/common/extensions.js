@@ -70,7 +70,6 @@ define(['cocos2d'], function() {
 
             var x = (point.y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y) + p1.x;
 
-
             if (x > point.x) {
                 nCross++;
             }
