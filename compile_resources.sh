@@ -8,7 +8,7 @@ set -x
 #images first
 echo "Compiling Resources"
 echo "  Collecting Files"
-echo "{" >> $targetFile
+echo "{" > $targetFile
 findResults=($(find ./shared-resources ./tools -type f \( -iname "*.png" -o -iname "*.jpg" \) -not \( -iname "*@2x.*" \)))
 last=$(( ${#findResults[@]} - 1 ))
 resource_i=0
