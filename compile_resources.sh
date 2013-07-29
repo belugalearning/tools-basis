@@ -8,8 +8,7 @@ set -x
 #images first
 echo "Compiling Resources"
 echo "  Collecting Files"
-echo "window.bl = window.bl || {};" >> $targetFile
-echo "window.bl.resources = {" >> $targetFile
+echo "{" >> $targetFile
 findResults=($(find ./shared-resources ./tools -type f \( -iname "*.png" -o -iname "*.jpg" \) -not \( -iname "*@2x.*" \)))
 last=$(( ${#findResults[@]} - 1 ))
 resource_i=0
@@ -74,6 +73,6 @@ do
 	`rm $newFile`
 	
 done
-echo "};" >> $targetFile
+echo "}" >> $targetFile
 
 echo "Resources Compiled!"
