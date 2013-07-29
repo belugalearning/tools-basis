@@ -20,6 +20,11 @@ define(['cocos2d'], function() {
         }];
     };
 
+    window.bl.animation = {};
+    window.bl.animation.popIn = function () {
+        return cc.Sequence.create(cc.FadeIn.create(0.4), cc.ScaleTo.create(0.2, 1.2, 1.2), cc.ScaleTo.create(0.2, 1, 1));
+    }
+
     window.bl.getQueryParams = function(queryString) {
         var query = (queryString || window.location.search).substring(1); // delete ?
         if (!query) {
