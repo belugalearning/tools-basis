@@ -1,8 +1,28 @@
+var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'extensions'];
+
+var url = top.location.href;
+
+if (url.match('geoboard')) {
+    reqs.push('geoboardtool');
+} else if (url.match('clock')) {
+    reqs.push('clocktool');
+} else if (url.match('sorting')) {
+    reqs.push('sortingtool');
+} else if (url.match('shape')) {
+    reqs.push('shapebuilder');
+} else if (url.match('tool_base')) {
+    reqs.push('tool_base');
+} else if (url.match('numberbonds')) {
+    reqs.push('numberbondstool');
+} else if (url.match('piesplitter')) {
+    reqs.push('piesplittertool');
+} else {
+    reqs.push('longdivisiontool');
+}
 
 require.config({
     paths: {
         'cocos2d': 'cocosLoader',
-        'resources': 'src/resource',
         'domReady': '../../tools/common/lib/domReady',
         'underscore': '../../tools/common/lib/underscore',
         'vec2': '../../tools/common/lib/vec2',
@@ -41,141 +61,132 @@ require.config({
     }
 });
 
-var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'resources', 'extensions'];
-
-var url = top.location.href;
-
-if (url.match('geoboard')) {
-    reqs.push('geoboardtool');
-} else if (url.match('clock')) {
-    reqs.push('clocktool');
-} else if (url.match('sorting')) {
-    reqs.push('sortingtool');
-} else if (url.match('shape')) {
-    reqs.push('shapebuilder');
-} else if (url.match('tool_base')) {
-    reqs.push('tool_base');
-} else if (url.match('numberbonds')) {
-    reqs.push('numberbondstool');
-} else if (url.match('piesplitter')) {
-    reqs.push('piesplittertool');
-} else {
-    reqs.push('longdivisiontool');
-}
-
-window.bl = top.$.extend(window.bl, {
-    _tool_resources: undefined,
-    getResource: function (key, resources) {
-
-        if (_.isUndefined(this._tool_resources)) {
-            this._tool_resources = this.getResources(bl.toolTag);
-            this._tool_resources = this._tool_resources.concat(this.getResources('images_'));
-        }
-
-        resources = _.isUndefined(resources) 
-            ? this._tool_resources 
-            : this.getResources(resources);
-
-        var rxp = new RegExp(RegExp.quote(key), 'i');
-        var exact = _.find(resources, function (x) {
-            return x.match(rxp);
-        });
-        return window.bl.resources[exact];
-
-    },
-
-    getResources: function (key) {
-
-        return _.filter(_.keys(window.bl.resources), function (x) {
-            return x.match(key);
-        });
-
-    }
-}, true);
-
-require(reqs, function(domReady, _, cocos2d, QLayer, resources, extensions, tool) {
+require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
     'use strict';
 
-    window.bl.qs = window.bl.getQueryParams(window.top.location.search);
+    require(['src/resource.js?prefixes[]=images_&prefixes=' + window.bl.toolTag], function (resources) {
 
-    domReady(function() {
+        window.bl = top.$.extend(window.bl, {
 
-        var d = document;
+            _getResource: function (key) {
 
-        if(!d.createElement('canvas').getContext){
-            var s = d.createElement('div');
-            s.innerHTML = '<h2>Your browser does not support HTML5 canvas!</h2>' +
-                '<p>Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.Click the logo to download.</p>' +
-                '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/zh-CN/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
-            var p = d.getElementById(document.ccConfig.tag).parentNode;
-            p.style.background = 'none';
-            p.style.border = 'none';
-            p.insertBefore(s);
+                return this._tool_resources[this.getResource(key)];
 
-            d.body.style.background = '#ffffff';
-            return;
-        }
-
-        if (url.match('debug')) {
-            cc.SPRITE_DEBUG_DRAW = 1;
-        }
-
-        var Cocos2dApp = cc.Application.extend({
-            config:document['ccConfig'],
-            ctor:function (scene) {
-                this._super();
-                this.startScene = scene;
-                cc.COCOS2D_DEBUG = this.config['COCOS2D_DEBUG'];
-                cc.initDebugSetting();
-                cc.setup(this.config['tag']);
-                cc.AppController.shareAppController().didFinishLaunchingWithOptions();
             },
-            applicationDidFinishLaunching:function () {
-                // initialize director
-                var director = cc.Director.getInstance();
 
-                cc.EGLView.getInstance().setDesignResolutionSize(window.bl.qs.width || 1024, window.bl.qs.height || 768,cc.RESOLUTION_POLICY.SHOW_ALL);
+            initResources: function () {
+                var self = this;
+                // here we force cocos' texture cache to load in the images
+                _.each(this._tool_resources, self.cacheResource);
+            },
 
-                // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
-                //director.enableRetinaDisplay(true);
+            // do some fuzzy-ish matching to return the exact cache key
+            getResource: function (key) {
+                var rxp = new RegExp(RegExp.quote(key), 'i');
+                var exact = _.find(_.keys(this._tool_resources), function (x) {
+                    return x.match(rxp);
+                });
+                if (exact === '') {
+                    throw new Error('Resource not found')
+                }
+                return exact;
+            },
 
-                // turn on display FPS
-                director.setDisplayStats(this.config['showFPS']);
-
-                // set FPS. the default value is 1.0/60 if you don't call this
-                director.setAnimationInterval(1.0 / this.config['frameRate']);
-
-                //load resources
-                cc.LoaderScene.preload(g_resources, function () {
-                    director.replaceScene(new this.startScene());
-                }, this);
-
-                return true;
+            cacheResource: function (resource, key) {
+                var sharedTextureCache = cc.TextureCache.getInstance();
+                var image = new Image();
+                image.src = resource.src
+                image.width = resource.width;
+                image.height = resource.height;
+                console.log(key)
+                sharedTextureCache.cacheImage(key, image);
             }
-        });
 
-        window.bl.app = new Cocos2dApp(function () {
-            var scene = cc.Scene.create();
-            var layer = new tool.ToolLayer();
-            if (layer && layer.init(cc.c4b(255, 255, 255, 255))) {
-                scene.addChild(layer);
+        }, true);
 
-                scene.layer = layer;
-                window.bl.toolLayer = layer;
+        window.bl.qs = window.bl.getQueryParams(window.top.location.search);
 
-                scene.ql = new QLayer();
-                scene.ql.init();
-                layer.addChild(scene.ql, 99);
+        domReady(function() {
 
-                scene.update = function(dt) {
-                    this.layer.update(dt);
-                    this.ql.update(dt);
-                };
-                scene.scheduleUpdate();
+            var d = document;
 
-                return scene;
+            window.bl.initResources();
+
+            if(!d.createElement('canvas').getContext){
+                var s = d.createElement('div');
+                s.innerHTML = '<h2>Your browser does not support HTML5 canvas!</h2>' +
+                    '<p>Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.Click the logo to download.</p>' +
+                    '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/zh-CN/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
+                var p = d.getElementById(document.ccConfig.tag).parentNode;
+                p.style.background = 'none';
+                p.style.border = 'none';
+                p.insertBefore(s);
+
+                d.body.style.background = '#ffffff';
+                return;
             }
-            return null;
+
+            if (url.match('debug')) {
+                cc.SPRITE_DEBUG_DRAW = 1;
+            }
+
+            var Cocos2dApp = cc.Application.extend({
+                config:document['ccConfig'],
+                ctor:function (scene) {
+                    this._super();
+                    this.startScene = scene;
+                    cc.COCOS2D_DEBUG = this.config['COCOS2D_DEBUG'];
+                    cc.initDebugSetting();
+                    cc.setup(this.config['tag']);
+                    cc.AppController.shareAppController().didFinishLaunchingWithOptions();
+                },
+                applicationDidFinishLaunching:function () {
+                    // initialize director
+                    var director = cc.Director.getInstance();
+
+                    cc.EGLView.getInstance().setDesignResolutionSize(window.bl.qs.width || 1024, window.bl.qs.height || 768,cc.RESOLUTION_POLICY.SHOW_ALL);
+
+                    // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
+                    //director.enableRetinaDisplay(true);
+
+                    // turn on display FPS
+                    director.setDisplayStats(this.config['showFPS']);
+
+                    // set FPS. the default value is 1.0/60 if you don't call this
+                    director.setAnimationInterval(1.0 / this.config['frameRate']);
+
+                    //load resources
+                    cc.LoaderScene.preload([], function () {
+                        director.replaceScene(new this.startScene());
+                    }, this);
+
+                    return true;
+                }
+            });
+
+            window.bl.app = new Cocos2dApp(function () {
+                var scene = cc.Scene.create();
+                var layer = new tool.ToolLayer();
+                if (layer && layer.init(cc.c4b(255, 255, 255, 255))) {
+                    scene.addChild(layer);
+
+                    scene.layer = layer;
+                    window.bl.toolLayer = layer;
+
+                    scene.ql = new QLayer();
+                    scene.ql.init();
+                    layer.addChild(scene.ql, 99);
+
+                    scene.update = function(dt) {
+                        this.layer.update(dt);
+                        this.ql.update(dt);
+                    };
+                    scene.scheduleUpdate();
+
+                    return scene;
+                }
+                return null;
+            });
         });
     });
 });
