@@ -64,7 +64,7 @@ require.config({
 require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
     'use strict';
 
-    require(['src/resource.js?prefixes[]=images_&prefixes=' + window.bl.toolTag], function (resources) {
+    require(['src/resource.js?prefixes[]=images_&prefixes[]=' + window.bl.toolTag], function (resources) {
 
         window.bl = top.$.extend(window.bl, {
 
@@ -98,7 +98,6 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                 image.src = resource.src
                 image.width = resource.width;
                 image.height = resource.height;
-                console.log(key)
                 sharedTextureCache.cacheImage(key, image);
             }
 
