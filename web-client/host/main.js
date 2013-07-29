@@ -86,8 +86,8 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                 var exact = _.find(_.keys(this._tool_resources), function (x) {
                     return x.match(rxp);
                 });
-                if (exact === '') {
-                    throw new Error('Resource not found')
+                if (_.isUndefined(exact)) {
+                    throw new Error('Resource not found "' + key + '"');
                 }
                 return exact;
             },
