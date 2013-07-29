@@ -16,15 +16,15 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             
         },
 
-        _posCount: 0;
+        _posCount: 0,
         setPosition: function (pos) {
             if (this._posCount == 0) {
                 this._homePosition = pos;
             }
             this._posCount++;
             this._super.apply(this, [pos]);
-        }
-        
+        },
+
         returnToLastPosition: function () {
             this.setPosition(this._lastPosition);
         },
