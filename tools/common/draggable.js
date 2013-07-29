@@ -9,9 +9,12 @@ define(['cocos2d'], function (cc) {
 
         tag: '',
         _lastPosition: undefined,
+        _homePosition: undefined,
+        _length: undefined,
 
         ctor:function() {
             this._super();
+            
         },
 
         initWithFile: function (file) {
@@ -38,6 +41,10 @@ define(['cocos2d'], function (cc) {
 
         returnToLastPosition: function () {
             this.setPosition(this._lastPosition);
+        },
+        
+        returnToHomePosition: function () {
+            this.setPosition(this._homePosition);
         },
 
         onTouchBegan: function (touch, event) {
