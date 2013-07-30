@@ -20,9 +20,15 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         onTouchBegan: function (touch, event) {
             if (this._super(touch, event)) {
                 this._lastPosition = this.getPosition();
+                this.setPosition(touch.getLocation());
                 return true;
             }
             return false;
+        },
+
+        _onTouchDown :function () {},
+        onTouchDown:function(cb) {
+            this._onTouchDown = cb;
         },
 
         onTouchMoved: function (touch, event) {

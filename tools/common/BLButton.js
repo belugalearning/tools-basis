@@ -93,7 +93,7 @@ define(['cocos2d'], function(cc) {
         initWithFile: function(file) {
             var sprite = new cc.Sprite();
             sprite.initWithFile(file);
-            this.initWithBackgroundSprite(sprite);
+            this.initWithSprite(sprite);
             this.setMargins(0, 0);
         },
 
