@@ -1,16 +1,15 @@
-# Tools Basis
 
-## Handy Tools:
+
+### Compiling Resources:
 
 You'll need to install optipng first. `brew install optipng` if you have http://brew.sh/ installed.
 
-Run `./compile_resources.sh` to update the references in resource.js
+Add/ remove any resources
 
-## Releasing:
+Run `./compile_resources.sh` to update the references in resource.json
 
-To update the teach.belugalearning.com page with the latest tools see: https://github.com/belugalearning/teach.belugalearning.com#update-to-latest
 
-## Tool API Req:
+# Tool API Req:
 
 ### Controls
 
@@ -34,7 +33,7 @@ All tools should respond to `setQuestion(question)` and `getState()`.
 + Add it to the tools-basis repo as a submodule
 + Add it to the require paths in `tools-basis/web-client/host/main.js`
 + Add it to the if/else block in `tools-basis/web-client/host/main.js`
-+ Run it using `open "http://localhost:2222/web-client/host/?{{ tool_name }}" && python -m SimpleHTTPServer 2222`
+
 
 ### Sorting
 
@@ -67,4 +66,4 @@ Stacked sprite creates a node with sprites stacked on top of each other from an 
 		],
 	}
 
-The filenames are those in resource.js
+The filenames are those in resource.json
