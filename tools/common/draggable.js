@@ -8,13 +8,34 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
     var Draggable = BlButton.extend({
 
         _lastPosition: undefined,
+        _homePosition: undefined,
+        _length: undefined,
 
         ctor:function() {
             this._super();
+            
+        },
+
+        _posCount: 0,
+        setPosition: function (pos, anchorBottomLeft) {
+            if (anchorBottomLeft) {
+                var size = this.getContentSize();
+                pos.x += size.width * 0.5;
+                pos.y += size.height * 0.5;
+            }
+            if (this._posCount == 0) {
+                this._homePosition = pos;
+            }
+            this._posCount++;
+            this._super.apply(this, [pos]);
         },
 
         returnToLastPosition: function () {
             this.setPosition(this._lastPosition);
+        },
+        
+        returnToHomePosition: function () {
+            this.setPosition(this._homePosition);
         },
 
         onTouchBegan: function (touch, event) {
