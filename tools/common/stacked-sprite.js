@@ -6,20 +6,22 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 			this._super();
             // Set the default anchor point
             // this.ignoreAnchorPointForPosition(false);
-            // this.setAnchorPoint(cc.p(0., 1));
+            // this.setAnchorPoint(cc.p(0.5, 0.5));
 		},
 
 		setup: function(instructions) {
 			var self = this;
 			var layers = instructions['layers'];
+			var mx_width = _.max(layers, function (layer) { return layer.width }).width;
+			var mx_height = _.max(layers, function (layer) { return layer.height }).height;
+
 			_.each(layers, function (layer) {
 				var l;
 				var height = layer.height;
 				var width = layer.width;
 				if (layer.hasOwnProperty('shape')) {
-					console.log(layer);
 					var color = cc.c4FFromccc4B(cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a));
-					l = new BLDrawNode();
+					l = new BLDrawNode(mx_width, mx_height, width, height);
 					l.drawShape(layer.shape, color, 0, cc.c4f(0,0,0,0));
 					l.setContentSize(cc.SizeMake(width, height));
 				} else if (layer.hasOwnProperty('color')) {
@@ -39,8 +41,8 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 				var priority = layer.priority || 0;
 				l.setZOrder(priority);
 				self.addChild(l);
-				self.setContentSize(l.getBoundingBox().size)
 			});
+			self.setContentSize(cc.SizeMake(mx_width, mx_height))
 		},
 	})
 
