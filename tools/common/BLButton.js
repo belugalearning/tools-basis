@@ -238,10 +238,15 @@ define(['cocos2d'], function(cc) {
 
             if (this.isTouchInside(touch)) {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_INSIDE);
-                // this._onTouchUp.apply(this, [touch.getLocation(), this]);
+                this._onTouchUp.apply(this, [touch.getLocation(), this]);
             } else {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_OUTSIDE);
             }
+        },
+
+        _onTouchUp: function () {},
+        onTouchUp: function (cb) {
+            this._onTouchUp = cb;
         },
 
         onTouchCancelled: function(touch, event) {

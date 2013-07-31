@@ -1,8 +1,6 @@
 define(['cocos2d'], function() {
     'use strict';
 
-
-
     window.bl = window.bl || {};
     window.bl.PolyRectMake = function(x, y, width, height) {
         return [{
@@ -79,6 +77,21 @@ define(['cocos2d'], function() {
             return true;
         }
         return false;
+    };
+
+    window.bl.getClosestPoint = function(point, points) {
+        var distance = 9999999 * 99999999;
+        var index = 0;
+        _.each(points, function (p, i) {
+            var x = Math.abs(point.x - p.x);
+            var y = Math.abs(point.y - p.y);
+            var distanceSq = Math.min(x * x + y * y, distance);
+            if (distanceSq < distance) {
+                distance = distanceSq;
+                index = i;
+            }
+        });
+        return points[index];
     }
 
     cc.Sprite.prototype.touched = function(touchLocation) {
