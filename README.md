@@ -1,5 +1,4 @@
 
-
 ### Compiling Resources:
 
 You'll need to install optipng first. `brew install optipng` if you have http://brew.sh/ installed.
@@ -28,11 +27,13 @@ All tools should respond to `setQuestion(question)` and `getState()`.
 ### Creating a new Tool
 
 + Duplicate `tools/tests/tools_base` into it's own folder outside of the project
-+ Rename it something suitable
-+ Initialise it as a git repo
-+ Add it to the tools-basis repo as a submodule
++ Rename it something suitable "tool-{{NAME}}"
++ Initialise it as a git repo `git init`
++ Create a repo on github.com, follow the instructions to push it to github
++ Switch back to tools-basis, run `git submodule add {{REPO_URL}} tools/{{TOOL_NAME}}`
 + Add it to the require paths in `tools-basis/web-client/host/main.js`
 + Add it to the if/else block in `tools-basis/web-client/host/main.js`
++ Commit & push your changes
 
 
 ### Sorting
