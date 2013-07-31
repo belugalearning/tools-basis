@@ -42,6 +42,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             if (this._super(touch, event)) {
                 this._lastPosition = this.getPosition();
                 this.setPosition(touch.getLocation());
+                this._onTouchDown.apply(this, [touch.getLocation(), this]);
                 return true;
             }
             return false;
