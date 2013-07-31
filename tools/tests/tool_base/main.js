@@ -12,12 +12,10 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
     var BACKGROUND_Z = 0;
     var DRAGGABLE_Z = 1;
 
-    window.toolTag = 'tool_base';
+    window.bl.toolTag = 'tool_base';
     var Tool = ToolLayer.extend({
 
         _windowSize: undefined,
-        _background: undefined,
-        _backgroundLayer: undefined,
 
         init: function () {
             var self = this;
@@ -44,17 +42,6 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
             this._totalLabels = [];
             this._subTotalLabels = [];
             this._super();
-        },
-
-        setBackground: function (resource) {
-            if (_.isUndefined(this._background)) {
-                this._backgroundLayer = cc.Layer.create();
-                this.addChild(this._backgroundLayer, BACKGROUND_Z);
-                this._background = new cc.Sprite();
-            }
-            this._background.initWithFile(resource);
-            this._background.setPosition(this._windowSize.width/2, this._windowSize.height/2);
-            this._backgroundLayer.addChild(this._background);
         },
 
         _draggableCounter: 0,
