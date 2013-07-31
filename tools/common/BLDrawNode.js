@@ -32,7 +32,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
     var BLDrawNode = cc.DrawNodeCanvas.extend({
 
-        ctor: function (sprite_width, sprite_height, width, height) {
+        ctor: function(sprite_width, sprite_height, width, height) {
             this._sprite_width = sprite_width || SPRITE_WIDTH;
             this._sprite_height = sprite_height || SPRITE_HEIGHT;
             this._width = width || WIDTH;
@@ -162,17 +162,17 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     context.beginPath();
                     context.moveTo((-self._sprite_width/ 5), (element.a));
                     context.lineTo(0, 0);
-                    context.lineTo((self._sprite_width/ 5), (element.a));
-                    context.lineTo((-self._sprite_width/ 5), (element.a));
+                    context.lineTo((self._sprite_width / 5), (element.a));
+                    context.lineTo((-self._sprite_width / 5), (element.a));
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
                     context.translate(self._width / 2, ((self._height - element.a) / 2));
                     context.beginPath();
-                    context.moveTo((self._width/ 2), (element.a));
+                    context.moveTo((self._width / 2), (element.a));
                     context.lineTo(0, 0);
-                    context.lineTo((-self._width/ 2), (element.a));
-                    context.lineTo((self._width/ 2), (element.a));
+                    context.lineTo((-self._width / 2), (element.a));
+                    context.lineTo((self._width / 2), (element.a));
                     context.stroke();
 
                 } else if (element.type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
@@ -181,11 +181,11 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     var theta = (2 * Math.PI) / i;
                     context.translate((self._sprite_width * 0.5) - ((self._sprite_width - self._width) * 0.5), (self._sprite_height * 0.5) - ((self._sprite_height - self._height) * 0.5));
                     context.beginPath();
-                    context.moveTo(self._width/ 2, 0);
+                    context.moveTo(self._width / 2, 0);
                     for (var n = 0; n < i; n++) {
-                        context.lineTo(self._width/ 3 * (element.seeds[i] + 0.5) * Math.cos(n * theta), self._width/ 3 * (element.seeds[i + 1] + 0.5) * Math.sin(n * theta));
+                        context.lineTo(self._width / 3 * (element.seeds[i] + 0.5) * Math.cos(n * theta), self._width / 3 * (element.seeds[i + 1] + 0.5) * Math.sin(n * theta));
                     }
-                    context.lineTo(self._width/ 2, 0);
+                    context.lineTo(self._width / 2, 0);
 
                 } else if (element.type === bl.DRAWNODE_TYPE_DART) {
 
