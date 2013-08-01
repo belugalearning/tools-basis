@@ -180,6 +180,10 @@ define(['cocos2d'], function() {
         this.setTexture(texture);
     };
 
+    Number.prototype.sign = function () {
+        return this > 0 ? 1 : this < 0 ? -1 : 0;
+    }
+
     Number.prototype.numberInCorrectRange = function(lowerBound, upperBound) {
         var result = this;
         var range = upperBound - lowerBound;
