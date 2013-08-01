@@ -44,6 +44,63 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             this._super();
         },
 
+        rotatePoly: function (poly, angle, center) {
+            center = center || cc.p(0, 0);
+            var cosAngle = Math.cos(angle);
+            var sinAngle = Math.sin(angle);
+            return _.map(poly, function (p) {
+                return cc.p(
+                    center.x + ((p.x - center.x) * cosAngle - (p.y - center.y) * sinAngle),
+                    center.y + ((p.x - center.x) * sinAngle + (p.y - center.y) * cosAngle)
+                )
+            });
+        },
+
+        generateRegularShape: function (sides, rotation) {
+
+            rotation = rotation || 0;
+
+            var scene_width = 1;
+            var scene_height = 1;
+            var scene_center = cc.p(scene_width / 2, scene_height / 2);
+            var scene_min_dimension = Math.min(scene_width, scene_height);
+
+            var shape_sides = 5;
+            var shape_max_side = 1;
+            var shape_theta = ((2 * Math.PI) / shape_sides);
+            var shape_offset = (shape_theta - (Math.PI / 2)) + (Math.PI / shape_sides) + rotation;
+
+            // node.rotatePoly(triangle, rot, cc.p(scale_width/2,scale_height/2))
+
+            var points = [];
+
+            for (var i = 0; i < shape_sides; i++) {
+                points.push(
+                    cc.p(
+                        shape_max_side * Math.cos((i * shape_theta) + shape_offset), 
+                        shape_max_side * Math.sin((i * shape_theta) + shape_offset)
+                    )
+                );
+            }
+            var min_x = _.min(points, function (p) { return p.x }).x;
+            var min_y = _.min(points, function (p) { return p.x }).x;
+            console.log(1,min_x, min_y)
+            points = _.map(points, function (p) {
+                return cc.p(p.x + (min_x * -1), p.y + (min_y * -1));
+            });
+            min_x = _.min(points, function (p) { return p.x }).x;
+            min_y = _.min(points, function (p) { return p.x }).x;
+            console.log(2, min_x, min_y)
+            return points;
+
+        },
+
+        convertToPx: function (points, width, height) {
+            return _.map(points, function (p) {
+                return cc.p(p.x * width, p.y * height);
+            });
+        },
+
         draw: function(ctx) {
             this._super(ctx);
             var self = this;
@@ -160,10 +217,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
                     context.translate(self._width / 2, ((self._height - element.a) / 2));
                     context.beginPath();
-                    context.moveTo((-self._sprite_width/ 5), (element.a));
+                    context.moveTo((-self._sprite_width/ 5), (element.a + 10));
                     context.lineTo(0, 0);
-                    context.lineTo((self._sprite_width / 5), (element.a));
-                    context.lineTo((-self._sprite_width / 5), (element.a));
+                    context.lineTo((self._sprite_width / 5), (element.a + 10));
+                    context.lineTo((-self._sprite_width / 5), (element.a + 10));
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
@@ -313,6 +370,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
 
                 element.a = Math.floor(Math.random() * (self._height / 2)) + (self._height / 2);
+                element.seed = 30 * Math.random();
 
             } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
