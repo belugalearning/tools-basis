@@ -38,6 +38,14 @@ define(['cocos2d'], function() {
             .value();
     };
 
+    window.bl.getPolyBounds = function (position, poly) {
+        var max_x = _.max(poly, function (p) { return p.x }).x;
+        var min_x = _.min(poly, function (p) { return p.x }).x;
+        var max_y = _.max(poly, function (p) { return p.y }).y;
+        var min_y = _.min(poly, function (p) { return p.y }).y;
+        return cc.SizeMake(max_x - min_x, max_y - min_y);
+    };
+
     window.bl.isPointInsideArea = function (point, area, offset) {
             var self = this;
 
