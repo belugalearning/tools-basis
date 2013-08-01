@@ -34,9 +34,13 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 					var l = new cc.Sprite();
 					l.initWithFile(resource);
 				}
-				var position = layer.position;
-				if (position) {
+				
+				if (layer.hasOwnProperty('position')) {
+					var position = layer.position;
 					l.setPosition(position['x'], position['y']);
+				}
+				if (layer.hasOwnProperty('rotation')) {
+					l.setRotation(layer.rotation);
 				}
 				var priority = layer.priority || 0;
 				l.setZOrder(priority);
