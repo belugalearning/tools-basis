@@ -16,8 +16,10 @@ if (url.match('geoboard')) {
     reqs.push('numberbondstool');
 } else if (url.match('piesplitter')) {
     reqs.push('piesplittertool');
-} else {
+} else if (url.match('division')) {
     reqs.push('longdivisiontool');
+} else {
+    reqs.push('splashtool');
 }
 
 require.config({
@@ -47,7 +49,8 @@ require.config({
         'shapebuilder': '../../tools/tests/shapebuilder/main',
         'tool_base': '../../tools/tests/tool_base/main',
         'numberbondstool': '../../tools/numberbonds/main',
-        'piesplittertool': '../../tools/piesplitter/main'
+        'piesplittertool': '../../tools/piesplitter/main',
+        'splashtool': '../../tools/splash/main'
     },
     shim: {
         'cocos2d': {
