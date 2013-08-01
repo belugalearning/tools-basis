@@ -31,14 +31,9 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
 
             this.addChild(l)
 
-            this.setQuestion(
-              window.bl.contentService.question({
-                tool:'sorting',
-                toolMode:'table',
-                setCategory:'shape',
-                numSets:2
-              })
-            )
+            this.setQuestion({
+                'type': 'vector'
+            })
             return this;
         },
 
@@ -65,6 +60,39 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
             var self = this;
 
             this._super(question);
+
+            if (question.type == 'vector') {
+
+                var scene_width = 200;
+                var scene_height = 200;
+
+                var node = new BLDrawNode();
+
+                var scale_width = 100;
+                var scale_height = 100;
+                var rot = _.random(0, 360);
+                var triangle = node.generateRegularShape(4, rot)
+                triangle = node.convertToPx(triangle, scale_width, scale_height);
+
+                var size = window.bl.getPolyBounds(cc.p(0,0), triangle);
+
+                var multiplier = Math.min(scene_width, scene_height) / Math.max(size.width, size.height);
+                
+                triangle = _.map(triangle, function (p) {
+                    return cc.p(p.x * multiplier, p.y * multiplier);
+                });
+
+                node.drawPoly(triangle, cc.c4f(0, 1, 0, 0), 1, cc.c4f(0,1,0,0.2))
+
+                node.drawPoly(bl.PolyRectMake(0,0,scene_width, scene_height), cc.c4f(0, 1, 0, 0), 1, cc.c4f(1,0,0,0.2))
+
+                node.setPosition(cc.p(100, 100))
+
+                this.addChild(node);
+
+                return;
+
+            }
 
             // add draggables
             var shapes = ['dart', 'irregular_polygon', 'short_isosceles_triangle', 'equilateral_triangle', 'isosceles_triangle', 'kite', 'parallelogram', 'rectangle', 'decagon', 'dodecagon', 'hendecagon', 'heptagon', 'hexagon', 'nonagon', 'octagon', 'pentagon', 'right_angle_triangle', 'scalene_triangle', 'square', 'trapezium']
