@@ -1,14 +1,14 @@
-# Tools Basis
 
-## Handy Tools:
+### Compiling Resources:
 
-Run `./compile_resources.sh` to update the references in resource.js
+You'll need to install optipng first. `brew install optipng` if you have http://brew.sh/ installed.
 
-## Releasing:
+Add/ remove any resources
 
-To update the teach.belugalearning.com page with the latest tools see: https://github.com/belugalearning/teach.belugalearning.com#update-to-latest
+Run `./compile_resources.sh` to update the references in resource.json
 
-## Tool API Req:
+
+# Tool API Req:
 
 ### Controls
 
@@ -24,6 +24,18 @@ All tools should respond to `setQuestion(question)` and `getState()`.
 
 ## Tools
 
+### Creating a new Tool
+
++ Duplicate `tools/tests/tools_base` into it's own folder outside of the project
++ Rename it something suitable "tool-{{NAME}}"
++ Initialise it as a git repo `git init`
++ Create a repo on github.com, follow the instructions to push it to github
++ Switch back to tools-basis, run `git submodule add {{REPO_URL}} tools/{{TOOL_NAME}}`
++ Add it to the require paths in `tools-basis/web-client/host/main.js`
++ Add it to the if/else block in `tools-basis/web-client/host/main.js`
++ Commit & push your changes
+
+
 ### Sorting
 
 #### Expected behaviour
@@ -36,3 +48,23 @@ Content service will send:
 Tool will be able to:
 + Tool will try to fit all draggables within an area when they have been dropped, scaling if necessary
 + Send back the positions of all dragables
+
+#### Stacked sprite usage
+
+Stacked sprite creates a node with sprites stacked on top of each other from an object in the following format:
+
+	{
+		layers:[
+			{
+				filename (optional): string, 
+				color (optional):{r: int, g: int, b: int, a},
+					height (when color): int, 
+					width (when color): int, 
+				priority (optional): int, 
+				position (optional):{x: int, y: int}
+			},
+			...
+		],
+	}
+
+The filenames are those in resource.json
