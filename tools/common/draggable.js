@@ -41,7 +41,8 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         onTouchBegan: function (touch, event) {
             if (this._super(touch, event)) {
                 this._lastPosition = this.getPosition();
-                this.setPosition(touch.getLocation());
+                var position = this.getParent().convertToNodeSpace(touch.getLocation());
+                this.setPosition(position);
                 this._onTouchDown.apply(this, [touch.getLocation(), this]);
                 return true;
             }
@@ -55,7 +56,8 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
 
         onTouchMoved: function (touch, event) {
             this._super(touch, event);
-            this.setPosition(touch.getLocation());
+            var position = this.getParent().convertToNodeSpace(touch.getLocation());
+            this.setPosition(position);
             this._onMoved.apply(this, [touch.getLocation(), this]);
         },
 
@@ -72,7 +74,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         _onMoveEnded: function () {},
         onMoveEnded: function (cb) {
             this._onMoveEnded = cb;
-        }
+        },
 
     });
 
