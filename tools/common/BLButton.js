@@ -35,6 +35,7 @@ define(['cocos2d'], function(cc) {
 
             // Update the background sprite
             this._backgroundSprite = this.getBackgroundSpriteForState(this._state);
+            this._origin = this._backgroundSprite._origin;
             // Set the content size
             var maxRect = this._backgroundSprite.getBoundingBox();
             this.setContentSize(cc.SizeMake(maxRect.size.width, maxRect.size.height));
@@ -49,8 +50,10 @@ define(['cocos2d'], function(cc) {
             if (this.init(true)) {
                 cc.Assert(backgroundSprite != null, "backgroundSprite must not be nil");
 
-                this.ignoreAnchorPointForPosition(false);
-                this.setAnchorPoint(cc.p(0.5, 0.5));
+                if (backgroundSprite instanceof cc.LayerColor) {
+                    this.ignoreAnchorPointForPosition(false);
+                    this.setAnchorPoint(cc.p(0.5, 0.5));
+                }
 
                 this.setTouchEnabled(true);
                 this._pushed = false;
@@ -93,7 +96,7 @@ define(['cocos2d'], function(cc) {
         initWithFile: function(file) {
             var sprite = new cc.Sprite();
             sprite.initWithFile(file);
-            this.initWithBackgroundSprite(sprite);
+            this.initWithSprite(sprite);
             this.setMargins(0, 0);
         },
 
@@ -197,7 +200,13 @@ define(['cocos2d'], function(cc) {
         },
 
         onTouchBegan: function(touch, event) {
-            if (!this.isTouchInside(touch) || !this.isEnabled()) {
+            var touchInside;
+            if (this._backgroundSprite instanceof cc.Sprite) {
+                touchInside = this._backgroundSprite.touched(touch.getLocation());
+            } else {
+                touchInside = this.isTouchInside(touch);
+            };
+            if (!touchInside || !this.isEnabled()) {
                 return false;
             }
 
@@ -238,10 +247,15 @@ define(['cocos2d'], function(cc) {
 
             if (this.isTouchInside(touch)) {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_INSIDE);
-                // this._onTouchUp.apply(this, [touch.getLocation(), this]);
+                this._onTouchUp.apply(this, [touch.getLocation(), this]);
             } else {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_OUTSIDE);
             }
+        },
+
+        _onTouchUp: function () {},
+        onTouchUp: function (cb) {
+            this._onTouchUp = cb;
         },
 
         onTouchCancelled: function(touch, event) {

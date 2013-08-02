@@ -19,3 +19,6 @@
 [submodule "tools/piesplitter"]
 	path = tools/piesplitter
 	url = git@github.com:belugalearning/tool-piesplitter.git
+[submodule "tools/splash"]
+	path = tools/splash
+	url = https://github.com/belugalearning/tool-splash.git

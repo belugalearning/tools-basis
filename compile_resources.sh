@@ -3,29 +3,25 @@
 targetFile=web-client/host/src/resource.json
 resources=()
 
-set -x
+# set -x
 
 #images first
-echo "Compiling Resources"
-echo "  Collecting Files"
 echo "{" > $targetFile
-findResults=($(find ./shared-resources ./tools -type f \( -iname "*.png" -o -iname "*.jpg" \) -not \( -iname "*@2x.*" \)))
+findResults=($(find ./shared-resources ./tools -type f \( -iname "*.png" -o -iname "*.jpg" \) -not \( -iname "*@2x.*" \) | grep -v tmp))
 last=$(( ${#findResults[@]} - 1 ))
 resource_i=0
 for i in  "${!findResults[@]}"
 do
 	f=${findResults[$i]};
-	echo "        $f";
 
 	b=$(basename $f);
 	d=$(dirname $f);
 	newFile=$d/tmp/$b;
 	`mkdir -p $d/tmp/`;
 	`cp $f $newFile`;
-	echo "        $d/tmp/$b";
 
 	# compress
-	`optipng -o3 -preserve "$newFile"`;
+	`optipng -o3 -preserve "$newFile" &`;
 
 	# encode
     k="data:image/png;base64,"`base64 -e "$newFile"`;
@@ -74,5 +70,5 @@ do
 	
 done
 echo "}" >> $targetFile
-
+wait
 echo "Resources Compiled!"

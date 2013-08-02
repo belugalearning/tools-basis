@@ -1,8 +1,8 @@
 define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     'use strict';
 
-    var WIDTH = 60;
-    var HEIGHT = 60;
+    var WIDTH = 10;
+    var HEIGHT = 10;
 
     var SPRITE_WIDTH = 100;
     var SPRITE_HEIGHT = 100;
@@ -32,11 +32,14 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
     var BLDrawNode = cc.DrawNodeCanvas.extend({
 
-        ctor: function (width, height, sprite_width, sprite_height) {
+        ctor: function(sprite_width, sprite_height, width, height) {
+            this._sprite_width = sprite_width || SPRITE_WIDTH;
+            this._sprite_height = sprite_height || SPRITE_HEIGHT;
             this._width = width || WIDTH;
             this._height = height || HEIGHT;
-            this._sprite_height = sprite_height || SPRITE_HEIGHT;
-            this._sprite_width = sprite_width || SPRITE_WIDTH;
+
+            this._min_sprite_dimension = Math.min(this._sprite_width, this._sprite_height);
+            this._min_dimension = Math.min(this._width, this._height);
 
             this._super();
         },
@@ -59,7 +62,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
 
-                    context.translate((self._sprite_width - (element.x + element.a + element.x2)) / 2, (self._sprite_height - element.y) / 2);
+                    context.translate((self._width - (element.x + element.a + element.x2)) / 2, (self._height - element.y) / 2);
                     context.beginPath();
                     context.moveTo(element.x, 0);
                     context.lineTo((element.x + element.a), 0);
@@ -69,7 +72,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SQUARE) {
 
-                    context.translate((self._sprite_width - element.x) / 2, (self._sprite_height - element.x) / 2);
+                    context.translate((self._width - element.x) / 2, (self._height - element.x) / 2);
                     context.beginPath();
                     context.moveTo(0, 0);
                     context.lineTo(0, element.x);
@@ -79,7 +82,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SCALENE) {
 
-                    context.translate((self._sprite_width - (element.b + element.a * Math.cos(element.theta))) / 2, (self._sprite_height + element.a * Math.sin(element.theta)) / 2);
+                    context.translate((self._width - (element.b + element.a * Math.cos(element.theta))) / 2, (self._height + element.a * Math.sin(element.theta)) / 2);
                     context.beginPath();
                     context.moveTo(0, 0);
                     context.lineTo((0 + element.b), 0);
@@ -89,7 +92,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
 
-                    context.translate((self._sprite_width - element.b) / 2, (self._sprite_height - element.a) / 2);
+                    context.translate((self._width - element.b) / 2, (self._height - element.a) / 2);
                     context.beginPath();
                     context.moveTo(0, 0);
                     context.lineTo(0, element.a);
@@ -101,7 +104,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     var h = element.side * (Math.sqrt(3) / 2);
 
                     context.beginPath();
-                    context.translate(self._sprite_width / 2, self._sprite_height / 2);
+                    context.translate(self._width / 2, self._height / 2);
                     context.moveTo(0, -h / 2);
                     context.lineTo(-element.side / 2, h / 2);
                     context.lineTo(element.side / 2, h / 2);
@@ -117,16 +120,16 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     element.type === bl.DRAWNODE_TYPE_HENDECAGON ||
                     element.type === bl.DRAWNODE_TYPE_DODECAGON) {
 
-                    context.translate((self._sprite_width) / 2, (self._sprite_height) / 2);
+                    context.translate((self._width) / 2, (self._height) / 2);
                     context.beginPath();
-                    context.moveTo(self._width / 2, 0);
+                    context.moveTo(element.side, 0);
                     for (var i = 0; i < element.sides; i++) {
-                        context.lineTo(self._width / 2 * Math.cos(i * element.theta), self._width / 2 * Math.sin(i * element.theta));
+                        context.lineTo(element.side * Math.cos(i * element.theta), element.side * Math.sin(i * element.theta));
                     }
 
                 } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
 
-                    context.translate((self._sprite_width - element.b) / 2, (self._sprite_height - element.a) / 2);
+                    context.translate((self._width - element.b) / 2, (self._height - element.a) / 2);
                     context.beginPath();
                     context.moveTo(0, 0);
                     context.lineTo(0, element.a);
@@ -136,7 +139,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
 
-                    context.translate((self._sprite_width - element.a - (2 * element.x)) / 2, (self._sprite_height - element.y) / 2);
+                    context.translate((self._width - element.a - (2 * element.x)) / 2, (self._height - element.y) / 2);
                     context.beginPath();
                     context.moveTo(element.x, 0);
                     context.lineTo(((2 * element.x) + element.a), 0);
@@ -146,7 +149,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_KITE) {
 
-                    context.translate((self._sprite_width - (2 * element.c)) / 2, (self._sprite_height - element.a - element.b) / 2);
+                    context.translate((self._width - (2 * element.c)) / 2, (self._height - element.a - element.b) / 2);
                     context.beginPath();
                     context.moveTo(0, element.b);
                     context.lineTo(element.c, (element.a + element.b));
@@ -155,16 +158,16 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                     context.lineTo(0, element.b);
 
                 } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
-                    context.translate(self._sprite_width / 2, ((self._sprite_height - element.a) / 2));
+                    context.translate(self._width / 2, ((self._height - element.a) / 2));
                     context.beginPath();
-                    context.moveTo((-self._width / 5), (element.a));
+                    context.moveTo((-self._sprite_width/ 5), (element.a));
                     context.lineTo(0, 0);
-                    context.lineTo((self._width / 5), (element.a));
-                    context.lineTo((-self._width / 5), (element.a));
+                    context.lineTo((self._sprite_width / 5), (element.a));
+                    context.lineTo((-self._sprite_width / 5), (element.a));
 
                 } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
-                    context.translate(self._sprite_width / 2, ((self._sprite_height - element.a) / 2));
+                    context.translate(self._width / 2, ((self._height - element.a) / 2));
                     context.beginPath();
                     context.moveTo((self._width / 2), (element.a));
                     context.lineTo(0, 0);
@@ -176,7 +179,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                     var i = 6
                     var theta = (2 * Math.PI) / i;
-                    context.translate(self._sprite_width / 2, self._sprite_height / 2);
+                    context.translate((self._sprite_width * 0.5) - ((self._sprite_width - self._width) * 0.5), (self._sprite_height * 0.5) - ((self._sprite_height - self._height) * 0.5));
                     context.beginPath();
                     context.moveTo(self._width / 2, 0);
                     for (var n = 0; n < i; n++) {
@@ -186,7 +189,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
                 } else if (element.type === bl.DRAWNODE_TYPE_DART) {
 
-                    context.translate(self._sprite_width / 2, (self._sprite_height + element.c - element.d) / 2);
+                    context.translate(self._width / 2, (self._height + element.c - element.d) / 2);
                     context.beginPath();
                     context.moveTo(0, 0);
                     context.lineTo((0 + element.b), (0 - element.c));
@@ -202,6 +205,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         },
 
         drawShape: function(shape, fillColor, borderWidth, borderColor) {
+            var self = this;
             var element = new cc._DrawNodeElement(shape);
             element.fillColor = fillColor;
             element.borderWidth = borderWidth;
@@ -227,11 +231,11 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             } else if (element.type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
 
                 element.a = Math.floor(Math.random() * (this._width - 15)) + 15;
-                element.b = Math.floor(Math.random() * (this._height - 15)) + 15;
+                element.b = Math.floor(Math.random() * (self._height - 15)) + 15;
 
             } else if (element.type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
 
-                element.rand = ((this._width / 3) - 10) * Math.random() + 10;
+                element.rand = ((this._width * 0.6 / 3) - 10) * Math.random() + 10;
                 element.seeds = [];
                 _.times(20, function() {
                     element.seeds.push(Math.random());
@@ -239,52 +243,60 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_EQUILATERAL) {
 
-                element.side = Math.random() * (Math.min(WIDTH, HEIGHT) - 20) + 20;
+                element.side = Math.random() * (self._min_dimension - 30) + 30;
 
             } else if (element.type === bl.DRAWNODE_TYPE_PENTAGON) {
 
                 element.sides = 5;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_HEXAGON) {
 
                 element.sides = 6;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_HEPTAGON) {
 
                 element.sides = 7;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_OCTAGON) {
 
                 element.sides = 8;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_NONAGON) {
 
                 element.sides = 9;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_DECAGON) {
 
                 element.sides = 10;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_HENDECAGON) {
 
                 element.sides = 11;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_DODECAGON) {
 
                 element.sides = 12;
+                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
                 element.theta = (2 * Math.PI) / element.sides;
 
             } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
 
                 element.b = Math.floor(Math.random() * this._width * 0.4) + this._width * 0.6;
-                element.a = Math.floor(Math.random() * this._height * 0.25) + this._height * 0.3;
+                element.a = Math.floor(Math.random() * self._sprite_height * 0.25) + self._sprite_height * 0.3;
 
             } else if (element.type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
 
@@ -294,21 +306,21 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
             } else if (element.type === bl.DRAWNODE_TYPE_KITE) {
 
-                element.a = Math.floor(Math.random() * (this._height * 0.3 - 5)) + 5;
-                element.b = Math.floor(Math.random() * (this._height * 0.7 - 30)) + 30;
+                element.a = Math.floor(Math.random() * (self._width * 0.3 - 5)) + 5;
+                element.b = Math.floor(Math.random() * (self._height * 0.7 - 30)) + 30;
                 element.c = Math.floor(Math.random() * ((this._width / 2) - 10)) + 10;
 
             } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
 
-                element.a = Math.floor(Math.random() * (this._height / 2)) + (this._height / 2);
+                element.a = Math.floor(Math.random() * (self._height / 2)) + (self._height / 2);
 
             } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
 
-                element.a = Math.floor(Math.random() * (this._height / 3)) + 10;
+                element.a = Math.floor(Math.random() * (self._height / 3)) + 10;
 
             } else if (element.type === bl.DRAWNODE_TYPE_DART) {
 
-                element.a = Math.floor(Math.random() * (this._height * 0.3)) + (this._height * 0.3);
+                element.a = Math.floor(Math.random() * (self._height * 0.3)) + (self._height * 0.3);
                 element.theta = Math.PI * (Math.floor(Math.random() * 20) + 15) / 180;
                 element.b = element.a * Math.cos(element.theta);
                 element.c = element.a * Math.sin(element.theta);

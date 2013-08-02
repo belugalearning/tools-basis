@@ -63,6 +63,13 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
             this._backgroundLayer.addChild(this._background);
         },
 
+        addBackgroundComponent: function (resource, position) {
+            var component = new cc.Sprite();
+            component.initWithFile(resource);
+            component.setPosition(position);
+            this._backgroundLayer.addChild(component);
+        },
+
         getState: function () {
             throw {name : "NotImplementedError", message : "This needs implementing"};
         },

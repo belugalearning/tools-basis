@@ -57,14 +57,23 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                     this._anchorPointInPoints.y / cs.height
                 );
 
-                 return true;
+                var position = this.getParent().convertToNodeSpace(touch.getLocation());
+                this.setPosition(position);
+                this._onTouchDown.apply(this, [touch.getLocation(), this]);
+                return true;
             }
             return false;
         },
 
+        _onTouchDown :function () {},
+        onTouchDown:function(cb) {
+            this._onTouchDown = cb;
+        },
+
         onTouchMoved: function (touch, event) {
             this._super(touch, event);
-            this.setPosition(touch.getLocation());
+            var position = this.getParent().convertToNodeSpace(touch.getLocation());
+            this.setPosition(position);
             this._onMoved.apply(this, [touch.getLocation(), this]);
         },
 

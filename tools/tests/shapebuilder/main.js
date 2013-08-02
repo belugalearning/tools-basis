@@ -71,21 +71,33 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
             _.each(shapes, function (shape, i) {
                 _.times(10, function (j) {
 
+                    var sprite_width = 100;
+                    var sprite_height = 100;
+                    var shape_width = 40;
+                    var shape_height = 40;
+
                     var layers = [
+                      {
+                        color: { r: 1, g: 1, b: 1, a: 25 },
+                        width: sprite_width,
+                        height: sprite_height,
+                        position: { x: 0, y: 0 }
+                      },
                       {
                         shape: shape,
                         color: { r: 1, g: 1, b: 1, a: 255 },
-                        width: 100,
-                        height: 100,
-                        position: { x: 0, y: 0 }
+                        width: shape_width,
+                        height: shape_height,
+                        position: { x: (sprite_width - shape_width) / 2, y: sprite_height - ((sprite_height - shape_height) / 2) }
                       }
                     ];
 
                     var sprite = new StackedSprite();
                     sprite.setup({ layers: layers });
-                    sprite.setPosition({x:100 + (i * 100), y:100 + (j * 100)});
+                    sprite.setPosition({x:sprite_width + (i * sprite_width), y:sprite_height + (j * sprite_height)});
                     var dbg = new cc.DrawNode();
-                    dbg.drawPoly(bl.PolyRectMake(10,15,60,60), cc.c4f(0,0,0,0), 1, cc.c4f(0,1,0,1))
+                    dbg.drawPoly(bl.PolyRectMake(0,0,sprite_width,sprite_height), cc.c4f(0,0,0,0), 1, cc.c4f(0,1,0,1))
+                    dbg.drawPoly(bl.PolyRectMake((sprite_width - shape_width) / 2,(sprite_height - shape_height) / 2,shape_width,shape_height), cc.c4f(0,0,0,0), 0.5, cc.c4f(1,0,0,1))
                     sprite.addChild(dbg);
                     self.addChild(sprite);
                 })
