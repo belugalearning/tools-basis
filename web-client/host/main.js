@@ -152,8 +152,10 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                     // enable High Resource Mode(2x, such as iphone4) and maintains low resource on other devices.
                     //director.enableRetinaDisplay(true);
 
-                    // turn on display FPS
-                    director.setDisplayStats(this.config['showFPS']);
+                    if (url.match('debug')) {
+                        // turn on display FPS
+                        director.setDisplayStats(this.config['showFPS']);
+                    }
 
                     // set FPS. the default value is 1.0/60 if you don't call this
                     director.setAnimationInterval(1.0 / this.config['frameRate']);
