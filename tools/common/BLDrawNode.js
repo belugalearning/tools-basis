@@ -48,7 +48,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var side = Math.random() >= 0.5 ? 'x' : 'y';
 
         var trapezium = _.map(square, function (point, i) {
-            if (i < 2) {
+            if (side == 'x' && i < 2 ||
+                side == 'y' && i >= 1 && i < 3) {
                 point[side] = point[side] + (offset / (i + 1));
             }
             return point;
