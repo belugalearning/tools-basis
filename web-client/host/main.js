@@ -41,6 +41,7 @@ require.config({
         'blbutton': '../../tools/common/BLButton',
         'settingslayer': '../../tools/common/settings-layer',
         'dropzone': '../../tools/common/dropzone',
+        'canvasclippingnode': '../../tools/common/canvas-clipping-node',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
