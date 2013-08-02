@@ -9,8 +9,8 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
 
         _lastPosition: undefined,
         _homePosition: undefined,
-        _length: undefined,
-
+        _preDragAnchorPoint: undefined,
+        
         ctor:function() {
             this._super();
             
@@ -40,8 +40,24 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
 
         onTouchBegan: function (touch, event) {
             if (this._super(touch, event)) {
+                
                 this._lastPosition = this.getPosition();
-                return true;
+
+                var cs = this.getContentSize();
+                this._preDragAnchorPoint = this._anchorPoint;
+
+               //move anchor point to touch position
+                this._anchorPointInPoints = cc.p(
+                    (touch._point.x - (this._lastPosition.x - (cs.width * this._scaleX) / 2)) / this._scaleX,
+                    (touch._point.y - (this._lastPosition.y - (cs.height * this._scaleY) / 2)) / this._scaleY
+                );
+                
+                this._anchorPoint = cc.p(
+                    this._anchorPointInPoints.x / cs.width,
+                    this._anchorPointInPoints.y / cs.height
+                );
+
+                 return true;
             }
             return false;
         },
@@ -55,6 +71,9 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         onTouchEnded: function (touch, event) {
             this._super(touch, event);
             this._onMoveEnded.apply(this, [touch.getLocation(), this]);
+
+            //restore central anchor point
+            this.setAnchorPoint(this._preDragAnchorPoint);
         },
 
         _onMoved: function () {},
@@ -65,7 +84,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         _onMoveEnded: function () {},
         onMoveEnded: function (cb) {
             this._onMoveEnded = cb;
-        }
+        },
 
     });
 
