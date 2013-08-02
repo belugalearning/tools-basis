@@ -1,12 +1,10 @@
 define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 	'use strict';
 
-	var StackedSprite = cc.Node.extend({
+	var StackedSprite = cc.Sprite.extend({
 		ctor: function() {
 			this._super();
-            // Set the default anchor point
-            // this.ignoreAnchorPointForPosition(false);
-            // this.setAnchorPoint(cc.p(0.5, 0.5));
+			this.initWithFile(bl.getResource('transparent')); // we need to init the sprite with a transparent png to stop it from drawing a bg colour of white
 		},
 
 		setup: function(instructions) {
