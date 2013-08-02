@@ -59,6 +59,32 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         return drawing.scaleToFit(trapezium, width, height)
     };
 
+    drawing.dart = function(width, height, rotation) {
+
+        var scene_width = 1;
+        var scene_height = 1;
+
+        var a = Math.floor(Math.random() * (scene_height * 0.3)) + (scene_height * 0.3);
+        var theta = Math.PI * (Math.floor(Math.random() * 20) + 15) / 180;
+        var b = a * Math.cos(theta);
+        var c = a * Math.sin(theta);
+        var d = (Math.floor(Math.random() * c) + 2 * c);
+
+        var points = [
+            cc.p(0,0),
+            cc.p((0 + b), (0 - c)),
+            cc.p(0, (0 + d)),
+            cc.p((0 - b), (0 - c)),
+            cc.p(0,0)
+        ];
+
+        points = drawing.rotateVector(points, rotation, cc.p(0.5,0.5));
+        points = drawing.centerVector(points);
+
+
+        return drawing.scaleToFit(points, width, height)
+    };
+
     drawing.centerVector = function (vector) {
         var min_x = _.min(vector, function (p) { return p.x }).x;
         var min_y = _.min(vector, function (p) { return p.y }).y;
@@ -345,6 +371,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 shape = drawing.regularShape(12, this._width, this._height, rotation);
             } else if (type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
                 shape = drawing.trapezium(this._width, this._height, rotation);
+            } else if (type === bl.DRAWNODE_TYPE_DART) {
+                shape = drawing.dart(this._width, this._height, rotation);
             }
 
             if (!_.isUndefined(shape)) {
