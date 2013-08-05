@@ -9,7 +9,6 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
     window.bl = window.bl || {};
 
-
     var drawing = {};
     drawing.shapes = {};
 
