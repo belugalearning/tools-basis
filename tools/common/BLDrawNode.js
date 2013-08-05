@@ -103,7 +103,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
     drawing.isoceles = function(rotation) {
 
-        var triangle = drawing.regularShape(3, rotation);
+        var triangle = drawing.regularShape(3, 0);
 
         var min_y = _.min(triangle, function (p) { return p.y; }).y;
         var max_y = _.max(triangle, function (p) { return p.y; }).y;
