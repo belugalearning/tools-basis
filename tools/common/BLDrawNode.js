@@ -109,8 +109,9 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var max_y = _.max(triangle, function (p) { return p.y; }).y;
 
         var range = (max_y - min_y);
-        var scale_height = (_.random(0.6, 1) * range);
-        triangle[0].y = triangle[0].y + (scale_height);
+        var scale_height = (_.random(0.3, 0.7) * range);
+        var sign = Math.random() >= 0.5 ? 1 : 0;
+        triangle[0].y = triangle[0].y + (scale_height * sign);
 
         triangle = drawing.rotateVector(triangle, rotation);
         triangle = drawing.centerVector(triangle);
