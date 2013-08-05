@@ -60,7 +60,7 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
 
             this._super(question);
             // add draggables
-            var shapes = ['dart', 'irregular_polygon', 'short_isosceles_triangle', 'equilateral_triangle', 'isosceles_triangle', 'kite', 'parallelogram', 'rectangle', 'decagon', 'dodecagon', 'hendecagon', 'heptagon', 'hexagon', 'nonagon', 'octagon', 'pentagon', 'right_angle_triangle', 'scalene_triangle', 'square', 'trapezium']
+            var shapes = ['dart', 'irregular_polygon', 'isosceles_triangle', 'equilateral_triangle', 'kite', 'parallelogram', 'rectangle', 'decagon', 'dodecagon', 'hendecagon', 'heptagon', 'hexagon', 'nonagon', 'octagon', 'pentagon', 'right_angle_triangle', 'scalene_triangle', 'square', 'trapezium']
             _.each(shapes, function (shape, i) {
                 _.times(10, function (j) {
 
