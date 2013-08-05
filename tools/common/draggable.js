@@ -42,24 +42,21 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             if (this._super(touch, event)) {
                 
                 this._lastPosition = this.getPosition();
+                this._preDragAnchorPoint = this.getAnchorPoint();
 
                 var cs = this.getContentSize();
-                this._preDragAnchorPoint = this._anchorPoint;
-
-               //move anchor point to touch position
-                this._anchorPointInPoints = cc.p(
-                    (touch._point.x - (this._lastPosition.x - (cs.width * this._scaleX) / 2)) / this._scaleX,
-                    (touch._point.y - (this._lastPosition.y - (cs.height * this._scaleY) / 2)) / this._scaleY
-                );
+                var x = (touch._point.x - (this._lastPosition.x - (cs.width * this._scaleX) / 2)) / this._scaleX;
+                var y = (touch._point.y - (this._lastPosition.y - (cs.height * this._scaleY) / 2)) / this._scaleY;
                 
-                this._anchorPoint = cc.p(
-                    this._anchorPointInPoints.x / cs.width,
-                    this._anchorPointInPoints.y / cs.height
-                );
+                this.setAnchorPoint(cc.p(
+                    x / cs.width,
+                    y / cs.height
+                ));
 
                 var position = this.getParent().convertToNodeSpace(touch.getLocation());
                 this.setPosition(position);
-                this._onTouchDown.apply(this, [touch.getLocation(), this]);
+
+                this._onTouchDown.apply(this, [position, this]);
                 return true;
             }
             return false;
