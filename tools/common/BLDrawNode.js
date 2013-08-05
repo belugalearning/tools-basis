@@ -11,24 +11,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
 
     var drawing = {};
-    /*
-     * Draws a regular shape of n sides.
-     */
-    drawing.scaleToFit = function(vector, width, height) {
-        var size = drawing.getVectorBounds(cc.p(0,0), vector);
 
-        var multiplier = Math.min(width, height) / Math.max(size.width, size.height);
-        
-        vector = _.map(vector, function (p) {
-            return cc.p(p.x * multiplier, p.y * multiplier);
-        });
+    drawing.trapezium = function() {
 
-        return vector;
-    };
-
-    drawing.trapezium = function(rotation) {
-
-        var square = drawing.regularShape(4, rotation);
+        var square = drawing.regularShape(4);
 
         var min_x = _.min(square, function (p) { return p.x; }).x;
         var max_x = _.max(square, function (p) { return p.x; }).x;
@@ -47,12 +33,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             return point;
         });
 
-        trapezium = drawing.centerVector(trapezium);
-
         return trapezium;
     };
 
-    drawing.dart = function(rotation) {
+    drawing.dart = function() {
 
         var scene_width = 1;
         var scene_height = 1;
@@ -71,14 +55,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             cc.p(0,0)
         ];
 
-        points = drawing.rotateVector(points, rotation, cc.p(0.5,0.5));
-        points = drawing.centerVector(points);
-
-
         return points;
     };
 
-    drawing.polygon = function(rotation) {
+    drawing.polygon = function() {
 
         var scene_width = 1;
         var scene_height = 1;
@@ -95,15 +75,12 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         }
         points.push(cc.p(scene_width / 2, 0));
 
-        points = drawing.rotateVector(points, rotation, cc.p(0.5,0.5));
-        points = drawing.centerVector(points);
-
         return points;
     };
 
-    drawing.isoceles = function(rotation) {
+    drawing.isoceles = function() {
 
-        var triangle = drawing.regularShape(3, 0);
+        var triangle = drawing.regularShape(3);
 
         var min_y = _.min(triangle, function (p) { return p.y; }).y;
         var max_y = _.max(triangle, function (p) { return p.y; }).y;
@@ -113,15 +90,12 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var sign = Math.random() >= 0.5 ? 1 : 0;
         triangle[0].y = triangle[0].y + (scale_height * sign);
 
-        triangle = drawing.rotateVector(triangle, rotation);
-        triangle = drawing.centerVector(triangle);
-
         return triangle;
     };
 
-    drawing.kite = function(rotation) {
+    drawing.kite = function() {
 
-        var triangle = drawing.isoceles(0);
+        var triangle = drawing.isoceles();
 
         var min_y = _.min(triangle, function (p) { return p.y; }).y;
         var max_y = _.max(triangle, function (p) { return p.y; }).y;
@@ -129,8 +103,6 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var range = (max_y - min_y);
         var p = cc.p(triangle[0].x, triangle[0].y - (range * _.random(1.3, 1.7)));
         triangle.splice(2,0,p);
-        triangle = drawing.rotateVector(triangle, rotation);
-        triangle = drawing.centerVector(triangle);
 
         return triangle;
     };
@@ -148,14 +120,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             return p;
         });
 
-        parallelogram = drawing.rotateVector(parallelogram, rotation);
-        parallelogram = drawing.centerVector(parallelogram);
-
-
         return parallelogram;
     };
 
-    drawing.rectangle = function(rotation) {
+    drawing.rectangle = function() {
 
         var square = drawing.regularShape(4);
 
@@ -168,33 +136,23 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             return p;
         });
 
-        parallelogram = drawing.rotateVector(parallelogram, rotation);
-        parallelogram = drawing.centerVector(parallelogram);
-
-
         return parallelogram;
     };
 
-    drawing.rightAngleTriangle = function(rotation) {
+    drawing.rightAngleTriangle = function() {
 
         var square = drawing.regularShape(4);
         square.splice(2, 1);
 
-        square = drawing.rotateVector(square, rotation);
-        square = drawing.centerVector(square);
-
         return square;
     };
 
-    drawing.scaleneTriangle = function(rotation) {
+    drawing.scaleneTriangle = function() {
 
-        var triangle = drawing.rightAngleTriangle(0);
+        var triangle = drawing.rightAngleTriangle();
 
         triangle[0].x += _.random(1, 1.6);
         triangle[1].y += _.random(0.8, 1.2);
-
-        triangle = drawing.rotateVector(triangle, rotation);
-        triangle = drawing.centerVector(triangle);
 
         return triangle;
     };
@@ -202,9 +160,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     /*
      * Draws a regular vector shape on a scale of 0,0 -> 1,1 orientated around 0.5,0.5 with n sides
      */
-    drawing.regularShape = function (sides, rotation) {
-
-        rotation = rotation || 0;
+    drawing.regularShape = function (sides) {
 
         var scene_width = 1;
         var scene_height = 1;
@@ -213,7 +169,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var shape_sides = sides;
         var shape_max_side = 1;
         var shape_theta = ((2 * Math.PI) / shape_sides);
-        var shape_offset = (shape_theta - (Math.PI / 2)) + (Math.PI / shape_sides) + rotation;
+        var shape_offset = (shape_theta - (Math.PI / 2)) + (Math.PI / shape_sides);
 
         var points = [];
 
@@ -266,6 +222,18 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         });
     };
 
+    drawing.scaleToFit = function(vector, width, height) {
+        var size = drawing.getVectorBounds(cc.p(0,0), vector);
+
+        var multiplier = Math.min(width, height) / Math.max(size.width, size.height);
+        
+        vector = _.map(vector, function (p) {
+            return cc.p(p.x * multiplier, p.y * multiplier);
+        });
+
+        return vector;
+    };
+
     bl.DRAWNODE_TYPE_CIRCLE = 'circle';
     bl.DRAWNODE_TYPE_DART = 'dart';
     bl.DRAWNODE_TYPE_IRREGULAR_POLYGON = 'irregular_polygon';
@@ -307,45 +275,47 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             var shape;
 
             if (type === bl.DRAWNODE_TYPE_EQUILATERAL) {
-                shape = drawing.regularShape(3, rotation);
+                shape = drawing.regularShape(3);
             } else if (type === bl.DRAWNODE_TYPE_SQUARE) {
-                shape = drawing.regularShape(4, rotation);
+                shape = drawing.regularShape(4);
             } else if (type === bl.DRAWNODE_TYPE_PENTAGON) {
-                shape = drawing.regularShape(5, rotation);
+                shape = drawing.regularShape(5);
             } else if (type === bl.DRAWNODE_TYPE_HEXAGON) {
-                shape = drawing.regularShape(6, rotation);
+                shape = drawing.regularShape(6);
             } else if (type === bl.DRAWNODE_TYPE_HEPTAGON) {
-                shape = drawing.regularShape(7, rotation);
+                shape = drawing.regularShape(7);
             } else if (type === bl.DRAWNODE_TYPE_OCTAGON) {
-                shape = drawing.regularShape(8, rotation);
+                shape = drawing.regularShape(8);
             } else if (type === bl.DRAWNODE_TYPE_NONAGON) {
-                shape = drawing.regularShape(9, rotation);
+                shape = drawing.regularShape(9);
             } else if (type === bl.DRAWNODE_TYPE_DECAGON) {
-                shape = drawing.regularShape(10, rotation);
+                shape = drawing.regularShape(10);
             } else if (type === bl.DRAWNODE_TYPE_HENDECAGON) {
-                shape = drawing.regularShape(11, rotation);
+                shape = drawing.regularShape(11);
             } else if (type === bl.DRAWNODE_TYPE_DODECAGON) {
-                shape = drawing.regularShape(12, rotation);
+                shape = drawing.regularShape(12);
             } else if (type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
-                shape = drawing.trapezium(rotation);
+                shape = drawing.trapezium();
             } else if (type === bl.DRAWNODE_TYPE_DART) {
-                shape = drawing.dart(rotation);
+                shape = drawing.dart();
             } else if (type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
-                shape = drawing.polygon(rotation);
+                shape = drawing.polygon();
             } else if (type === bl.DRAWNODE_TYPE_ISOSCELES) {
-                shape = drawing.isoceles(rotation);
+                shape = drawing.isoceles();
             } else if (type === bl.DRAWNODE_TYPE_KITE) {
-                shape = drawing.kite(rotation);
+                shape = drawing.kite();
             } else if (type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
-                shape = drawing.parallelogram(rotation);
+                shape = drawing.parallelogram();
             } else if (type === bl.DRAWNODE_TYPE_RECTANGLE) {
-                shape = drawing.rectangle(rotation);
+                shape = drawing.rectangle();
             } else if (type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
-                shape = drawing.rightAngleTriangle(rotation);
+                shape = drawing.rightAngleTriangle();
             } else if (type === bl.DRAWNODE_TYPE_SCALENE) {
-                shape = drawing.scaleneTriangle(rotation);
+                shape = drawing.scaleneTriangle();
             }
 
+            shape = drawing.rotateVector(shape, rotation);
+            shape = drawing.centerVector(shape);
             shape = drawing.scaleToFit(shape, this._width, this._height);
             this.drawPoly(shape, fillColor, borderWidth, borderColor);
 
