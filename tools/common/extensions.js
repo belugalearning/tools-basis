@@ -92,7 +92,7 @@ define(['cocos2d'], function() {
             }
         });
         return points[index];
-    }
+    };
 
     cc.Sprite.prototype.touched = function(touchLocation) {
         var parent = this.getParent();
