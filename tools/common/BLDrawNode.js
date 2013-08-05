@@ -126,13 +126,11 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         var min_y = _.min(triangle, function (p) { return p.y; }).y;
         var max_y = _.max(triangle, function (p) { return p.y; }).y;
 
-
         var range = (max_y - min_y);
         var p = cc.p(triangle[0].x, triangle[0].y - (range * _.random(1.3, 1.7)));
         triangle.splice(2,0,p);
         triangle = drawing.rotateVector(triangle, rotation);
         triangle = drawing.centerVector(triangle);
-
 
         return triangle;
     };
@@ -141,7 +139,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
         var square = drawing.regularShape(4);
 
-        var offset = _.random(0.2, 0.4);
+        var offset = _.random(0.2, 0.7);
 
         var parallelogram = _.map(square, function (p, i) {
             if (i < 2) {
@@ -150,12 +148,42 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             return p;
         });
 
+        parallelogram = drawing.rotateVector(parallelogram, rotation);
+        parallelogram = drawing.centerVector(parallelogram);
+
+
+        return parallelogram;
+    };
+
+    drawing.rectangle = function(rotation) {
+
+        var square = drawing.regularShape(4);
+
+        var offset = _.random(0.3, 0.4);
+
+        var parallelogram = _.map(square, function (p, i) {
+            if (i == 1 || i == 2) {
+                p.x += offset;
+            }
+            return p;
+        });
 
         parallelogram = drawing.rotateVector(parallelogram, rotation);
         parallelogram = drawing.centerVector(parallelogram);
 
 
         return parallelogram;
+    };
+
+    drawing.rightAngleTriangle = function(rotation) {
+
+        var square = drawing.regularShape(4);
+        square.splice(2, 1);
+
+        square = drawing.rotateVector(square, rotation);
+        square = drawing.centerVector(square);
+
+        return square;
     };
 
     /*
@@ -458,6 +486,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 shape = drawing.parallelogram(rotation);
             } else if (type === bl.DRAWNODE_TYPE_RECTANGLE) {
                 shape = drawing.rectangle(rotation);
+            } else if (type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
+                shape = drawing.rightAngleTriangle(rotation);
             }
 
             if (!_.isUndefined(shape)) {
