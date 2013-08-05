@@ -186,6 +186,19 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         return square;
     };
 
+    drawing.scaleneTriangle = function(rotation) {
+
+        var triangle = drawing.rightAngleTriangle(0);
+
+        triangle[0].x += _.random(1, 1.6);
+        triangle[1].y += _.random(0.8, 1.2);
+
+        triangle = drawing.rotateVector(triangle, rotation);
+        triangle = drawing.centerVector(triangle);
+
+        return triangle;
+    };
+
     /*
      * Draws a regular vector shape on a scale of 0,0 -> 1,1 orientated around 0.5,0.5 with n sides
      */
@@ -488,6 +501,8 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 shape = drawing.rectangle(rotation);
             } else if (type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
                 shape = drawing.rightAngleTriangle(rotation);
+            } else if (type === bl.DRAWNODE_TYPE_SCALENE) {
+                shape = drawing.scaleneTriangle(rotation);
             }
 
             if (!_.isUndefined(shape)) {
