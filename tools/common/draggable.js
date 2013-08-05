@@ -23,7 +23,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                 pos.x += size.width * 0.5;
                 pos.y += size.height * 0.5;
             }
-            if (this._posCount == 0) {
+            if (this._posCount === 0) {
                 this._homePosition = pos;
             }
             this._posCount++;
