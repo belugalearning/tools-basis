@@ -137,6 +137,27 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         return triangle;
     };
 
+    drawing.parallelogram = function(rotation) {
+
+        var square = drawing.regularShape(4);
+
+        var offset = _.random(0.2, 0.4);
+
+        var parallelogram = _.map(square, function (p, i) {
+            if (i < 2) {
+                p.x += offset;
+            }
+            return p;
+        });
+
+
+        parallelogram = drawing.rotateVector(parallelogram, rotation);
+        parallelogram = drawing.centerVector(parallelogram);
+
+
+        return parallelogram;
+    };
+
     /*
      * Draws a regular vector shape on a scale of 0,0 -> 1,1 orientated around 0.5,0.5 with n sides
      */
@@ -192,6 +213,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     };
 
     drawing.rotateVector = function (vector, angle, center) {
+        if (angle === 0) return vector;
         center = center || cc.p(0, 0);
         var cosAngle = Math.cos(angle);
         var sinAngle = Math.sin(angle);
@@ -432,6 +454,10 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
                 shape = drawing.isoceles(rotation);
             } else if (type === bl.DRAWNODE_TYPE_KITE) {
                 shape = drawing.kite(rotation);
+            } else if (type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
+                shape = drawing.parallelogram(rotation);
+            } else if (type === bl.DRAWNODE_TYPE_RECTANGLE) {
+                shape = drawing.rectangle(rotation);
             }
 
             if (!_.isUndefined(shape)) {
