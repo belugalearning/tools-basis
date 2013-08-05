@@ -20,7 +20,8 @@ define(['cocos2d', 'underscore', 'bldrawnode'], function(cc, _, BLDrawNode) {
 				if (layer.hasOwnProperty('shape')) {
 					var color = cc.c4FFromccc4B(cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a));
 					l = new BLDrawNode(mx_width, mx_height, width, height);
-					l.drawShape(layer.shape, color, 0, cc.c4f(0,0,0,0));
+					l.drawShape(layer.shape, (layer.rotation || 0), color, 0, cc.c4f(0,0,0,0));
+					layer.rotation = 0;
 					l.setContentSize(cc.SizeMake(width, height));
 				} else if (layer.hasOwnProperty('color')) {
 					var color = cc.c4b(layer.color.r, layer.color.g, layer.color.b, layer.color.a);
