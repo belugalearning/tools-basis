@@ -128,7 +128,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
 
 
         var range = (max_y - min_y);
-        var p = cc.p(triangle[0].x, triangle[0].y - (range * _.random(1.3, 1.9)));
+        var p = cc.p(triangle[0].x, triangle[0].y - (range * _.random(1.3, 1.7)));
         triangle.splice(2,0,p);
         triangle = drawing.rotateVector(triangle, rotation);
         triangle = drawing.centerVector(triangle);
