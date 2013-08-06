@@ -21,7 +21,24 @@ define(['cocos2d'], function() {
     window.bl.animation = {};
     window.bl.animation.popIn = function () {
         return cc.Sequence.create(cc.FadeIn.create(0.4), cc.ScaleTo.create(0.2, 1.2, 1.2), cc.ScaleTo.create(0.2, 1, 1));
-    }
+    };
+
+    window.bl.animation.moveTo = function (duration, end) {
+        return window.bl.animation.moveThrough(duration, [end]);
+    };
+
+    window.bl.animation.moveAndRotateTo = function (duration, end, rotation, cb) {
+        cb = cb || function () {};
+        var callback = cc.CallFunc.create(cb, this);
+        return cc.Sequence.create(cc.MoveTo.create(duration / 2, end), cc.RotateTo.create(duration / 2, rotation), callback);
+    };
+
+    window.bl.animation.moveThrough = function (duration, points) {
+        points = _.map(points, function (p) {
+            return cc.MoveTo.create(duration / points.length, p);
+        });
+        return cc.Sequence.create.apply(undefined, points);
+    };
 
     window.bl.getQueryParams = function(queryString) {
         var query = (queryString || window.location.search).substring(1); // delete ?

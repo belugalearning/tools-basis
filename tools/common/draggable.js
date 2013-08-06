@@ -23,21 +23,22 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                 pos.x += size.width * 0.5;
                 pos.y += size.height * 0.5;
             }
-            if (this._posCount == 0) {
+            if (this._posCount === 0) {
                 this._homePosition = pos;
             }
             this._posCount++;
             this._super.apply(this, [pos]);
         },
 
-        returnToLastPosition: function () {
+        returnToLastPosition: function (animate) {
+            if (animate) {
+                var action = cc.Sequence.create(cc.MoveTo.create(0.2, this._lastPosition));
+                this.runAction(action);
+                return;
+            }
             this.setPosition(this._lastPosition);
         },
         
-        returnToHomePosition: function () {
-            this.setPosition(this._homePosition);
-        },
-
         onTouchBegan: function (touch, event) {
             if (this._super(touch, event)) {
                 
