@@ -202,11 +202,28 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
         });
     };
 
-    drawing.tools.centerVector = function (vector) {
+    drawing.tools.centerVector = function (vector, space_width, space_height) {
         var min_x = _.min(vector, function (p) { return p.x; }).x;
         var min_y = _.min(vector, function (p) { return p.y; }).y;
+        var max_x = _.max(vector, function (p) { return p.x; }).x;
+        var max_y = _.max(vector, function (p) { return p.y; }).y;
+        var size_x = max_x - min_x;
+        var size_y = max_y - min_y;
+
+        var x_offset = min_x * -1;
+        var y_offset = min_y * -1;
+
+        // find the smallest dimension
+        if (Math.min(size_x, size_y) == size_x) {
+            // x is the smallest
+            x_offset += (size_y - size_x) / 2;
+        } else {
+            // y is the smallest
+            y_offset += (size_x - size_y) / 2;
+        }
+
         vector = _.map(vector, function (p) {
-            return cc.p(p.x + (min_x * -1), p.y + (min_y * -1));
+            return cc.p(p.x + x_offset, p.y + y_offset);
         });
         return vector;
     };
@@ -317,7 +334,7 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             }
 
             shape = drawing.tools.rotateVector(shape, rotation);
-            shape = drawing.tools.centerVector(shape);
+            shape = drawing.tools.centerVector(shape, 1, 1);
             shape = drawing.tools.scaleToFit(shape, this._width, this._height);
             this.drawPoly(shape, fillColor, borderWidth, borderColor);
 
