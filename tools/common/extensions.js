@@ -259,4 +259,8 @@ define(['cocos2d'], function() {
               this[i].setPosition(xPosition, yPosition);
         };
     };
+
+    Number.prototype.putInBounds = function(lowerBound, upperBound) {
+        return Math.max(Math.min(this, upperBound), lowerBound);
+    };
 });

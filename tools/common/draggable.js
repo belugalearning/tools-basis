@@ -13,7 +13,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         
         ctor:function() {
             this._super();
-            
+            this._dragAreaRect = null;
         },
 
         _posCount: 0,
@@ -54,7 +54,8 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                     y / cs.height
                 ));
 
-                var position = this.getParent().convertToNodeSpace(touch.getLocation());
+                var position = this.findPositionToSet(touch);
+
                 this.setPosition(position);
 
                 this._onTouchDown.apply(this, [position, this]);
@@ -70,7 +71,7 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
 
         onTouchMoved: function (touch, event) {
             this._super(touch, event);
-            var position = this.getParent().convertToNodeSpace(touch.getLocation());
+            var position = this.findPositionToSet(touch);
             this.setPosition(position);
             this._onMoved.apply(this, [touch.getLocation(), this]);
         },
@@ -92,6 +93,31 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         onMoveEnded: function (cb) {
             this._onMoveEnded = cb;
         },
+
+        setDragAreaRect:function(rect) {
+            this._dragAreaRect = rect;
+        },
+
+        findPositionToSet:function(touch) {
+            var touchLocation = this.getParent().convertToNodeSpace(touch.getLocation());
+            var xPos = touchLocation.x, yPos = touchLocation.y;
+            if (this._dragAreaRect !== null) {
+                var sprite = this.getCurrentBackgroundSprite();
+                var leftToAnchor = sprite.getAnchorPointInPoints().x * sprite.getScaleX();
+                var rightToAnchor = sprite.getBoundingBox().size.width - leftToAnchor;
+                var lowX = this._dragAreaRect.origin.x + leftToAnchor;
+                var highX = this._dragAreaRect.origin.x + this._dragAreaRect.size.width - rightToAnchor;
+                xPos = xPos.putInBounds(lowX, highX);
+
+                var bottomToAnchor = sprite.getAnchorPointInPoints().y * sprite.getScaleY();
+                var topToAnchor = sprite.getBoundingBox().size.height - bottomToAnchor;
+                var lowY = this._dragAreaRect.origin.y + bottomToAnchor;
+                var highY = this._dragAreaRect.origin.y + this._dragAreaRect.size.height - topToAnchor;
+                yPos = yPos.putInBounds(lowY, highY);
+            };
+            return cc.p(xPos, yPos);
+        },
+
 
     });
 
