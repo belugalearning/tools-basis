@@ -97,7 +97,6 @@ define(['cocos2d'], function(cc) {
             var sprite = new cc.Sprite();
             sprite.initWithFile(file);
             this.initWithSprite(sprite);
-            this.setMargins(0, 0);
         },
 
         /** Adjust the background image. YES by default. If the property is set to NO, the
@@ -205,7 +204,7 @@ define(['cocos2d'], function(cc) {
                 touchInside = this._backgroundSprite.touched(touch.getLocation());
             } else {
                 touchInside = this.isTouchInside(touch);
-            };
+            }
             if (!touchInside || !this.isEnabled()) {
                 return false;
             }
@@ -245,7 +244,14 @@ define(['cocos2d'], function(cc) {
             this._pushed = false;
             this.setHighlighted(false);
 
-            if (this.isTouchInside(touch)) {
+            var touchInside = false;
+            if (this._backgroundSprite instanceof cc.Sprite) {
+                touchInside = this._backgroundSprite.touched(touch.getLocation());
+            } else {
+                touchInside = this.isTouchInside(touch);
+            }
+
+            if (touchInside) {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_INSIDE);
                 this._onTouchUp.apply(this, [touch.getLocation(), this]);
             } else {
