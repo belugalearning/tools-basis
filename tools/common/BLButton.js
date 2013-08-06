@@ -284,6 +284,10 @@ define(['cocos2d'], function(cc) {
             return this._backgroundSpriteDispatchTable[cc.CONTROL_STATE_NORMAL];
         },
 
+        getCurrentBackgroundSprite:function() {
+            return this.getBackgroundSpriteForState(this._state);
+        },
+
         /**
          * Sets the background sprite to use for the specified button state.
          *
