@@ -99,7 +99,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
             cacheResource: function (resource, key) {
                 var sharedTextureCache = cc.TextureCache.getInstance();
                 var image = new Image();
-                image.src = resource.src
+                image.src = resource.src;
                 image.width = resource.width;
                 image.height = resource.height;
                 sharedTextureCache.cacheImage(key, image);
