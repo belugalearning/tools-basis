@@ -39,6 +39,10 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             this.setPosition(this._lastPosition);
         },
         
+        returnToHomePosition: function () {
+            this.setPosition(this._homePosition);
+        },
+
         onTouchBegan: function (touch, event) {
             if (this._super(touch, event)) {
                 
