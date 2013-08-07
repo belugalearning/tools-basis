@@ -291,16 +291,10 @@ define(['cocos2d'], function() {
         while (positionOnBackground(pinPosition(0, secondCoordinate))) {
             while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
                 latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
-                // var pin = new Pin();
-                // pin.sprite.setPosition(this.pinPosition(firstCoordinate, secondCoordinate));
-                // this.pins.push(pin);
                 firstCoordinate++;
             }
             firstCoordinate = -1;
             while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
-                // var pin = new Pin();
-                // pin.sprite.setPosition(pinPosition(firstCoordinate, secondCoordinate));
-                // this.pins.push(pin);
                 latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
                 firstCoordinate--;
             }
