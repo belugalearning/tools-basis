@@ -263,4 +263,50 @@ define(['cocos2d'], function() {
     Number.prototype.putInBounds = function(lowerBound, upperBound) {
         return Math.max(Math.min(this, upperBound), lowerBound);
     };
+
+    cc.Rect.prototype.latticePoints = function(xDistance, yDistance, angle, offsetX, offsetY) {
+        var self = this;
+
+        var rowHeight = Math.sin(angle);
+        var rowOffset = Math.cos(angle);
+        
+        var pinPosition = function(i, j) {
+            var xValue = self.origin.x + xDistance * i + yDistance * rowOffset * j;
+            var yValue = self.origin.y + yDistance * rowHeight * j;
+            var pinPosition = cc.p(xValue, yValue);
+            return pinPosition;
+        };
+
+        var positionOnBackground = function(pinPosition) {
+            var xRelativeToBackground = pinPosition.x + self.origin.x + offsetX;
+            var yRelativeToBackground = pinPosition.y + self.origin.y + offsetY;
+            var pinPositionRelativeToBackground= cc.p(xRelativeToBackground, yRelativeToBackground);
+            var onBackground = cc.rectContainsPoint(self, pinPosition);
+            return onBackground;
+        };
+
+        var latticePoints = [];    
+        var firstCoordinate = 0;
+        var secondCoordinate = 0;
+        while (positionOnBackground(pinPosition(0, secondCoordinate))) {
+            while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
+                latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
+                // var pin = new Pin();
+                // pin.sprite.setPosition(this.pinPosition(firstCoordinate, secondCoordinate));
+                // this.pins.push(pin);
+                firstCoordinate++;
+            }
+            firstCoordinate = -1;
+            while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
+                // var pin = new Pin();
+                // pin.sprite.setPosition(pinPosition(firstCoordinate, secondCoordinate));
+                // this.pins.push(pin);
+                latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
+                firstCoordinate--;
+            }
+            firstCoordinate = 0;
+            secondCoordinate++;
+        }
+        return latticePoints;
+    };
 });
