@@ -16,7 +16,7 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
         _controls: {},
 
         reset: function () {
-            this._controls = {}; 
+            this._controls = {};
             this._background = undefined;
             this._backgroundLayer = undefined;
             this.removeAllChildren();
@@ -76,7 +76,7 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
         setQuestion: function (question) {
             var self = this;
-            this.question = question;
+            this._question = question;
 
             function recursiveApply (control, state) {
                 if (state.hasOwnProperty('enabled') && typeof control.setEnabled === 'function') {
