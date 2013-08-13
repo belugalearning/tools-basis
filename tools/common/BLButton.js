@@ -198,6 +198,11 @@ define(['cocos2d'], function(cc) {
             }
         },
 
+        setGreyedOut: function(greyed) {
+            this.setOpacity(greyed ? 128 : 255);
+            this.setEnabled(!greyed);
+        },
+
         onTouchBegan: function(touch, event) {
             var touchInside;
             if (this._backgroundSprite instanceof cc.Sprite) {
