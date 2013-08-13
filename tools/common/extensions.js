@@ -117,6 +117,44 @@ define(['cocos2d'], function() {
         return points[index];
     };
 
+    window.bl.polygonArea = function(points) {
+        var area = 0;
+        var nPoints = points.length;
+        var j = nPoints - 1;
+        var p1; var p2;
+
+        for (var i = 0; i < nPoints; j = i++) {
+           p1 = points[i];
+           p2 = points[j];
+           area += p1.x * p2.y;
+           area -= p1.y * p2.x;
+        }
+        area /= 2;
+         
+        return area;
+    };
+
+    window.bl.polygonCentroid = function(points) {
+        var nPoints = points.length;
+        var x = 0;
+        var y = 0;
+        var f;
+        var j = nPoints - 1;
+        var p1; var p2;
+
+        for (var i = 0; i < nPoints; j = i++) {
+            p1 = points[i];
+            p2 = points[j];
+            f = p1.x * p2.y - p2.x * p1.y;
+            x += (p1.x + p2.x) * f;
+            y += (p1.y + p2.y) * f;
+        }
+
+        f = window.bl.polygonArea(points) * 6;
+
+        return cc.p(x/f, y/f);
+    };
+
     cc.Sprite.prototype.touched = function(touchLocation) {
         var parent = this.getParent();
         var touchRelativeToParent = parent.convertToNodeSpace(touchLocation);
