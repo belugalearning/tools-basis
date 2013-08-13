@@ -201,10 +201,10 @@ define(['cocos2d'], function() {
         var y = radius;
         var angle = 0;
         var range = 2 * Math.PI;
+        var inc = range / 360;
 
-        var vertices = [];
-        while (angle < range) {
-            angle += 0.01;
+        while (angle < range - inc) {
+            angle += inc;
             x = position.x + (radius * Math.cos(angle));
             y = position.y + (radius * Math.sin(angle));
             vertices.push(cc.p(x, y));
