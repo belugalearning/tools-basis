@@ -7,10 +7,15 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
         _background: undefined,
         _backgroundLayer: undefined,
+        _windowSize: undefined,
 
         tag: '',
         ctor: function () {
             this._super();
+
+            this._director = cc.Director.getInstance();
+            this._windowSize = this._director.getWinSize();
+
         },
 
         _controls: {},
