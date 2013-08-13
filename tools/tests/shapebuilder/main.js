@@ -3,7 +3,7 @@ require.config({
     }
 });
 
-define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer', 'stackedsprite'], function (exports, cc, QLayer, BLDrawNode, Polygon, ToolLayer, StackedSprite) {
+define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'toollayer', 'stackedsprite'], function (exports, cc, QLayer, BLDrawNode, ToolLayer, StackedSprite) {
     'use strict';
 
     window.toolTag = 'shapebuilder';
