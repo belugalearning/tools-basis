@@ -29,8 +29,6 @@ require.config({
         'underscore': '../../tools/common/lib/underscore',
         'vec2': '../../tools/common/lib/vec2',
         'segseg': '../../tools/common/lib/segseg',
-        'polygon': '../../tools/common/lib/polygon',
-        'polygonclip': '../../tools/common/lib/polygon.clip',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'bldrawnode': '../../tools/common/BLDrawNode',

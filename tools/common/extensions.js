@@ -96,6 +96,12 @@ define(['cocos2d'], function() {
         return false;
     };
 
+    window.bl.getDistanceBetweenPoints = function(p1, p2) {
+        var dY = p2.y - p1.y;
+        var dX = p2.x - p1.x;
+        return Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+    };
+
     window.bl.getClosestPoint = function(point, points) {
         var distance = 9999999 * 99999999;
         var index = 0;
