@@ -14,6 +14,8 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
         ctor:function() {
             this._super();
             this._dragAreaRect = null;
+            this.changePositionOnTouchDown = true;
+            // this._draggable = true;
         },
 
         _posCount: 0,
@@ -29,6 +31,10 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             this._posCount++;
             this._super.apply(this, [pos]);
         },
+
+        // setDraggable:function(draggable) {
+
+        // },
 
         returnToLastPosition: function (animate) {
             if (animate) {
@@ -58,9 +64,10 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                     y / cs.height
                 ));
 
-                var position = this.findPositionToSet(touch);
-
-                this.setPosition(position);
+                if (this.changePositionOnTouchDown) {
+                    var position = this.findPositionToSet(touch);
+                    this.setPosition(position);
+                };
 
                 this._onTouchDown.apply(this, [touch.getLocation(), this]);
                 return true;
@@ -102,6 +109,10 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             this._dragAreaRect = rect;
         },
 
+        setChangePositionOnTouchDown:function(change) {
+            this.changePositionOnTouchDown = change;
+        },
+
         findPositionToSet:function(touch) {
             var touchLocation = this.getParent().convertToNodeSpace(touch.getLocation());
             var xPos = touchLocation.x, yPos = touchLocation.y;
@@ -129,6 +140,10 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
                 };
             };
             return cc.p(xPos, yPos);
+        },
+
+        distanceMoved:function() {
+            return cc.pDistance(this.getPosition(), this._lastPosition);            
         },
 
 
