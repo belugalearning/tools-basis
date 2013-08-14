@@ -1,7 +1,7 @@
-
 ### Compiling Resources:
 
 You'll need to install optipng first. `brew install optipng` if you have http://brew.sh/ installed.
+This script requires base64 --version 1.5. You may need to install it using homebrew too.
 
 Add/ remove any resources
 
