@@ -15,7 +15,6 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             this._super();
             this._dragAreaRect = null;
             this.changePositionOnTouchDown = true;
-            // this._draggable = true;
         },
 
         _posCount: 0,
@@ -31,10 +30,6 @@ define(['cocos2d', 'blbutton'], function (cc, BlButton) {
             this._posCount++;
             this._super.apply(this, [pos]);
         },
-
-        // setDraggable:function(draggable) {
-
-        // },
 
         returnToLastPosition: function (animate) {
             if (animate) {
