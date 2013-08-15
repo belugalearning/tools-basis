@@ -80,33 +80,45 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
             throw {name : "NotImplementedError", message : "This needs implementing"};
         },
 
+        hideQuestion: function () {
+            this._questionLabel.setVisible(false);
+            this._questionLabelBlock.setVisible(false);
+        },
+
+        showQuestion: function () {
+            this._questionLabel.setVisible(true);
+            this._questionLabelBlock.setVisible(true);
+        },
+
         _questionLabel: undefined,
+        _questionLabelBlock: undefined,
         setQuestion: function (question) {
             var self = this;
             this._question = question;
 
             if (!_.isUndefined(question.text)) {
-                var questionBlockWidth = self._windowSize.width * 0.9;
+                var questionBlockWidth = self._windowSize.width * 0.8;
                 var questionWidth = questionBlockWidth - (54 * 2);
 
                 if (_.isUndefined(this._questionLabel)) {
-                    this._questionLabel = cc.LabelTTF.create(text, "mikadoBold", 30);
+                    this._questionLabel = cc.LabelTTF.create(question.text, "mikadoBold", 30);
                     this._questionLabel.setColor(cc.c3b(255,255,255));
                     this.addChild(this._questionLabel, QUESTION_Z);
                     this._questionLabel.setDimensions(cc.SizeMake(questionWidth, 0));
                     this._questionLabel.setHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
                     this._questionLabel.setVerticalAlignment(cc.TEXT_ALIGNMENT_CENTER);
-                }
 
-                var batchNode = cc.SpriteBatchNode.create(window.bl.getResource('question_tray_9_slice'));
-                var blocks = cc.Scale9Sprite.create();
-                blocks.updateWithBatchNode(batchNode, cc.rect(0, 0, 139, 138), false, cc.rect(54, 54, 31, 31));
-                var size = cc.size(questionBlockWidth, this._questionLabel.getContentSize().height + (54 * 2));
-                var pos = cc.p(self._windowSize.width / 2, self._windowSize.height - (size.height / 2));
-                blocks.setContentSize(size);
-                this._questionLabel.setPosition(pos);
-                blocks.setPosition(pos);
-                this.addChild(blocks, QUESTION_Z - 1);
+                    var batchNode = cc.SpriteBatchNode.create(window.bl.getResource('question_tray_9_slice'));
+                    this._questionLabelBlock = cc.Scale9Sprite.create();
+                    this._questionLabelBlock.updateWithBatchNode(batchNode, cc.rect(0, 0, 139, 138), false, cc.rect(54, 54, 31, 31));
+                    var size = cc.size(questionBlockWidth, this._questionLabel.getContentSize().height + (54 * 2));
+                    var pos = cc.p(self._windowSize.width / 2, self._windowSize.height - (size.height / 2));
+                    this._questionLabelBlock.setContentSize(size);
+                    this._questionLabel.setPosition(pos);
+                    this._questionLabelBlock.setPosition(pos);
+                    this.addChild(this._questionLabelBlock, QUESTION_Z - 1);
+                }
+                this._questionLabel.setString(question.text);
             }
 
             function recursiveApply (control, state) {
