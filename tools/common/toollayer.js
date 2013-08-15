@@ -97,8 +97,11 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
             this._question = question;
 
             if (!_.isUndefined(question.text)) {
-                var questionBlockWidth = self._windowSize.width * 0.8;
-                var questionWidth = questionBlockWidth - (54 * 2);
+
+                var sliceBorderWidth = 24;
+                var sliceInternalWidth = 34;
+                var questionBlockWidth = self._windowSize.width * 0.76;
+                var questionWidth = questionBlockWidth - (sliceBorderWidth * 2);
 
                 if (_.isUndefined(this._questionLabel)) {
                     this._questionLabel = cc.LabelTTF.create(question.text, "mikadoBold", 30);
@@ -110,9 +113,9 @@ define(['exports', 'underscore','cocos2d'], function (exports, _, cc) {
 
                     var batchNode = cc.SpriteBatchNode.create(window.bl.getResource('question_tray_9_slice'));
                     this._questionLabelBlock = cc.Scale9Sprite.create();
-                    this._questionLabelBlock.updateWithBatchNode(batchNode, cc.rect(0, 0, 139, 138), false, cc.rect(54, 54, 31, 31));
-                    var size = cc.size(questionBlockWidth, this._questionLabel.getContentSize().height + (54 * 2));
-                    var pos = cc.p(self._windowSize.width / 2, self._windowSize.height - (size.height / 2));
+                    this._questionLabelBlock.updateWithBatchNode(batchNode, cc.rect(0, 0, sliceBorderWidth * 2 + sliceInternalWidth,  sliceBorderWidth * 2 + sliceInternalWidth), false, cc.rect(sliceBorderWidth, sliceBorderWidth, sliceInternalWidth, sliceInternalWidth));
+                    var size = cc.size(questionBlockWidth, this._questionLabel.getContentSize().height + (sliceBorderWidth * 2));
+                    var pos = cc.p(self._windowSize.width / 2, self._windowSize.height - 20 - (size.height / 2));
                     this._questionLabelBlock.setContentSize(size);
                     this._questionLabel.setPosition(pos);
                     this._questionLabelBlock.setPosition(pos);
