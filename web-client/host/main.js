@@ -187,6 +187,9 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                     };
                     scene.scheduleUpdate();
 
+                    var fl = window.top.toolLoaded || function () {};
+                    fl();
+
                     return scene;
                 }
                 return null;
