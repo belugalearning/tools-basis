@@ -40,6 +40,8 @@ require.config({
         'settingslayer': '../../tools/common/settings-layer',
         'dropzone': '../../tools/common/dropzone',
         'canvasclippingnode': '../../tools/common/canvas-clipping-node',
+        'scrollbar': '../../tools/common/scroll-bar',
+        'scrollcontainer': '../../tools/common/scroll-container',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
