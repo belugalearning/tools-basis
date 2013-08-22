@@ -5,11 +5,9 @@ define(['draggable'], function(Draggable) {
 		ctor:function() {
 			this._super();
 			this.vertical;
-			// this.height;
 			this.lowBound;
 			this.highBound;
 			this.fixedBound;
-			// this.scrollProportion;
 		},
 
 		initWithOrientation:function(vertical) {
