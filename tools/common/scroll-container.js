@@ -43,19 +43,19 @@ define(['scrollbar'], function(ScrollBar) {
 		scrollToProportion:function(proportion) {
 			proportion = proportion.putInBounds(0,1);
 			this.scrollBar.setPositionFromProportion(proportion);
-			this.scrollSpaceNode();
+			this.scrollScrollNode();
 		},
 
 		setScrollBarFunctions:function() {
 			var self = this;
 			this.scrollBar.onTouchDown(function() {
-				self.scrollSpaceNode();
+				self.scrollScrollNode();
 				var proportion = self.scrollBar.getProportionFromPosition();
 				self.scrollStart.call(self, proportion);
 			});
 
 			this.scrollBar.onMoved(function() {
-				self.scrollSpaceNode();
+				self.scrollScrollNode();
 				var proportion = self.scrollBar.getProportionFromPosition();
 				self.scrollMove.call(self, proportion);
 			});
@@ -78,13 +78,13 @@ define(['scrollbar'], function(ScrollBar) {
 			this.scrollEnd = scrollEnd;
 		},
 
-		scrollSpaceNode:function() {
+		scrollScrollNode:function() {
 			var proportion = this.scrollBar.getProportionFromPosition();
-			var position = proportion * (this.spacesNode.getTotalHeight() - this.spacesNode.getVisibleHeight());
+			var position = proportion * (this.scrollNode.getTotalHeight() - this.scrollNode.getVisibleHeight());
 			if (this.vertical) {
 				this.scrollNode.setPosition(this.scrollNode.getPosition().x, position);
 			} else {
-				this.scrollNode.setPosition(position, this.scrollNode.getPosition().y);
+				this.scrollNode.setPosition(-position, this.scrollNode.getPosition().y);
 			};
 		},
 

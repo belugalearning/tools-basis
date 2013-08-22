@@ -30,9 +30,9 @@ define(['draggable'], function(Draggable) {
 
 		getHeight:function() {
 			var property = this.vertical ? "height" : "width";
-			var topHeight = this.top.getContentSize()["height"];
-			var middleHeight = this.barSprite.getBoundingBox().size["height"];
-			var bottomHeight = this.bottom.getContentSize()["height"];
+			var topHeight = this.top.getContentSize()[property];
+			var middleHeight = this.barSprite.getBoundingBox().size[property];
+			var bottomHeight = this.bottom.getContentSize()[property];
 			return topHeight + middleHeight + bottomHeight;
 		},
 
@@ -77,18 +77,24 @@ define(['draggable'], function(Draggable) {
 
 		getProportionFromPosition:function() {
 			var position = this.vertical ? this.getPosition().y : this.getPosition().x;
+			var proportion;
 			if (this.upperLimit() - this.lowerLimit() === 0) {
-				return 0;
-			};
-			return (this.upperLimit() - position)/(this.upperLimit() - this.lowerLimit());
+				proportion = 0;
+			} else if (this.vertical) {
+				proportion = (this.upperLimit() - position)/(this.upperLimit() - this.lowerLimit());
+			} else {
+				proportion = (position - this.lowerLimit())/(this.upperLimit() - this.lowerLimit());
+			}
+			return proportion;
 		},
 
 		setPositionFromProportion:function(proportion) {
 			proportion = proportion.putInBounds(0,1);
-			var position = this.upperLimit() - proportion * (this.upperLimit() - this.lowerLimit());
 			if (this.vertical) {
+				var position = this.upperLimit() - proportion * (this.upperLimit() - this.lowerLimit());
 				this.setPosition(cc.p(this.fixedBound, position));
 			} else {
+				var position = this.lowerLimit() + proportion * (this.upperLimit() - this.lowerLimit());
 				this.setPosition(cc.p(position, this.fixedBound));
 			};
 		},
