@@ -3,9 +3,8 @@ require.config({
     }
 });
 
-define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer', 'stackedsprite'], function (exports, cc, QLayer, BLDrawNode, Polygon, ToolLayer, StackedSprite) {
+define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'toollayer', 'stackedsprite'], function (exports, cc, QLayer, BLDrawNode, ToolLayer, StackedSprite) {
     'use strict';
-
 
     window.toolTag = 'shapebuilder';
     var Tool = ToolLayer.extend({
@@ -31,14 +30,9 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
 
             this.addChild(l)
 
-            this.setQuestion(
-              window.bl.contentService.question({
-                tool:'sorting',
-                toolMode:'table',
-                setCategory:'shape',
-                numSets:2
-              })
-            )
+            this.setQuestion({
+                'type': 'vector'
+            })
             return this;
         },
 
@@ -65,9 +59,8 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
             var self = this;
 
             this._super(question);
-
             // add draggables
-            var shapes = ['dart', 'irregular_polygon', 'short_isosceles_triangle', 'equilateral_triangle', 'isosceles_triangle', 'kite', 'parallelogram', 'rectangle', 'decagon', 'dodecagon', 'hendecagon', 'heptagon', 'hexagon', 'nonagon', 'octagon', 'pentagon', 'right_angle_triangle', 'scalene_triangle', 'square', 'trapezium']
+            var shapes = ['dart', 'irregular_polygon', 'isosceles_triangle', 'equilateral_triangle', 'kite', 'parallelogram', 'rectangle', 'decagon', 'dodecagon', 'hendecagon', 'heptagon', 'hexagon', 'nonagon', 'octagon', 'pentagon', 'right_angle_triangle', 'scalene_triangle', 'square', 'trapezium']
             _.each(shapes, function (shape, i) {
                 _.times(10, function (j) {
 
@@ -88,7 +81,8 @@ define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer'
                         color: { r: 1, g: 1, b: 1, a: 255 },
                         width: shape_width,
                         height: shape_height,
-                        position: { x: (sprite_width - shape_width) / 2, y: sprite_height - ((sprite_height - shape_height) / 2) }
+                        position: { x: (sprite_width - shape_width) / 2, y: (sprite_height - shape_height) / 2 },
+                        rotation: (Math.PI * 2) * Math.random()
                       }
                     ];
 

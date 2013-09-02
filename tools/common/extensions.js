@@ -21,7 +21,24 @@ define(['cocos2d'], function() {
     window.bl.animation = {};
     window.bl.animation.popIn = function () {
         return cc.Sequence.create(cc.FadeIn.create(0.4), cc.ScaleTo.create(0.2, 1.2, 1.2), cc.ScaleTo.create(0.2, 1, 1));
-    }
+    };
+
+    window.bl.animation.moveTo = function (duration, end) {
+        return window.bl.animation.moveThrough(duration, [end]);
+    };
+
+    window.bl.animation.moveAndRotateTo = function (duration, end, rotation, cb) {
+        cb = cb || function () {};
+        var callback = cc.CallFunc.create(cb, this);
+        return cc.Sequence.create(cc.MoveTo.create(duration / 2, end), cc.RotateTo.create(duration / 2, rotation), callback);
+    };
+
+    window.bl.animation.moveThrough = function (duration, points) {
+        points = _.map(points, function (p) {
+            return cc.MoveTo.create(duration / points.length, p);
+        });
+        return cc.Sequence.create.apply(undefined, points);
+    };
 
     window.bl.getQueryParams = function(queryString) {
         var query = (queryString || window.location.search).substring(1); // delete ?
@@ -79,6 +96,12 @@ define(['cocos2d'], function() {
         return false;
     };
 
+    window.bl.getDistanceBetweenPoints = function(p1, p2) {
+        var dY = p2.y - p1.y;
+        var dX = p2.x - p1.x;
+        return Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+    };
+
     window.bl.getClosestPoint = function(point, points) {
         var distance = 9999999 * 99999999;
         var index = 0;
@@ -92,7 +115,45 @@ define(['cocos2d'], function() {
             }
         });
         return points[index];
-    }
+    };
+
+    window.bl.polygonArea = function(points) {
+        var area = 0;
+        var nPoints = points.length;
+        var j = nPoints - 1;
+        var p1; var p2;
+
+        for (var i = 0; i < nPoints; j = i++) {
+           p1 = points[i];
+           p2 = points[j];
+           area += p1.x * p2.y;
+           area -= p1.y * p2.x;
+        }
+        area /= 2;
+         
+        return area;
+    };
+
+    window.bl.polygonCentroid = function(points) {
+        var nPoints = points.length;
+        var x = 0;
+        var y = 0;
+        var f;
+        var j = nPoints - 1;
+        var p1; var p2;
+
+        for (var i = 0; i < nPoints; j = i++) {
+            p1 = points[i];
+            p2 = points[j];
+            f = p1.x * p2.y - p2.x * p1.y;
+            x += (p1.x + p2.x) * f;
+            y += (p1.y + p2.y) * f;
+        }
+
+        f = window.bl.polygonArea(points) * 6;
+
+        return cc.p(x/f, y/f);
+    };
 
     cc.Sprite.prototype.touched = function(touchLocation) {
         var parent = this.getParent();
@@ -140,10 +201,10 @@ define(['cocos2d'], function() {
         var y = radius;
         var angle = 0;
         var range = 2 * Math.PI;
+        var inc = range / 360;
 
-        var vertices = [];
-        while (angle < range) {
-            angle += 0.01;
+        while (angle < range - inc) {
+            angle += inc;
             x = position.x + (radius * Math.cos(angle));
             y = position.y + (radius * Math.sin(angle));
             vertices.push(cc.p(x, y));
@@ -241,5 +302,49 @@ define(['cocos2d'], function() {
               var yPosition = -verticalSpacing * (this.length-1)/2 + verticalSpacing * i;
               this[i].setPosition(xPosition, yPosition);
         };
+    };
+
+    Number.prototype.putInBounds = function(lowerBound, upperBound) {
+        return Math.max(Math.min(this, upperBound), lowerBound);
+    };
+
+    cc.Rect.prototype.latticePoints = function(xDistance, yDistance, angle, offsetX, offsetY) {
+        var self = this;
+
+        var rowHeight = Math.sin(angle);
+        var rowOffset = Math.cos(angle);
+        
+        var pinPosition = function(i, j) {
+            var xValue = self.origin.x + xDistance * i + yDistance * rowOffset * j;
+            var yValue = self.origin.y + yDistance * rowHeight * j;
+            var pinPosition = cc.p(xValue, yValue);
+            return pinPosition;
+        };
+
+        var positionOnBackground = function(pinPosition) {
+            var xRelativeToBackground = pinPosition.x + self.origin.x + offsetX;
+            var yRelativeToBackground = pinPosition.y + self.origin.y + offsetY;
+            var pinPositionRelativeToBackground= cc.p(xRelativeToBackground, yRelativeToBackground);
+            var onBackground = cc.rectContainsPoint(self, pinPosition);
+            return onBackground;
+        };
+
+        var latticePoints = [];    
+        var firstCoordinate = 0;
+        var secondCoordinate = 0;
+        while (positionOnBackground(pinPosition(0, secondCoordinate))) {
+            while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
+                latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
+                firstCoordinate++;
+            }
+            firstCoordinate = -1;
+            while (positionOnBackground(pinPosition(firstCoordinate, secondCoordinate))) {
+                latticePoints.push(pinPosition(firstCoordinate, secondCoordinate));
+                firstCoordinate--;
+            }
+            firstCoordinate = 0;
+            secondCoordinate++;
+        }
+        return latticePoints;
     };
 });

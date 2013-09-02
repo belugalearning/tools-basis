@@ -16,8 +16,10 @@ if (url.match('geoboard')) {
     reqs.push('numberbondstool');
 } else if (url.match('piesplitter')) {
     reqs.push('piesplittertool');
-} else {
+} else if (url.match('division')) {
     reqs.push('longdivisiontool');
+} else {
+    reqs.push('splashtool');
 }
 
 require.config({
@@ -27,8 +29,6 @@ require.config({
         'underscore': '../../tools/common/lib/underscore',
         'vec2': '../../tools/common/lib/vec2',
         'segseg': '../../tools/common/lib/segseg',
-        'polygon': '../../tools/common/lib/polygon',
-        'polygonclip': '../../tools/common/lib/polygon.clip',
         'qlayer': '../../host-helpers/shared-qlayer',
         'extensions': '../../tools/common/extensions',
         'bldrawnode': '../../tools/common/BLDrawNode',
@@ -39,6 +39,9 @@ require.config({
         'blbutton': '../../tools/common/BLButton',
         'settingslayer': '../../tools/common/settings-layer',
         'dropzone': '../../tools/common/dropzone',
+        'canvasclippingnode': '../../tools/common/canvas-clipping-node',
+        'scrollbar': '../../tools/common/scroll-bar',
+        'scrollcontainer': '../../tools/common/scroll-container',
 
         'geoboardtool': '../../tools/geoboard/main',
         'clocktool': '../../tools/clock/main',
@@ -47,7 +50,8 @@ require.config({
         'shapebuilder': '../../tools/tests/shapebuilder/main',
         'tool_base': '../../tools/tests/tool_base/main',
         'numberbondstool': '../../tools/numberbonds/main',
-        'piesplittertool': '../../tools/piesplitter/main'
+        'piesplittertool': '../../tools/piesplitter/main',
+        'splashtool': '../../tools/splash/main'
     },
     shim: {
         'cocos2d': {
@@ -96,7 +100,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
             cacheResource: function (resource, key) {
                 var sharedTextureCache = cc.TextureCache.getInstance();
                 var image = new Image();
-                image.src = resource.src
+                image.src = resource.src;
                 image.width = resource.width;
                 image.height = resource.height;
                 sharedTextureCache.cacheImage(key, image);
@@ -184,6 +188,9 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                         this.ql.update(dt);
                     };
                     scene.scheduleUpdate();
+
+                    var fl = window.top.toolLoaded || function () {};
+                    fl();
 
                     return scene;
                 }

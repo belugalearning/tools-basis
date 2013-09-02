@@ -35,6 +35,7 @@ define(['cocos2d'], function(cc) {
 
             // Update the background sprite
             this._backgroundSprite = this.getBackgroundSpriteForState(this._state);
+            this._origin = this._backgroundSprite._origin;
             // Set the content size
             var maxRect = this._backgroundSprite.getBoundingBox();
             this.setContentSize(cc.SizeMake(maxRect.size.width, maxRect.size.height));
@@ -49,8 +50,10 @@ define(['cocos2d'], function(cc) {
             if (this.init(true)) {
                 cc.Assert(backgroundSprite != null, "backgroundSprite must not be nil");
 
-                this.ignoreAnchorPointForPosition(false);
-                this.setAnchorPoint(cc.p(0.5, 0.5));
+                if (backgroundSprite instanceof cc.LayerColor) {
+                    this.ignoreAnchorPointForPosition(false);
+                    this.setAnchorPoint(cc.p(0.5, 0.5));
+                }
 
                 this.setTouchEnabled(true);
                 this._pushed = false;
@@ -94,7 +97,6 @@ define(['cocos2d'], function(cc) {
             var sprite = new cc.Sprite();
             sprite.initWithFile(file);
             this.initWithSprite(sprite);
-            this.setMargins(0, 0);
         },
 
         /** Adjust the background image. YES by default. If the property is set to NO, the
@@ -196,8 +198,19 @@ define(['cocos2d'], function(cc) {
             }
         },
 
+        setGreyedOut: function(greyed) {
+            this.setOpacity(greyed ? 128 : 255);
+            this.setEnabled(!greyed);
+        },
+
         onTouchBegan: function(touch, event) {
-            if (!this.isTouchInside(touch) || !this.isEnabled()) {
+            var touchInside;
+            if (this._backgroundSprite instanceof cc.Sprite) {
+                touchInside = this._backgroundSprite.touched(touch.getLocation());
+            } else {
+                touchInside = this.isTouchInside(touch);
+            }
+            if (!touchInside || !this.isEnabled()) {
                 return false;
             }
 
@@ -236,7 +249,14 @@ define(['cocos2d'], function(cc) {
             this._pushed = false;
             this.setHighlighted(false);
 
-            if (this.isTouchInside(touch)) {
+            var touchInside = false;
+            if (this._backgroundSprite instanceof cc.Sprite) {
+                touchInside = this._backgroundSprite.touched(touch.getLocation());
+            } else {
+                touchInside = this.isTouchInside(touch);
+            }
+
+            if (touchInside) {
                 this.sendActionsForControlEvents(cc.CONTROL_EVENT_TOUCH_UP_INSIDE);
                 this._onTouchUp.apply(this, [touch.getLocation(), this]);
             } else {
@@ -267,6 +287,10 @@ define(['cocos2d'], function(cc) {
                 return this._backgroundSpriteDispatchTable[state];
             }
             return this._backgroundSpriteDispatchTable[cc.CONTROL_STATE_NORMAL];
+        },
+
+        getCurrentBackgroundSprite:function() {
+            return this.getBackgroundSpriteForState(this._state);
         },
 
         /**

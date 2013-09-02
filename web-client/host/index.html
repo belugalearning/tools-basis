@@ -22,6 +22,7 @@
             font-family: mikadoBold;
             src: url('../../shared-resources/fonts/belugamikadobold.ttf') format('truetype');
         }
+
     </style>
     <!-- Temp jquery location -->
     <script type="text/javascript" src="../../expression-service/jquery-2.0.3.min.js"></script>
@@ -29,38 +30,26 @@
     <script type="text/javascript" src="../../tools/common/lib/require.js"></script>
 </head>
 <body style="padding:0; margin: 0; background: #000;">
-<!-- <div style="height:100; color:white; background-color:#333333;"><p>heading</p></div> -->
-<canvas id="gameCanvas" width="800" height="450"></canvas>
-<script type="text/javascript">
-    document.ccConfig = {
-        COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
-        box2d:false,
-        chipmunk:true,
-        showFPS:true,
-        loadExtension:true,
-        frameRate:60,
-        tag:'gameCanvas', //the dom element to run cocos2d on
-        engineDir:'../cocos2d/',
-        appFiles:[]
-};
-</script>
-<script src="../cocos2d/platform/jsloader.js"></script>
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
+    <script type="text/javascript">
+        document.ccConfig = {
+            COCOS2D_DEBUG:2, //0 to turn debug off, 1 for basic debug, and 2 for full debug
+            box2d:false,
+            chipmunk:true,
+            showFPS:true,
+            loadExtension:true,
+            frameRate:60,
+            tag:'gameCanvas', //the dom element to run cocos2d on
+            engineDir:'../cocos2d/',
+            appFiles:[]
+    };
+    </script>
+    <script src="../cocos2d/platform/jsloader.js"></script>
+    <script type="text/javascript" src="/content-service/index.js"></script>
+    <script type="text/javascript" src="../../shared-resources/exprmap-defaults.js"></script>
 
-
-<script type="text/javascript" src="/content-service/index.js"></script>
-<script type="text/javascript" src="../../shared-resources/exprmap-defaults.js"></script>
-
-<!-- USE THIS IF YOU WANT TO SKIP THE EXPR MAP GUI, IT'LL JUST COPY DATA FROM DEFAULTS, LIKE IOS CLIENT CURRENTLY DOES ... ALSO COMMENT OUT THE dat.gui AND exprMapGui SCRIPTS BELOW -->
-<script type="text/javascript" src="emapCopyDefaults.js"></script>
-
-<!-- <script type="text/javascript" src="lib/dat.gui.min.js"></script>
-<script type="text/javascript" src="exprMapGui.js"></script> -->
-
-<script type="text/javascript">
-    //test that we wrote something to session storage
-    var lbp=JSON.parse(sessionStorage.getItem("bundle_parameters"));
-    console.log(lbp);
-</script>
+    <!-- USE THIS IF YOU WANT TO SKIP THE EXPR MAP GUI, IT'LL JUST COPY DATA FROM DEFAULTS, LIKE IOS CLIENT CURRENTLY DOES ... ALSO COMMENT OUT THE dat.gui AND exprMapGui SCRIPTS BELOW -->
+    <script type="text/javascript" src="emapCopyDefaults.js"></script>
 
 </body>
 </html>

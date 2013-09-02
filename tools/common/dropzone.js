@@ -55,7 +55,7 @@ define(['cocos2d', 'bldrawnode', 'underscore'], function (cc, BLDrawNode, _) {
             text = text || '';
             if (_.isUndefined(this._label)) {
                 this._label = cc.LabelTTF.create(text, "mikadoBold", 30);
-                this.addChild(this._label);  
+                this.addChild(this._label);
             }
             this._label.setPosition(cc.p(this.getContentSize().width / 2, this.getContentSize().height / 2));
         },

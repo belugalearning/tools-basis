@@ -3,7 +3,7 @@ require.config({
     }
 });
 
-define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'polygonclip', 'toollayer', 'draggable', 'draggableLayer', ], function (exports, cc, QLayer, BLDrawNode, Polygon, ToolLayer, Draggable, DraggableLayer) {
+define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'toollayer', 'draggable', 'draggableLayer', ], function (exports, cc, QLayer, BLDrawNode, ToolLayer, Draggable, DraggableLayer) {
     'use strict';
 
     var DRAGGABLE_PREFIX = 'DRAGGABLE_';

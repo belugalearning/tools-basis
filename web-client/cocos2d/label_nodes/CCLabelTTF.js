@@ -313,6 +313,7 @@ cc.LabelTTFCanvas = cc.Sprite.extend(/** @lends cc.LabelTTFCanvas# */{
         } else
             this._isMultiLine = false;
 
+        var locDimensionsWidth = this._dimensions.width;
         // we will need to change contentSize to cater this
         //if dimension is not set, set contentSize according to actual size
         if (this._dimensions.width === 0) {
@@ -325,6 +326,17 @@ cc.LabelTTFCanvas = cc.Sprite.extend(/** @lends cc.LabelTTFCanvas# */{
             //dimension is already set, contentSize must be same as dimension
             this.setContentSize(cc.size(this._dimensions.width, this._dimensions.height));
             this._anchorPointInPoints = new cc.Point(this._contentSize.width * this._anchorPoint.x, this._contentSize.height * this._anchorPoint.y);
+
+            if(this._dimensions.height === 0) {
+                if (this._isMultiLine)
+                    this.setContentSize(cc.size(locDimensionsWidth, this._fontClientHeight * this._strings.length));
+                else
+                    this.setContentSize(cc.size(locDimensionsWidth, this._fontClientHeight));
+            } else {
+                //dimension is already set, contentSize must be same as dimension
+                this.setContentSize(cc.size(locDimensionsWidth, this._dimensions.height));
+            }
+
         }
     },
     /**

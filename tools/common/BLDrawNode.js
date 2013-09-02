@@ -8,10 +8,255 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
     var SPRITE_HEIGHT = 100;
 
     window.bl = window.bl || {};
+
+    var drawing = {};
+    drawing.shapes = {};
+
+    drawing.shapes.trapezium = function() {
+
+        var square = drawing.shapes.regularShape(4);
+
+        var min_x = _.min(square, function (p) { return p.x; }).x;
+        var max_x = _.max(square, function (p) { return p.x; }).x;
+
+        var range = (max_x - min_x);
+        var sign = Math.random() >= 0.5 ? 1 : -1;
+        var offset = ((Math.random() * range - (range * 0.3)) + (range * 0.5)) * sign;
+
+        var side = Math.random() >= 0.5 ? 'x' : 'y';
+
+        var trapezium = _.map(square, function (point, i) {
+            if (side == 'x' && i < 2 ||
+                side == 'y' && i >= 1 && i < 3) {
+                point[side] = point[side] + (offset / (i + 1));
+            }
+            return point;
+        });
+
+        return trapezium;
+    };
+
+    drawing.shapes.dart = function() {
+
+        var scene_width = 1;
+        var scene_height = 1;
+
+        var a = Math.floor(Math.random() * (scene_height * 0.3)) + (scene_height * 0.3);
+        var theta = Math.PI * (Math.floor(Math.random() * 20) + 15) / 180;
+        var b = a * Math.cos(theta);
+        var c = a * Math.sin(theta);
+        var d = (Math.floor(Math.random() * c) + 2 * c);
+
+        var points = [
+            cc.p(0,0),
+            cc.p((0 + b), (0 - c)),
+            cc.p(0, (0 + d)),
+            cc.p((0 - b), (0 - c)),
+            cc.p(0,0)
+        ];
+
+        return points;
+    };
+
+    drawing.shapes.polygon = function() {
+
+        var scene_width = 1;
+        var scene_height = 1;
+
+        var i = 6;
+        var theta = (2 * Math.PI) / i;
+
+        var points = [
+            cc.p(scene_width / 2, 0),
+
+        ];
+        for (var n = 0; n < i; n++) {
+            points.push(cc.p(scene_width / 3 * (Math.random() + 0.5) * Math.cos(n * theta), scene_width / 3 * (Math.random() + 0.5) * Math.sin(n * theta)));
+        }
+        points.push(cc.p(scene_width / 2, 0));
+
+        return points;
+    };
+
+    drawing.shapes.isoceles = function() {
+
+        var triangle = drawing.shapes.regularShape(3);
+
+        var min_y = _.min(triangle, function (p) { return p.y; }).y;
+        var max_y = _.max(triangle, function (p) { return p.y; }).y;
+
+        var range = (max_y - min_y);
+        var scale_height = (_.random(0.3, 0.7) * range);
+        var sign = Math.random() >= 0.5 ? 1 : 0;
+        triangle[0].y = triangle[0].y + (scale_height * sign);
+
+        return triangle;
+    };
+
+    drawing.shapes.kite = function() {
+
+        var triangle = drawing.shapes.isoceles();
+
+        var min_y = _.min(triangle, function (p) { return p.y; }).y;
+        var max_y = _.max(triangle, function (p) { return p.y; }).y;
+
+        var range = (max_y - min_y);
+        var p = cc.p(triangle[0].x, triangle[0].y - (range * _.random(1.3, 1.7)));
+        triangle.splice(2,0,p);
+
+        return triangle;
+    };
+
+    drawing.shapes.parallelogram = function() {
+
+        var square = drawing.shapes.regularShape(4);
+
+        var offset = _.random(0.2, 0.7);
+
+        var parallelogram = _.map(square, function (p, i) {
+            if (i < 2) {
+                p.x += offset;
+            }
+            return p;
+        });
+
+        return parallelogram;
+    };
+
+    drawing.shapes.rectangle = function() {
+
+        var square = drawing.shapes.regularShape(4);
+
+        var offset = _.random(0.3, 0.4);
+
+        var parallelogram = _.map(square, function (p, i) {
+            if (i == 1 || i == 2) {
+                p.x += offset;
+            }
+            return p;
+        });
+
+        return parallelogram;
+    };
+
+    drawing.shapes.rightAngleTriangle = function() {
+
+        var square = drawing.shapes.regularShape(4);
+        square.splice(2, 1);
+
+        return square;
+    };
+
+    drawing.shapes.scaleneTriangle = function() {
+
+        var triangle = drawing.shapes.rightAngleTriangle();
+
+        triangle[0].x += _.random(1, 1.6);
+        triangle[1].y += _.random(0.8, 1.2);
+
+        return triangle;
+    };
+
+    /*
+     * Draws a regular vector shape on a scale of 0,0 -> 1,1 orientated around 0.5,0.5 with n sides
+     */
+    drawing.shapes.regularShape = function (sides) {
+
+        var scene_width = 1;
+        var scene_height = 1;
+        var scene_center = cc.p(scene_width / 2, scene_height / 2);
+
+        var shape_sides = sides;
+        var shape_max_side = 1;
+        var shape_theta = ((2 * Math.PI) / shape_sides);
+        var shape_offset = (shape_theta - (Math.PI / 2)) + (Math.PI / shape_sides);
+
+        var points = [];
+
+        for (var i = 0; i < shape_sides; i++) {
+            points.push(
+                cc.p(
+                    shape_max_side * Math.cos((i * shape_theta) + shape_offset),
+                    shape_max_side * Math.sin((i * shape_theta) + shape_offset)
+                )
+            );
+        }
+        
+        return drawing.tools.centerVector(points);
+
+    };
+
+    drawing.tools = {};
+
+    drawing.tools.getVectorBounds = function (position, poly) {
+        var max_x = _.max(poly, function (p) { return p.x; }).x;
+        var min_x = _.min(poly, function (p) { return p.x; }).x;
+        var max_y = _.max(poly, function (p) { return p.y; }).y;
+        var min_y = _.min(poly, function (p) { return p.y; }).y;
+        return cc.SizeMake(max_x - min_x, max_y - min_y);
+    };
+
+    drawing.tools.convertVectorToPx = function (points, width, height) {
+        return _.map(points, function (p) {
+            return cc.p(p.x * width, p.y * height);
+        });
+    };
+
+    drawing.tools.centerVector = function (vector, space_width, space_height) {
+        var min_x = _.min(vector, function (p) { return p.x; }).x;
+        var min_y = _.min(vector, function (p) { return p.y; }).y;
+        var max_x = _.max(vector, function (p) { return p.x; }).x;
+        var max_y = _.max(vector, function (p) { return p.y; }).y;
+        var size_x = max_x - min_x;
+        var size_y = max_y - min_y;
+
+        var x_offset = min_x * -1;
+        var y_offset = min_y * -1;
+
+        // find the smallest dimension
+        if (Math.min(size_x, size_y) == size_x) {
+            // x is the smallest
+            x_offset += (size_y - size_x) / 2;
+        } else {
+            // y is the smallest
+            y_offset += (size_x - size_y) / 2;
+        }
+
+        vector = _.map(vector, function (p) {
+            return cc.p(p.x + x_offset, p.y + y_offset);
+        });
+        return vector;
+    };
+
+    drawing.tools.rotateVector = function (vector, angle, center) {
+        if (angle === 0) return vector;
+        center = center || cc.p(0, 0);
+        var cosAngle = Math.cos(angle);
+        var sinAngle = Math.sin(angle);
+        return _.map(vector, function (p) {
+            return cc.p(
+                center.x + ((p.x - center.x) * cosAngle - (p.y - center.y) * sinAngle),
+                center.y + ((p.x - center.x) * sinAngle + (p.y - center.y) * cosAngle)
+            );
+        });
+    };
+
+    drawing.tools.scaleToFit = function(vector, width, height) {
+        var size = drawing.tools.getVectorBounds(cc.p(0,0), vector);
+
+        var multiplier = Math.min(width, height) / Math.max(size.width, size.height);
+        
+        vector = _.map(vector, function (p) {
+            return cc.p(p.x * multiplier, p.y * multiplier);
+        });
+
+        return vector;
+    };
+
     bl.DRAWNODE_TYPE_CIRCLE = 'circle';
     bl.DRAWNODE_TYPE_DART = 'dart';
     bl.DRAWNODE_TYPE_IRREGULAR_POLYGON = 'irregular_polygon';
-    bl.DRAWNODE_TYPE_SHORT_ISOSCELES = 'short_isosceles_triangle';
+    bl.DRAWNODE_TYPE_ISOSCELES = 'isosceles_triangle';
     bl.DRAWNODE_TYPE_EQUILATERAL = 'equilateral_triangle';
     bl.DRAWNODE_TYPE_TALL_ISOSCELES = 'isosceles_triangle';
     bl.DRAWNODE_TYPE_KITE = 'kite';
@@ -44,313 +289,55 @@ define(['exports', 'underscore', 'cocos2d'], function(exports, _, cc) {
             this._super();
         },
 
-        draw: function(ctx) {
-            this._super(ctx);
-            var self = this;
 
-            var context = ctx || cc.renderContext;
-
-            _.each(this._buffer, function(element) {
-                context.fillStyle = "rgba(" + (0 | (element.fillColor.r * 255)) + "," + (0 | (element.fillColor.g * 255)) + "," + (0 | (element.fillColor.b * 255)) + "," + element.fillColor.a + ")";
-                context.lineWidth = element.borderWidth * 2;
-                context.lineCap = "round";
-                context.strokeStyle = "rgba(" + (0 | (element.borderColor.r * 255)) + "," + (0 | (element.borderColor.g * 255)) + "," + (0 | (element.borderColor.b * 255)) + "," + element.borderColor.a + ")";
-
-                if (element.type === bl.DRAWNODE_TYPE_CIRCLE) {
-
-                    cc.drawingUtil.drawCircle(element.position, element.radius, element.angle, element.segments, element.drawLineToCenter, element.fillColor, element.borderWidth, element.borderColor);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
-
-                    context.translate((self._width - (element.x + element.a + element.x2)) / 2, (self._height - element.y) / 2);
-                    context.beginPath();
-                    context.moveTo(element.x, 0);
-                    context.lineTo((element.x + element.a), 0);
-                    context.lineTo((element.x + element.a + element.x2), element.y);
-                    context.lineTo(0, element.y);
-                    context.lineTo(element.x, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_SQUARE) {
-
-                    context.translate((self._width - element.x) / 2, (self._height - element.x) / 2);
-                    context.beginPath();
-                    context.moveTo(0, 0);
-                    context.lineTo(0, element.x);
-                    context.lineTo(element.x, element.x);
-                    context.lineTo(element.x, 0);
-                    context.lineTo(0, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_SCALENE) {
-
-                    context.translate((self._width - (element.b + element.a * Math.cos(element.theta))) / 2, (self._height + element.a * Math.sin(element.theta)) / 2);
-                    context.beginPath();
-                    context.moveTo(0, 0);
-                    context.lineTo((0 + element.b), 0);
-                    context.lineTo((0 + element.a * Math.cos(element.theta)), (0 - element.a * Math.sin(element.theta)));
-                    context.lineTo(0, 0);
-
-
-                } else if (element.type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
-
-                    context.translate((self._width - element.b) / 2, (self._height - element.a) / 2);
-                    context.beginPath();
-                    context.moveTo(0, 0);
-                    context.lineTo(0, element.a);
-                    context.lineTo(element.b, 0);
-                    context.lineTo(0, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_EQUILATERAL) {
-
-                    var h = element.side * (Math.sqrt(3) / 2);
-
-                    context.beginPath();
-                    context.translate(self._width / 2, self._height / 2);
-                    context.moveTo(0, -h / 2);
-                    context.lineTo(-element.side / 2, h / 2);
-                    context.lineTo(element.side / 2, h / 2);
-                    context.lineTo(0, -h / 2);
-
-                } else if (
-                    element.type === bl.DRAWNODE_TYPE_PENTAGON ||
-                    element.type === bl.DRAWNODE_TYPE_HEXAGON ||
-                    element.type === bl.DRAWNODE_TYPE_HEPTAGON ||
-                    element.type === bl.DRAWNODE_TYPE_OCTAGON ||
-                    element.type === bl.DRAWNODE_TYPE_NONAGON ||
-                    element.type === bl.DRAWNODE_TYPE_DECAGON ||
-                    element.type === bl.DRAWNODE_TYPE_HENDECAGON ||
-                    element.type === bl.DRAWNODE_TYPE_DODECAGON) {
-
-                    context.translate((self._width) / 2, (self._height) / 2);
-                    context.beginPath();
-                    context.moveTo(element.side, 0);
-                    for (var i = 0; i < element.sides; i++) {
-                        context.lineTo(element.side * Math.cos(i * element.theta), element.side * Math.sin(i * element.theta));
-                    }
-
-                } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
-
-                    context.translate((self._width - element.b) / 2, (self._height - element.a) / 2);
-                    context.beginPath();
-                    context.moveTo(0, 0);
-                    context.lineTo(0, element.a);
-                    context.lineTo(element.b, element.a);
-                    context.lineTo(element.b, 0);
-                    context.lineTo(0, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
-
-                    context.translate((self._width - element.a - (2 * element.x)) / 2, (self._height - element.y) / 2);
-                    context.beginPath();
-                    context.moveTo(element.x, 0);
-                    context.lineTo(((2 * element.x) + element.a), 0);
-                    context.lineTo((element.x + element.a), element.y);
-                    context.lineTo(0, element.y);
-                    context.lineTo(element.x, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_KITE) {
-
-                    context.translate((self._width - (2 * element.c)) / 2, (self._height - element.a - element.b) / 2);
-                    context.beginPath();
-                    context.moveTo(0, element.b);
-                    context.lineTo(element.c, (element.a + element.b));
-                    context.lineTo((2 * element.c), element.b);
-                    context.lineTo(element.c, 0);
-                    context.lineTo(0, element.b);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
-                    context.translate(self._width / 2, ((self._height - element.a) / 2));
-                    context.beginPath();
-                    context.moveTo((-self._sprite_width/ 5), (element.a));
-                    context.lineTo(0, 0);
-                    context.lineTo((self._sprite_width / 5), (element.a));
-                    context.lineTo((-self._sprite_width / 5), (element.a));
-
-                } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
-
-                    context.translate(self._width / 2, ((self._height - element.a) / 2));
-                    context.beginPath();
-                    context.moveTo((self._width / 2), (element.a));
-                    context.lineTo(0, 0);
-                    context.lineTo((-self._width / 2), (element.a));
-                    context.lineTo((self._width / 2), (element.a));
-                    context.stroke();
-
-                } else if (element.type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
-
-                    var i = 6
-                    var theta = (2 * Math.PI) / i;
-                    context.translate((self._sprite_width * 0.5) - ((self._sprite_width - self._width) * 0.5), (self._sprite_height * 0.5) - ((self._sprite_height - self._height) * 0.5));
-                    context.beginPath();
-                    context.moveTo(self._width / 2, 0);
-                    for (var n = 0; n < i; n++) {
-                        context.lineTo(self._width / 3 * (element.seeds[i] + 0.5) * Math.cos(n * theta), self._width / 3 * (element.seeds[i + 1] + 0.5) * Math.sin(n * theta));
-                    }
-                    context.lineTo(self._width / 2, 0);
-
-                } else if (element.type === bl.DRAWNODE_TYPE_DART) {
-
-                    context.translate(self._width / 2, (self._height + element.c - element.d) / 2);
-                    context.beginPath();
-                    context.moveTo(0, 0);
-                    context.lineTo((0 + element.b), (0 - element.c));
-                    context.lineTo(0, (0 + element.d));
-                    context.lineTo((0 - element.b), (0 - element.c));
-                    context.lineTo(0, 0);
-
-                }
-                context.fill();
-                context.stroke();
-                context.closePath();
-            });
-        },
-
-        drawShape: function(shape, fillColor, borderWidth, borderColor) {
-            var self = this;
-            var element = new cc._DrawNodeElement(shape);
-            element.fillColor = fillColor;
-            element.borderWidth = borderWidth;
-            element.borderColor = borderColor;
-
-            if (element.type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
-
-                element.x = Math.floor(Math.random() * this._width * 0.4);
-                element.x2 = Math.floor(Math.random() * this._width * 0.2) + 5;
-                element.a = Math.floor(Math.random() * this._width * 0.25) + 15;
-                element.y = Math.floor(Math.random() * this._width * 0.4) + 30;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_SQUARE) {
-
-                element.x = Math.floor(Math.random() * (this._width - 20)) + 20;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_SCALENE) {
-
-                element.a = Math.floor(Math.random() * 10) + 25;
-                element.b = Math.floor(Math.random() * 10) + (1.2 * element.a);
-                element.theta = Math.PI * (Math.floor(Math.random() * 60) + 100) / 180;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
-
-                element.a = Math.floor(Math.random() * (this._width - 15)) + 15;
-                element.b = Math.floor(Math.random() * (self._height - 15)) + 15;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
-
-                element.rand = ((this._width * 0.6 / 3) - 10) * Math.random() + 10;
-                element.seeds = [];
-                _.times(20, function() {
-                    element.seeds.push(Math.random());
-                })
-
-            } else if (element.type === bl.DRAWNODE_TYPE_EQUILATERAL) {
-
-                element.side = Math.random() * (self._min_dimension - 30) + 30;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_PENTAGON) {
-
-                element.sides = 5;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_HEXAGON) {
-
-                element.sides = 6;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_HEPTAGON) {
-
-                element.sides = 7;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_OCTAGON) {
-
-                element.sides = 8;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_NONAGON) {
-
-                element.sides = 9;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_DECAGON) {
-
-                element.sides = 10;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_HENDECAGON) {
-
-                element.sides = 11;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_DODECAGON) {
-
-                element.sides = 12;
-                element.side = Math.random() * (self._min_dimension / 3 - 30) + 30;
-                element.theta = (2 * Math.PI) / element.sides;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_RECTANGLE) {
-
-                element.b = Math.floor(Math.random() * this._width * 0.4) + this._width * 0.6;
-                element.a = Math.floor(Math.random() * self._sprite_height * 0.25) + self._sprite_height * 0.3;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
-
-                element.x = Math.floor(Math.random() * 5) + 5;
-                element.a = Math.floor(Math.random() * 30) + 10;
-                element.y = Math.floor(Math.random() * 20) + 40;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_KITE) {
-
-                element.a = Math.floor(Math.random() * (self._width * 0.3 - 5)) + 5;
-                element.b = Math.floor(Math.random() * (self._height * 0.7 - 30)) + 30;
-                element.c = Math.floor(Math.random() * ((this._width / 2) - 10)) + 10;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_TALL_ISOSCELES) {
-
-                element.a = Math.floor(Math.random() * (self._height / 2)) + (self._height / 2);
-
-            } else if (element.type === bl.DRAWNODE_TYPE_SHORT_ISOSCELES) {
-
-                element.a = Math.floor(Math.random() * (self._height / 3)) + 10;
-
-            } else if (element.type === bl.DRAWNODE_TYPE_DART) {
-
-                element.a = Math.floor(Math.random() * (self._height * 0.3)) + (self._height * 0.3);
-                element.theta = Math.PI * (Math.floor(Math.random() * 20) + 15) / 180;
-                element.b = element.a * Math.cos(element.theta);
-                element.c = element.a * Math.sin(element.theta);
-                element.d = (Math.floor(Math.random() * element.c) + 2 * element.c);
-
+        drawShape: function(type, rotation, fillColor, borderWidth, borderColor) {
+            var shape;
+
+            if (type === bl.DRAWNODE_TYPE_EQUILATERAL) {
+                shape = drawing.shapes.regularShape(3);
+            } else if (type === bl.DRAWNODE_TYPE_SQUARE) {
+                shape = drawing.shapes.regularShape(4);
+            } else if (type === bl.DRAWNODE_TYPE_PENTAGON) {
+                shape = drawing.shapes.regularShape(5);
+            } else if (type === bl.DRAWNODE_TYPE_HEXAGON) {
+                shape = drawing.shapes.regularShape(6);
+            } else if (type === bl.DRAWNODE_TYPE_HEPTAGON) {
+                shape = drawing.shapes.regularShape(7);
+            } else if (type === bl.DRAWNODE_TYPE_OCTAGON) {
+                shape = drawing.shapes.regularShape(8);
+            } else if (type === bl.DRAWNODE_TYPE_NONAGON) {
+                shape = drawing.shapes.regularShape(9);
+            } else if (type === bl.DRAWNODE_TYPE_DECAGON) {
+                shape = drawing.shapes.regularShape(10);
+            } else if (type === bl.DRAWNODE_TYPE_HENDECAGON) {
+                shape = drawing.shapes.regularShape(11);
+            } else if (type === bl.DRAWNODE_TYPE_DODECAGON) {
+                shape = drawing.shapes.regularShape(12);
+            } else if (type === bl.DRAWNODE_TYPE_TRAPEZIUM) {
+                shape = drawing.shapes.trapezium();
+            } else if (type === bl.DRAWNODE_TYPE_DART) {
+                shape = drawing.shapes.dart();
+            } else if (type === bl.DRAWNODE_TYPE_IRREGULAR_POLYGON) {
+                shape = drawing.shapes.polygon();
+            } else if (type === bl.DRAWNODE_TYPE_ISOSCELES) {
+                shape = drawing.shapes.isoceles();
+            } else if (type === bl.DRAWNODE_TYPE_KITE) {
+                shape = drawing.shapes.kite();
+            } else if (type === bl.DRAWNODE_TYPE_PARALLELOGRAM) {
+                shape = drawing.shapes.parallelogram();
+            } else if (type === bl.DRAWNODE_TYPE_RECTANGLE) {
+                shape = drawing.shapes.rectangle();
+            } else if (type === bl.DRAWNODE_TYPE_RIGHT_ANGLE_TRIANGLE) {
+                shape = drawing.shapes.rightAngleTriangle();
+            } else if (type === bl.DRAWNODE_TYPE_SCALENE) {
+                shape = drawing.shapes.scaleneTriangle();
             }
 
-            this._buffer.push(element);
-        },
+            shape = drawing.tools.rotateVector(shape, rotation);
+            shape = drawing.tools.centerVector(shape, 1, 1);
+            shape = drawing.tools.scaleToFit(shape, this._width, this._height);
+            this.drawPoly(shape, fillColor, borderWidth, borderColor);
 
-        /**
-         * draws a circle given the center, radius and number of segments.
-         * @param {cc.Point} center center of circle
-         * @param {Number} radius
-         * @param {Number} angle angle in radians
-         * @param {Number} segments
-         * @param {Boolean} drawLineToCenter
-         */
-        drawCircle: function(pos, radius, angle, segments, drawLineToCenter, fillColor, borderWidth, borderColor) {
-            var element = new cc._DrawNodeElement(bl.DRAWNODE_TYPE_CIRCLE);
-            element.position = pos;
-            element.radius = radius;
-            element.angle = angle;
-            element.segments = segments;
-            element.drawLineToCenter = drawLineToCenter;
-            element.fillColor = fillColor;
-            element.borderWidth = borderWidth;
-            element.borderColor = borderColor;
-            this._buffer.push(element);
-            this.setContentSize(cc.SizeMake(radius * 2, radius * 2));
         }
 
     });
