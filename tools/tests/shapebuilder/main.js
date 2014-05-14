@@ -6,7 +6,7 @@ require.config({
 define(['exports', 'cocos2d', 'qlayer', 'bldrawnode', 'toollayer', 'stackedsprite'], function (exports, cc, QLayer, BLDrawNode, ToolLayer, StackedSprite) {
     'use strict';
 
-    window.toolTag = 'shapebuilder';
+    window.bl.toolTag = 'shapebuilder';
     var Tool = ToolLayer.extend({
 
         _windowSize: undefined,
