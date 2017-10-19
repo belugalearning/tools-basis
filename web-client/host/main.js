@@ -1,6 +1,6 @@
 var reqs = ['domReady', 'underscore', 'cocos2d', 'qlayer', 'extensions'];
 
-var url = top.location.href;
+var url = window.parent.location.href;
 
 if (url.match('geoboard')) {
     reqs.push('geoboardtool');
@@ -71,7 +71,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
 
     require(['src/resource.js?prefixes[]=images_&prefixes[]=' + window.bl.toolTag], function (resources) {
 
-        window.bl = top.$.extend(window.bl, {
+        window.bl = window.parent.$.extend(window.bl, {
 
             _getResource: function (key) {
 
@@ -108,7 +108,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
 
         }, true);
 
-        window.bl.qs = window.bl.getQueryParams(window.top.location.search);
+        window.bl.qs = window.bl.getQueryParams(window.parent.location.search);
 
         domReady(function() {
 
@@ -189,7 +189,7 @@ require(reqs, function(domReady, _, cocos2d, QLayer, extensions, tool) {
                     };
                     scene.scheduleUpdate();
 
-                    var fl = window.top.toolLoaded || function () {};
+                    var fl = window.parent.toolLoaded || function () {};
                     fl();
 
                     return scene;
